@@ -15,5 +15,14 @@
 - [当前验收与候选交付](2026-10-26-native-content-acceptance.md)
 - [桌面品牌与标题栏对齐](2026-10-26-desktop-brand-spec.md)
 - [桌面品牌与对齐验收](2026-10-26-desktop-brand-review.md)
+- [Runtime Key 创建 Session Hotfix](2026-10-26-runtime-key-session-hotfix.md)
+- [桌面中英文配置](2026-10-26-desktop-localization-spec.md)
+- [Runtime Key Hotfix 与本地化评审](2026-10-26-runtime-key-localization-review.md)
+- [删除钥匙串账户恢复功能 Hotfix](2026-10-26-adhoc-keychain-hotfix.md)
+- [本地配置数据库与多 Region 设计](2026-10-26-local-config-region-spec.md)
+- [对话页视觉对齐与重复输出修复](2026-10-26-chat-visual-alignment-spec.md)
+- [本地加密凭据库（AK/SK 记忆）](2026-10-26-credential-vault-spec.md)
+- [Runtime 选择恢复与设置 Tab 联动 Hotfix](2026-10-26-runtime-selection-tab-linkage-hotfix.md)
+- [Runtime 选择恢复与设置 Tab 联动验证](2026-10-26-runtime-selection-tab-linkage-verification.md)
 
 当前releaseReady=false：核心对话/Session/原生日程及退出后调度通过，知识、专用三渠道、锁屏文件和镜像真实写入验收仍待补齐。所有制品为本地候选。

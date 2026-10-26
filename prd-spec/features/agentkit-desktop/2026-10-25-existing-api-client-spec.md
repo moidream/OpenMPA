@@ -19,7 +19,7 @@
 
 | 模块 | 现有接口/权威 | 客户端结果 |
 |---|---|---|
-| 云登录 | STS GetCallerIdentity；AgentKit `2025-10-30` 官方Go签名 | 核账号，AK/SK/STS留Go；可选原生Keychain保存 |
+| 云登录 | STS GetCallerIdentity；AgentKit `2025-10-30` 官方Go签名 | 核账号，AK/SK/STS仅留当前进程内存；不提供Keychain保存 |
 | Runtime目录/切换 | ListRuntimes `veadk:agent-type=mpa` + GetRuntime | region/project过滤和名称/ID搜索；切换递增epoch，迟到事件拒绝 |
 | Runtime配置 | GetRuntime/GetTool、现有UpdateRuntime/UpdateTool | 固定typed字段，回读关联Tool；不自动写、不复制秘密Envs；用户review目标后才提交 |
 | 对话/Session | `/api/v1/sessions` CRUD、`/{id}/run`、POST SSE、events | 原Session权威；原幂等key/pending，历史恢复，不重复执行 |
@@ -64,7 +64,7 @@ Session列表使用现有API，前端投影/渲染有界；历史避免每次事
 | 切片 | 实施文件/边界 | 必须证据 |
 |---|---|---|
 | S0 源码回退 | 两个本轮隔离后端worktree，备份后恢复；不动其他工作树/分支/云 | tracked/untracked备份摘要；git status干净、diff HEAD为空 |
-| S1 平台/宿主 | desktop cloud/ipc/credentials/host、Settings | STS账户与MPA目录，实际选择/切换，Keychain重开；固定Go签名/安全投影 |
+| S1 平台/宿主 | desktop cloud/ipc/configstore/host、Settings | STS账户与MPA目录，Region/Runtime实际选择与切换，SQLite非敏感设置重开；固定Go签名/安全投影 |
 | S2 Session/配置 | desktop session、services、BotSettings、Chat | 创建/重命名/删除、两轮对话/SSE恢复，现有execution-config GET/PATCH/CAS；无session-bots/Human请求 |
 | S3 渠道 | channels、Channels/ChannelManagement | capabilities、现有账号读取；本轮专用注册/配置/启停/权限/诊断/解绑，精准scope且不发送IM |
 | S4 日程/知识 | schedule/knowledge及页面 | 两模块CRUD与真实执行/入库/search/content；原生选文件，已创建对象回读及精确清理 |

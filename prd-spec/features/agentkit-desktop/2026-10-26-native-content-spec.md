@@ -7,7 +7,7 @@
 
 原生设置分 Account、Runtime、Authentication、Deployment 四个页签。MyGo 安全输入、勾选、按钮、系统确认；Go 直接复用 Platform/Connection/Deployment/RuntimeConfig。登录成功自动查询所选 Region/Project 的 MPA 目录；搜索和选择保留精确 Runtime ID，只有完整加载且匹配当前 scope 的成员可连接。目录使用现 ListRuntimes 分页和 MPA 标签过滤，不硬编码测试 Runtime。
 
-账户/连接 epoch 或页面切换会失效旧异步操作、确认框和输入凭据。切换后通知 WebView 回读 Connection.Status，清理旧会话及刷新当前目录。凭据不进入 ShellState、日志或证据；Remember 复用现 Keychain 服务，恢复仅使用安全 profile 引用。
+账户/连接 epoch 或页面切换会失效旧异步操作、确认框和输入凭据。切换后通知 WebView 回读 Connection.Status，清理旧会话及刷新当前目录。凭据不进入 ShellState、日志、SQLite 或证据；产品不再提供 Keychain 保存与账户恢复，秘密只在当前进程内存中保留。
 
 Runtime 资源支持 Description、CPU、Memory、Min/Max Instances、Concurrency。先 Read 获取版本和 fingerprint，确认精确资源及目标值，再用原 UpdateRuntime。镜像以当前官方 ToolId 为权威，Runtime image 和 Worker Tool image 各自独立更新，原 operation 回执可重开恢复，未知结果仅回读。实现不会生成或推送后端镜像；本轮自动验证只读取云资源。
 
