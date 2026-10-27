@@ -1658,6 +1658,12 @@ export interface UpgradeResult {
   error?: SafeError;
 }
 
+export interface UsageIntent {
+  connectionEpoch: number;
+  sessionId: string;
+  text: string;
+}
+
 export interface Values {
   description: string;
   cpuMilli: number;
@@ -2110,4 +2116,5 @@ export const Localization = {
 export const events = {
   closeRequested: event<CloseRequest>("CloseRequested"),
   navigationRequested: event<RailAction>("NavigationRequested"),
+  usageRequested: event<UsageIntent>("UsageRequested"),
 } as const;

@@ -300,7 +300,7 @@ export interface Messages {
    */
   finishCurrentOperation(): string;
   /**
-   * `恢复原助手：{session}`
+   * `待完成的创建请求（重试将沿用此 ID）：{session}`
    */
   recoverAssistant(session: string): string;
   /**
@@ -487,6 +487,14 @@ export interface Messages {
    * `请求包含无效输入。`
    */
   invalidInput(): string;
+  /**
+   * `此 Runtime 要求业务用户 ID（x-user-id）。请在「设置 → 身份认证」中配置该部署要求的业务身份。`
+   */
+  businessIdentityRequired(): string;
+  /**
+   * `此 Runtime 要求业务 JWT（X-Jwt-Token）。请在「设置 → 身份认证」中配置有效的 JWT。`
+   */
+  businessJWTRequired(): string;
   /**
    * `无法完成请求。`
    */
@@ -743,6 +751,402 @@ export interface Messages {
    * `删除这台 Mac 上的加密凭据？之后需要重新输入 AK/SK。`
    */
   forgetVaultConfirm(): string;
+  /**
+   * `资源`
+   */
+  resources(): string;
+  /**
+   * `协作`
+   */
+  collaboration(): string;
+  /**
+   * `技能、MCP 与指令`
+   */
+  skillsMcpInstructions(): string;
+  /**
+   * `A2A 协作`
+   */
+  a2aCollaboration(): string;
+  /**
+   * `页码`
+   */
+  usagePage(): string;
+  /**
+   * `总数`
+   */
+  usageTotal(): string;
+  /**
+   * `在会话中使用`
+   */
+  useInConversation(): string;
+  /**
+   * `请连接 Runtime 以管理协作。`
+   */
+  connectRuntimeCollaboration(): string;
+  /**
+   * `刷新协作`
+   */
+  refreshCollaboration(): string;
+  /**
+   * `浏览和刷新不会修改 Runtime。写入操作需要确认。`
+   */
+  collaborationReadOnly(): string;
+  /**
+   * `请先刷新协作，再提交更改。你的草稿会保留。`
+   */
+  collaborationRefreshRequired(): string;
+  /**
+   * `当前绑定`
+   */
+  currentBinding(): string;
+  /**
+   * `尚未加载当前绑定。`
+   */
+  bindingNotLoaded(): string;
+  /**
+   * `解绑空间`
+   */
+  unbindSpace(): string;
+  /**
+   * `尚未绑定 A2A 空间。`
+   */
+  noBoundA2aSpace(): string;
+  /**
+   * `A2A 空间`
+   */
+  a2aSpaces(): string;
+  /**
+   * `请刷新协作以加载空间。`
+   */
+  refreshCollaborationSpaces(): string;
+  /**
+   * `协作空间`
+   */
+  collaborationSpace(): string;
+  /**
+   * `没有可见的 A2A 空间。`
+   */
+  noVisibleA2aSpaces(): string;
+  /**
+   * `绑定所选空间`
+   */
+  bindSelectedSpace(): string;
+  /**
+   * `空间成员`
+   */
+  spaceMembers(): string;
+  /**
+   * `请选择空间以读取成员。`
+   */
+  selectSpaceMembers(): string;
+  /**
+   * `此空间中没有可见成员。`
+   */
+  noVisibleSpaceMembers(): string;
+  /**
+   * `选择成员`
+   */
+  selectMember(): string;
+  /**
+   * `上一页成员`
+   */
+  previousMembersPage(): string;
+  /**
+   * `下一页成员`
+   */
+  nextMembersPage(): string;
+  /**
+   * `上一页空间`
+   */
+  previousSpacesPage(): string;
+  /**
+   * `下一页空间`
+   */
+  nextSpacesPage(): string;
+  /**
+   * `成员详情`
+   */
+  memberDetails(): string;
+  /**
+   * `此 Runtime 不提供 Agent Card。`
+   */
+  agentCardUnavailable(): string;
+  /**
+   * `当前别名`
+   */
+  currentAlias(): string;
+  /**
+   * `成员别名`
+   */
+  memberAlias(): string;
+  /**
+   * `将别名留空即可移除。`
+   */
+  removeAliasHint(): string;
+  /**
+   * `保存成员别名`
+   */
+  saveMemberAlias(): string;
+  /**
+   * `此 Runtime 不支持别名。`
+   */
+  aliasesUnavailable(): string;
+  /**
+   * `协作任务`
+   */
+  collaborationTask(): string;
+  /**
+   * `此操作会将 @提及添加到会话草稿。请在会话中检查后发送。`
+   */
+  collaborationDraftHint(): string;
+  /**
+   * `更改 Runtime 的 A2A 空间绑定？`
+   */
+  confirmSpaceBinding(): string;
+  /**
+   * `空间绑定已保存。`
+   */
+  spaceBindingSaved(): string;
+  /**
+   * `更新所选空间中此成员的别名？`
+   */
+  confirmMemberAlias(): string;
+  /**
+   * `成员别名已保存。`
+   */
+  memberAliasSaved(): string;
+  /**
+   * `当前 Runtime 不提供此功能。`
+   */
+  capabilityUnavailable(): string;
+  /**
+   * `资源已发生变化。请重新读取并检查当前状态，再提交更改。`
+   */
+  conflict(): string;
+  /**
+   * `服务器可能已接受此操作。请先读回并核对状态，再决定是否重新提交。`
+   */
+  outcomeUnknown(): string;
+  /**
+   * `请先选择会话，再使用此资源。`
+   */
+  conversationRequired(): string;
+  /**
+   * `连接已发生变化。请重新加载此页面。`
+   */
+  staleConnection(): string;
+  /**
+   * `当前 Runtime 中已不可见此资源。请刷新资源列表。`
+   */
+  resourceNotVisible(): string;
+  /**
+   * `服务器返回了无效响应。请刷新以读取当前状态。`
+   */
+  invalidResponse(): string;
+  /**
+   * `无权执行此操作。请检查当前账户和 Runtime 的权限。`
+   */
+  denied(): string;
+  /**
+   * `服务暂时不可用。`
+   */
+  unavailable(): string;
+  /**
+   * `无法连接服务器。请检查连接后刷新。`
+   */
+  connectionFailure(): string;
+  /**
+   * `技能`
+   */
+  skills(): string;
+  /**
+   * `MCP`
+   */
+  mcp(): string;
+  /**
+   * `AGENTS.md`
+   */
+  agentsMd(): string;
+  /**
+   * `Main 配置`
+   */
+  mainProfile(): string;
+  /**
+   * `资源分类`
+   */
+  resourceSections(): string;
+  /**
+   * `资源错误`
+   */
+  resourceError(): string;
+  /**
+   * `模型`
+   */
+  model(): string;
+  /**
+   * `请连接 Runtime 以使用资源。`
+   */
+  connectRuntimeResources(): string;
+  /**
+   * `刷新技能`
+   */
+  refreshSkills(): string;
+  /**
+   * `仅显示此 Runtime 已挂载的技能空间。`
+   */
+  mountedSkillSpacesOnly(): string;
+  /**
+   * `尚未加载技能空间。`
+   */
+  skillSpacesNotLoaded(): string;
+  /**
+   * `尚未挂载技能空间。`
+   */
+  noMountedSkillSpaces(): string;
+  /**
+   * `已挂载技能空间`
+   */
+  mountedSkillSpace(): string;
+  /**
+   * `技能目录不可用。请检查平台访问权限后刷新。`
+   */
+  skillDirectoryUnavailable(): string;
+  /**
+   * `所选技能会添加到当前会话草稿，不会自动发送。`
+   */
+  skillDraftHint(): string;
+  /**
+   * `此页没有可见技能。`
+   */
+  noVisibleSkills(): string;
+  /**
+   * `此技能名称无法用作 Runtime 命令。`
+   */
+  skillNameNotUsable(): string;
+  /**
+   * `上一页技能`
+   */
+  previousSkillsPage(): string;
+  /**
+   * `下一页技能`
+   */
+  nextSkillsPage(): string;
+  /**
+   * `请选择会话以查看其 MCP 服务器。`
+   */
+  selectConversationMcp(): string;
+  /**
+   * `刷新 MCP 服务器`
+   */
+  refreshMcpServers(): string;
+  /**
+   * `配置会话 MCP`
+   */
+  configureConversationMcp(): string;
+  /**
+   * `尚未加载此会话的 MCP 服务器。`
+   */
+  mcpServersNotLoaded(): string;
+  /**
+   * `此会话尚未配置 MCP 服务器。`
+   */
+  noConfiguredMcpServers(): string;
+  /**
+   * `此 Runtime 不提供工具详情。`
+   */
+  toolDetailsUnavailable(): string;
+  /**
+   * `此服务器未列出工具。`
+   */
+  noServerTools(): string;
+  /**
+   * `共享 AGENTS.md 可能同时影响 Main 和 Worker。`
+   */
+  sharedAgentsMdScope(): string;
+  /**
+   * `Main 配置仅影响 Main。保存指令会保留其模型和技能配置。`
+   */
+  mainProfileScope(): string;
+  /**
+   * `Main 配置不受支持或尚未设置。不会创建配置。`
+   */
+  mainProfileUnsupportedOrUnconfigured(): string;
+  /**
+   * `Main 配置尚未设置。不会创建配置。`
+   */
+  mainProfileUnconfigured(): string;
+  /**
+   * `此 Runtime 不支持 Main 配置。`
+   */
+  mainProfileUnsupported(): string;
+  /**
+   * `Main 配置的实例身份或配置信息不可用。`
+   */
+  mainProfileUnavailable(): string;
+  /**
+   * `重新读取指令`
+   */
+  reloadInstructions(): string;
+  /**
+   * `读取最新指令？你的草稿会保留，以供检查。`
+   */
+  confirmReloadInstructions(): string;
+  /**
+   * `放弃指令草稿`
+   */
+  discardInstructionDraft(): string;
+  /**
+   * `用上次成功读取的指令替换你的草稿？`
+   */
+  confirmDiscardInstructions(): string;
+  /**
+   * `指令已保存。`
+   */
+  instructionsSaved(): string;
+  /**
+   * `指令草稿尚未保存。`
+   */
+  unsavedInstructionDraft(): string;
+  /**
+   * `最新已保存指令`
+   */
+  latestSavedInstructions(): string;
+  /**
+   * `已读取版本`
+   */
+  loadedRevision(): string;
+  /**
+   * `请先读取最新指令，再保存。你的草稿会保留。`
+   */
+  readInstructionsBeforeSaving(): string;
+  /**
+   * `重新读取 AGENTS.md`
+   */
+  reloadAgentsMd(): string;
+  /**
+   * `重新读取 Main 配置`
+   */
+  reloadMainProfile(): string;
+  /**
+   * `AGENTS.md 指令`
+   */
+  agentsMdInstructions(): string;
+  /**
+   * `Main 配置指令`
+   */
+  mainProfileInstructions(): string;
+  /**
+   * `保存 AGENTS.md`
+   */
+  saveAgentsMd(): string;
+  /**
+   * `保存 Main 配置`
+   */
+  saveMainProfile(): string;
+  /**
+   * `请先为此协作者保存唯一的成员别名，再发起协作。`
+   */
+  collaborationAliasRequired(): string;
 }
 
 const catalog = createCatalog<Messages>({
@@ -874,6 +1278,8 @@ const catalog = createCatalog<Messages>({
     "notConnected": [],
     "authRequired": [],
     "invalidInput": [],
+    "businessIdentityRequired": [],
+    "businessJWTRequired": [],
     "requestFailed": [],
     "dismissError": [],
     "message": [],
@@ -938,6 +1344,105 @@ const catalog = createCatalog<Messages>({
     "forgetSavedCredentials": [],
     "saveCredentials": [],
     "forgetVaultConfirm": [],
+    "resources": [],
+    "collaboration": [],
+    "skillsMcpInstructions": [],
+    "a2aCollaboration": [],
+    "usagePage": [],
+    "usageTotal": [],
+    "useInConversation": [],
+    "connectRuntimeCollaboration": [],
+    "refreshCollaboration": [],
+    "collaborationReadOnly": [],
+    "collaborationRefreshRequired": [],
+    "currentBinding": [],
+    "bindingNotLoaded": [],
+    "unbindSpace": [],
+    "noBoundA2aSpace": [],
+    "a2aSpaces": [],
+    "refreshCollaborationSpaces": [],
+    "collaborationSpace": [],
+    "noVisibleA2aSpaces": [],
+    "bindSelectedSpace": [],
+    "spaceMembers": [],
+    "selectSpaceMembers": [],
+    "noVisibleSpaceMembers": [],
+    "selectMember": [],
+    "previousMembersPage": [],
+    "nextMembersPage": [],
+    "previousSpacesPage": [],
+    "nextSpacesPage": [],
+    "memberDetails": [],
+    "agentCardUnavailable": [],
+    "currentAlias": [],
+    "memberAlias": [],
+    "removeAliasHint": [],
+    "saveMemberAlias": [],
+    "aliasesUnavailable": [],
+    "collaborationTask": [],
+    "collaborationDraftHint": [],
+    "confirmSpaceBinding": [],
+    "spaceBindingSaved": [],
+    "confirmMemberAlias": [],
+    "memberAliasSaved": [],
+    "capabilityUnavailable": [],
+    "conflict": [],
+    "outcomeUnknown": [],
+    "conversationRequired": [],
+    "staleConnection": [],
+    "resourceNotVisible": [],
+    "invalidResponse": [],
+    "denied": [],
+    "unavailable": [],
+    "connectionFailure": [],
+    "skills": [],
+    "mcp": [],
+    "agentsMd": [],
+    "mainProfile": [],
+    "resourceSections": [],
+    "resourceError": [],
+    "model": [],
+    "connectRuntimeResources": [],
+    "refreshSkills": [],
+    "mountedSkillSpacesOnly": [],
+    "skillSpacesNotLoaded": [],
+    "noMountedSkillSpaces": [],
+    "mountedSkillSpace": [],
+    "skillDirectoryUnavailable": [],
+    "skillDraftHint": [],
+    "noVisibleSkills": [],
+    "skillNameNotUsable": [],
+    "previousSkillsPage": [],
+    "nextSkillsPage": [],
+    "selectConversationMcp": [],
+    "refreshMcpServers": [],
+    "configureConversationMcp": [],
+    "mcpServersNotLoaded": [],
+    "noConfiguredMcpServers": [],
+    "toolDetailsUnavailable": [],
+    "noServerTools": [],
+    "sharedAgentsMdScope": [],
+    "mainProfileScope": [],
+    "mainProfileUnsupportedOrUnconfigured": [],
+    "mainProfileUnconfigured": [],
+    "mainProfileUnsupported": [],
+    "mainProfileUnavailable": [],
+    "reloadInstructions": [],
+    "confirmReloadInstructions": [],
+    "discardInstructionDraft": [],
+    "confirmDiscardInstructions": [],
+    "instructionsSaved": [],
+    "unsavedInstructionDraft": [],
+    "latestSavedInstructions": [],
+    "loadedRevision": [],
+    "readInstructionsBeforeSaving": [],
+    "reloadAgentsMd": [],
+    "reloadMainProfile": [],
+    "agentsMdInstructions": [],
+    "mainProfileInstructions": [],
+    "saveAgentsMd": [],
+    "saveMainProfile": [],
+    "collaborationAliasRequired": [],
   },
   messages: {
     "zh-Hans": {
@@ -1015,7 +1520,7 @@ const catalog = createCatalog<Messages>({
       "create": "创建",
       "saveTitle": "保存标题",
       "finishCurrentOperation": "请先完成当前操作，再创建其它项目。",
-      "recoverAssistant": "恢复原助手：{session}",
+      "recoverAssistant": "待完成的创建请求（重试将沿用此 ID）：{session}",
       "openMpaHome": "OpenMPA 首页",
       "toggleSidebar": "展开或折叠侧栏",
       "toggleNavigation": "展开或折叠导航",
@@ -1062,6 +1567,8 @@ const catalog = createCatalog<Messages>({
       "notConnected": "请先选择并连接 Runtime。",
       "authRequired": "需要认证。",
       "invalidInput": "请求包含无效输入。",
+      "businessIdentityRequired": "此 Runtime 要求业务用户 ID（x-user-id）。请在「设置 → 身份认证」中配置该部署要求的业务身份。",
+      "businessJWTRequired": "此 Runtime 要求业务 JWT（X-Jwt-Token）。请在「设置 → 身份认证」中配置有效的 JWT。",
       "requestFailed": "无法完成请求。",
       "dismissError": "关闭错误",
       "message": "消息",
@@ -1126,6 +1633,105 @@ const catalog = createCatalog<Messages>({
       "forgetSavedCredentials": "删除已保存凭据",
       "saveCredentials": "保存凭据",
       "forgetVaultConfirm": "删除这台 Mac 上的加密凭据？之后需要重新输入 AK/SK。",
+      "resources": "资源",
+      "collaboration": "协作",
+      "skillsMcpInstructions": "技能、MCP 与指令",
+      "a2aCollaboration": "A2A 协作",
+      "usagePage": "页码",
+      "usageTotal": "总数",
+      "useInConversation": "在会话中使用",
+      "connectRuntimeCollaboration": "请连接 Runtime 以管理协作。",
+      "refreshCollaboration": "刷新协作",
+      "collaborationReadOnly": "浏览和刷新不会修改 Runtime。写入操作需要确认。",
+      "collaborationRefreshRequired": "请先刷新协作，再提交更改。你的草稿会保留。",
+      "currentBinding": "当前绑定",
+      "bindingNotLoaded": "尚未加载当前绑定。",
+      "unbindSpace": "解绑空间",
+      "noBoundA2aSpace": "尚未绑定 A2A 空间。",
+      "a2aSpaces": "A2A 空间",
+      "refreshCollaborationSpaces": "请刷新协作以加载空间。",
+      "collaborationSpace": "协作空间",
+      "noVisibleA2aSpaces": "没有可见的 A2A 空间。",
+      "bindSelectedSpace": "绑定所选空间",
+      "spaceMembers": "空间成员",
+      "selectSpaceMembers": "请选择空间以读取成员。",
+      "noVisibleSpaceMembers": "此空间中没有可见成员。",
+      "selectMember": "选择成员",
+      "previousMembersPage": "上一页成员",
+      "nextMembersPage": "下一页成员",
+      "previousSpacesPage": "上一页空间",
+      "nextSpacesPage": "下一页空间",
+      "memberDetails": "成员详情",
+      "agentCardUnavailable": "此 Runtime 不提供 Agent Card。",
+      "currentAlias": "当前别名",
+      "memberAlias": "成员别名",
+      "removeAliasHint": "将别名留空即可移除。",
+      "saveMemberAlias": "保存成员别名",
+      "aliasesUnavailable": "此 Runtime 不支持别名。",
+      "collaborationTask": "协作任务",
+      "collaborationDraftHint": "此操作会将 @提及添加到会话草稿。请在会话中检查后发送。",
+      "confirmSpaceBinding": "更改 Runtime 的 A2A 空间绑定？",
+      "spaceBindingSaved": "空间绑定已保存。",
+      "confirmMemberAlias": "更新所选空间中此成员的别名？",
+      "memberAliasSaved": "成员别名已保存。",
+      "capabilityUnavailable": "当前 Runtime 不提供此功能。",
+      "conflict": "资源已发生变化。请重新读取并检查当前状态，再提交更改。",
+      "outcomeUnknown": "服务器可能已接受此操作。请先读回并核对状态，再决定是否重新提交。",
+      "conversationRequired": "请先选择会话，再使用此资源。",
+      "staleConnection": "连接已发生变化。请重新加载此页面。",
+      "resourceNotVisible": "当前 Runtime 中已不可见此资源。请刷新资源列表。",
+      "invalidResponse": "服务器返回了无效响应。请刷新以读取当前状态。",
+      "denied": "无权执行此操作。请检查当前账户和 Runtime 的权限。",
+      "unavailable": "服务暂时不可用。",
+      "connectionFailure": "无法连接服务器。请检查连接后刷新。",
+      "skills": "技能",
+      "mcp": "MCP",
+      "agentsMd": "AGENTS.md",
+      "mainProfile": "Main 配置",
+      "resourceSections": "资源分类",
+      "resourceError": "资源错误",
+      "model": "模型",
+      "connectRuntimeResources": "请连接 Runtime 以使用资源。",
+      "refreshSkills": "刷新技能",
+      "mountedSkillSpacesOnly": "仅显示此 Runtime 已挂载的技能空间。",
+      "skillSpacesNotLoaded": "尚未加载技能空间。",
+      "noMountedSkillSpaces": "尚未挂载技能空间。",
+      "mountedSkillSpace": "已挂载技能空间",
+      "skillDirectoryUnavailable": "技能目录不可用。请检查平台访问权限后刷新。",
+      "skillDraftHint": "所选技能会添加到当前会话草稿，不会自动发送。",
+      "noVisibleSkills": "此页没有可见技能。",
+      "skillNameNotUsable": "此技能名称无法用作 Runtime 命令。",
+      "previousSkillsPage": "上一页技能",
+      "nextSkillsPage": "下一页技能",
+      "selectConversationMcp": "请选择会话以查看其 MCP 服务器。",
+      "refreshMcpServers": "刷新 MCP 服务器",
+      "configureConversationMcp": "配置会话 MCP",
+      "mcpServersNotLoaded": "尚未加载此会话的 MCP 服务器。",
+      "noConfiguredMcpServers": "此会话尚未配置 MCP 服务器。",
+      "toolDetailsUnavailable": "此 Runtime 不提供工具详情。",
+      "noServerTools": "此服务器未列出工具。",
+      "sharedAgentsMdScope": "共享 AGENTS.md 可能同时影响 Main 和 Worker。",
+      "mainProfileScope": "Main 配置仅影响 Main。保存指令会保留其模型和技能配置。",
+      "mainProfileUnsupportedOrUnconfigured": "Main 配置不受支持或尚未设置。不会创建配置。",
+      "mainProfileUnconfigured": "Main 配置尚未设置。不会创建配置。",
+      "mainProfileUnsupported": "此 Runtime 不支持 Main 配置。",
+      "mainProfileUnavailable": "Main 配置的实例身份或配置信息不可用。",
+      "reloadInstructions": "重新读取指令",
+      "confirmReloadInstructions": "读取最新指令？你的草稿会保留，以供检查。",
+      "discardInstructionDraft": "放弃指令草稿",
+      "confirmDiscardInstructions": "用上次成功读取的指令替换你的草稿？",
+      "instructionsSaved": "指令已保存。",
+      "unsavedInstructionDraft": "指令草稿尚未保存。",
+      "latestSavedInstructions": "最新已保存指令",
+      "loadedRevision": "已读取版本",
+      "readInstructionsBeforeSaving": "请先读取最新指令，再保存。你的草稿会保留。",
+      "reloadAgentsMd": "重新读取 AGENTS.md",
+      "reloadMainProfile": "重新读取 Main 配置",
+      "agentsMdInstructions": "AGENTS.md 指令",
+      "mainProfileInstructions": "Main 配置指令",
+      "saveAgentsMd": "保存 AGENTS.md",
+      "saveMainProfile": "保存 Main 配置",
+      "collaborationAliasRequired": "请先为此协作者保存唯一的成员别名，再发起协作。",
     },
     "en": {
       "settings": "Settings",
@@ -1202,7 +1808,7 @@ const catalog = createCatalog<Messages>({
       "create": "Create",
       "saveTitle": "Save title",
       "finishCurrentOperation": "Finish the current operation before creating another item.",
-      "recoverAssistant": "Recover the original assistant: {session}",
+      "recoverAssistant": "Pending creation request (retry keeps this ID): {session}",
       "openMpaHome": "OpenMPA home",
       "toggleSidebar": "Toggle sidebar",
       "toggleNavigation": "Toggle navigation",
@@ -1249,6 +1855,8 @@ const catalog = createCatalog<Messages>({
       "notConnected": "Choose and connect a Runtime first.",
       "authRequired": "Authentication is required.",
       "invalidInput": "The request contains invalid input.",
+      "businessIdentityRequired": "This Runtime requires an explicit business user ID (x-user-id). Configure the identity required by this deployment in Settings > Authentication.",
+      "businessJWTRequired": "This Runtime requires a business JWT (X-Jwt-Token). Configure a valid JWT in Settings > Authentication.",
       "requestFailed": "The requested operation could not be completed.",
       "dismissError": "Dismiss error",
       "message": "Message",
@@ -1313,6 +1921,105 @@ const catalog = createCatalog<Messages>({
       "forgetSavedCredentials": "Forget saved credentials",
       "saveCredentials": "Save credentials",
       "forgetVaultConfirm": "Delete the encrypted credential from this Mac? You will need to enter AK/SK again.",
+      "resources": "Resources",
+      "collaboration": "Collaboration",
+      "skillsMcpInstructions": "Skills, MCP & instructions",
+      "a2aCollaboration": "A2A collaboration",
+      "usagePage": "Page",
+      "usageTotal": "Total",
+      "useInConversation": "Use in conversation",
+      "connectRuntimeCollaboration": "Connect a Runtime to manage collaboration.",
+      "refreshCollaboration": "Refresh collaboration",
+      "collaborationReadOnly": "Browsing and refreshing do not change the Runtime. Writes require confirmation.",
+      "collaborationRefreshRequired": "Refresh collaboration before submitting changes. Your drafts are retained.",
+      "currentBinding": "Current binding",
+      "bindingNotLoaded": "The current binding has not been loaded.",
+      "unbindSpace": "Unbind space",
+      "noBoundA2aSpace": "No A2A space is bound.",
+      "a2aSpaces": "A2A spaces",
+      "refreshCollaborationSpaces": "Refresh collaboration to load spaces.",
+      "collaborationSpace": "Collaboration space",
+      "noVisibleA2aSpaces": "No A2A spaces are visible.",
+      "bindSelectedSpace": "Bind selected space",
+      "spaceMembers": "Space members",
+      "selectSpaceMembers": "Select a space to read its members.",
+      "noVisibleSpaceMembers": "No members are visible in this space.",
+      "selectMember": "Select member",
+      "previousMembersPage": "Previous members page",
+      "nextMembersPage": "Next members page",
+      "previousSpacesPage": "Previous spaces page",
+      "nextSpacesPage": "Next spaces page",
+      "memberDetails": "Member details",
+      "agentCardUnavailable": "Agent Card unavailable in this Runtime.",
+      "currentAlias": "Current alias",
+      "memberAlias": "Member alias",
+      "removeAliasHint": "Leave the alias empty to remove it.",
+      "saveMemberAlias": "Save member alias",
+      "aliasesUnavailable": "Aliases are unavailable in this Runtime.",
+      "collaborationTask": "Collaboration task",
+      "collaborationDraftHint": "This adds an @mention to the conversation draft. Review and send it in the conversation.",
+      "confirmSpaceBinding": "Change the Runtime's A2A space binding?",
+      "spaceBindingSaved": "Space binding saved.",
+      "confirmMemberAlias": "Update this member's alias in the selected space?",
+      "memberAliasSaved": "Member alias saved.",
+      "capabilityUnavailable": "This capability is unavailable in the current Runtime.",
+      "conflict": "The resource changed. Reload and review the current state before submitting again.",
+      "outcomeUnknown": "The server may have accepted this operation. Read back and verify its state before submitting again.",
+      "conversationRequired": "Select a conversation before using this resource.",
+      "staleConnection": "The connection changed. Reload this view.",
+      "resourceNotVisible": "This resource is no longer visible in the current Runtime. Refresh the resource list.",
+      "invalidResponse": "The server returned an invalid response. Refresh to read the current state.",
+      "denied": "This action is not permitted. Check the permissions for the current account and Runtime.",
+      "unavailable": "The service is currently unavailable.",
+      "connectionFailure": "Could not reach the server. Check the connection and refresh.",
+      "skills": "Skills",
+      "mcp": "MCP",
+      "agentsMd": "AGENTS.md",
+      "mainProfile": "Main Profile",
+      "resourceSections": "Resource sections",
+      "resourceError": "Resource error",
+      "model": "Model",
+      "connectRuntimeResources": "Connect a Runtime to use resources.",
+      "refreshSkills": "Refresh skills",
+      "mountedSkillSpacesOnly": "Only Skill Spaces mounted by this Runtime are shown.",
+      "skillSpacesNotLoaded": "Skill Spaces have not been loaded.",
+      "noMountedSkillSpaces": "No Skill Spaces are mounted.",
+      "mountedSkillSpace": "Mounted Skill Space",
+      "skillDirectoryUnavailable": "The skill directory is unavailable. Check platform access and refresh.",
+      "skillDraftHint": "A skill choice is added to the current conversation draft. It is not sent automatically.",
+      "noVisibleSkills": "No skills are visible on this page.",
+      "skillNameNotUsable": "This skill name cannot be used as a Runtime command.",
+      "previousSkillsPage": "Previous skills page",
+      "nextSkillsPage": "Next skills page",
+      "selectConversationMcp": "Select a conversation to view its MCP servers.",
+      "refreshMcpServers": "Refresh MCP servers",
+      "configureConversationMcp": "Configure conversation MCP",
+      "mcpServersNotLoaded": "MCP servers have not been loaded for this conversation.",
+      "noConfiguredMcpServers": "No MCP servers are configured for this conversation.",
+      "toolDetailsUnavailable": "Tool details are unavailable in this Runtime.",
+      "noServerTools": "No tools are listed for this server.",
+      "sharedAgentsMdScope": "Shared AGENTS.md can affect both Main and Worker.",
+      "mainProfileScope": "Main Profile affects only Main. Saving instructions preserves its model and skills.",
+      "mainProfileUnsupportedOrUnconfigured": "Main Profile is unsupported or not configured. No profile will be created.",
+      "mainProfileUnconfigured": "Main Profile is not configured. No profile will be created.",
+      "mainProfileUnsupported": "Main Profile is not supported by this Runtime.",
+      "mainProfileUnavailable": "Main Profile identity or configuration is unavailable.",
+      "reloadInstructions": "Reload instructions",
+      "confirmReloadInstructions": "Read the latest instructions? Your draft will be kept for review.",
+      "discardInstructionDraft": "Discard instruction draft",
+      "confirmDiscardInstructions": "Replace your draft with the last successfully read instructions?",
+      "instructionsSaved": "Instructions saved.",
+      "unsavedInstructionDraft": "Unsaved instruction draft.",
+      "latestSavedInstructions": "Latest saved instructions",
+      "loadedRevision": "Loaded revision",
+      "readInstructionsBeforeSaving": "Read the latest instructions before saving. Your draft is retained.",
+      "reloadAgentsMd": "Reload AGENTS.md",
+      "reloadMainProfile": "Reload Main Profile",
+      "agentsMdInstructions": "AGENTS.md instructions",
+      "mainProfileInstructions": "Main Profile instructions",
+      "saveAgentsMd": "Save AGENTS.md",
+      "saveMainProfile": "Save Main Profile",
+      "collaborationAliasRequired": "Save a unique member alias before using this collaborator.",
     },
   },
 });

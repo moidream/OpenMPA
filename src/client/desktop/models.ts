@@ -1,3 +1,4 @@
+import type { Dispatch, SetStateAction } from 'react';
 import type { Page } from '../../shared/page-types';
 import type { Space } from '../../shared/types';
 import type { SavePage } from '../editor/autosave';
@@ -17,6 +18,25 @@ export interface ConnectionVM {
   runtimeId: string;
   status: string;
   userId?: string;
+}
+export type DesktopView =
+  | 'chat'
+  | 'pages'
+  | 'tasks'
+  | 'channels'
+  | 'settings'
+  | 'knowledge'
+  | 'resources'
+  | 'collaboration';
+export interface UsageRequestVM {
+  connectionEpoch: number;
+  sessionId: string;
+  text: string;
+}
+export interface ComposerDraft {
+  // Undefined permits recovery; an empty string is an intentionally cleared draft.
+  value: string | undefined;
+  setValue: Dispatch<SetStateAction<string | undefined>>;
 }
 export interface SessionVM {
   id: string;
@@ -127,7 +147,7 @@ export interface ImagesVM {
 }
 export interface NativeShellState {
   connectionEpoch: number;
-  view: string;
+  view: DesktopView;
   collapsed: boolean;
   pane: boolean;
   location: string;
@@ -145,6 +165,7 @@ export interface DesktopServices {
       action: 'configureSession' | 'renameSession' | 'deleteSession',
     ): Promise<void>;
     onNavigation?(listener: (action: string, id?: string) => void): () => void;
+    onUsage?(listener: (request: UsageRequestVM) => void): () => void;
     setShellState?(state: NativeShellState): Promise<void>;
     onClose(listener: (requestId: number) => void): () => void;
     closeState(): Promise<{ pending: boolean; requestId: number }>;

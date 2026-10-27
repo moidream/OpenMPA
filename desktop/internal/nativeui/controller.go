@@ -17,6 +17,7 @@ import (
 	"github.com/superops-team/OpenMPA/desktop/internal/localization"
 	"github.com/superops-team/OpenMPA/desktop/internal/runtimeconfig"
 	"github.com/superops-team/OpenMPA/desktop/internal/session"
+	"github.com/superops-team/OpenMPA/desktop/internal/usage"
 	"github.com/superops-team/OpenMPA/desktop/internal/workspace"
 	"strings"
 	"time"
@@ -34,6 +35,7 @@ type Services struct {
 	Channels       *channels.Channels
 	Schedule       ScheduleService
 	Knowledge      *knowledge.Service
+	Usage          *usage.Service
 	Localization   *localization.Service
 	Config         *configstore.Store
 }
@@ -59,6 +61,8 @@ type Controller struct {
 	channels                       channelState
 	schedules                      scheduleState
 	knowledge                      knowledgeState
+	resources                      resourceState
+	collaboration                  collaborationState
 	artifacts                      artifactState
 	prompt                         promptState
 	sessionDialog                  sessionDialogState
@@ -93,6 +97,8 @@ func Attach(h *host.Host, w *mygo.Window, s Services) *Controller {
 	p.channels = newChannelState()
 	p.schedules = scheduleState{}
 	p.knowledge = knowledgeState{}
+	p.resources = resourceState{}
+	p.collaboration = collaborationState{}
 	p.artifacts = artifactState{}
 	host.SetNativeContent(h, p.Render)
 	host.SetNativePane(h, p.RenderPane)
@@ -130,6 +136,8 @@ func (p *Controller) invalidate() {
 	p.channels = newChannelState()
 	p.schedules = scheduleState{}
 	p.knowledge = knowledgeState{}
+	p.resources = resourceState{}
+	p.collaboration = collaborationState{}
 	p.artifacts = artifactState{}
 	language := s.language
 	if p.services.Localization != nil && p.services.Localization.Status().Value != nil {
@@ -285,7 +293,7 @@ func (p *Controller) note(c *ui.Context, value string) {
 func (p *Controller) epoch() uint64 { return p.services.Connection.Client.State().ConnectionEpoch }
 func (p *Controller) Render(c *ui.Context, state host.ShellState) bool {
 	p.observe(state)
-	if state.View != "settings" && state.View != "channels" && state.View != "tasks" && state.View != "knowledge" {
+	if state.View != "settings" && state.View != "channels" && state.View != "tasks" && state.View != "knowledge" && state.View != "resources" && state.View != "collaboration" {
 		return false
 	}
 	if !p.entered && p.window != nil {
@@ -310,6 +318,14 @@ func (p *Controller) Render(c *ui.Context, state host.ShellState) bool {
 			case "channels":
 				if conn != nil && conn.Connected {
 					p.loadChannels()
+				}
+			case "resources":
+				if conn != nil && conn.Connected {
+					p.loadResources()
+				}
+			case "collaboration":
+				if conn != nil && conn.Connected {
+					p.loadCollaboration()
 				}
 			case "tasks":
 				if conn != nil && conn.Connected {
@@ -337,6 +353,12 @@ func (p *Controller) Render(c *ui.Context, state host.ShellState) bool {
 			if state.View == "knowledge" {
 				title = "Knowledge"
 			}
+			if state.View == "resources" {
+				title = "Skills, MCP & instructions"
+			}
+			if state.View == "collaboration" {
+				title = "A2A collaboration"
+			}
 			ui.Text(c, localization.UI(title)).FontSize(24).Bold().Grow(1)
 			if p.busy {
 				ui.Text(c, localization.Text("working", nil)).FontSize(12)
@@ -349,7 +371,11 @@ func (p *Controller) Render(c *ui.Context, state host.ShellState) bool {
 			ui.Text(c, localization.UI(p.message)).Padding(8, 28).FontSize(12).Selectable()
 		}
 		ui.Scroll(c).Grow(1).MinHeight(0).Padding(8, 28, 28).Gap(18).Children(func() {
-			if state.View == "knowledge" {
+			if state.View == "resources" {
+				p.renderResources(c)
+			} else if state.View == "collaboration" {
+				p.renderCollaboration(c)
+			} else if state.View == "knowledge" {
 				p.renderKnowledge(c)
 			} else if state.View == "tasks" {
 				p.renderSchedules(c)

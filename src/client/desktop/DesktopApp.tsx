@@ -31,6 +31,7 @@ function DesktopAppContent({ services }: { services: DesktopServices }) {
     navigate,
     setSelected,
     session,
+    composerDraft,
     reportFailure,
     epoch,
     refresh,
@@ -132,6 +133,10 @@ function DesktopAppContent({ services }: { services: DesktopServices }) {
           <section aria-label="Native channels content" />
         ) : view === 'knowledge' ? (
           <section aria-label="Native knowledge content" />
+        ) : view === 'resources' ? (
+          <section aria-label="Native resources content" />
+        ) : view === 'collaboration' ? (
+          <section aria-label="Native collaboration content" />
         ) : view === 'tasks' ? (
           <section aria-label="Native schedules content" />
         ) : view === 'pages' && space ? (
@@ -247,6 +252,7 @@ function DesktopAppContent({ services }: { services: DesktopServices }) {
                     services={services}
                     connection={connection}
                     session={session}
+                    composerDraft={composerDraft}
                     onSchedule={() => navigate('tasks')}
                   />
                 </>

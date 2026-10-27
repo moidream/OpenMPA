@@ -56,6 +56,9 @@ func UI(value string) string {
 	if key := uiKeys[plain]; key != "" {
 		return prefix + Text(key, nil)
 	}
+	if key := usageUIKeys[plain]; key != "" {
+		return prefix + Text(key, nil)
+	}
 	if strings.HasPrefix(plain, "Recover the original assistant: ") {
 		return Text("recoverAssistant", map[string]any{"session": strings.TrimPrefix(plain, "Recover the original assistant: ")})
 	}
@@ -63,7 +66,10 @@ func UI(value string) string {
 }
 
 func Error(code, fallback string) string {
-	if key := map[string]string{"notConnected": "notConnected", "authRequired": "authRequired", "invalidInput": "invalidInput"}[code]; key != "" {
+	if key := map[string]string{"notConnected": "notConnected", "authRequired": "authRequired", "invalidInput": "invalidInput", "businessIdentityRequired": "businessIdentityRequired", "businessJWTRequired": "businessJWTRequired"}[code]; key != "" {
+		return Text(key, nil)
+	}
+	if key := usageErrorKeys[code]; key != "" {
 		return Text(key, nil)
 	}
 	return fallback

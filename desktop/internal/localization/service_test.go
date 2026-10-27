@@ -3,8 +3,27 @@ package localization
 import (
 	"github.com/superops-team/OpenMPA/desktop/internal/configstore"
 	"path/filepath"
+	"strings"
 	"testing"
 )
+
+func TestBusinessIdentityErrorsAreLocalizedAndPendingCreationIsClear(t *testing.T) {
+	previous := CurrentLocale()
+	t.Cleanup(func() { SetCurrentLocale(previous) })
+	for _, locale := range []string{Chinese, English} {
+		SetCurrentLocale(locale)
+		for _, code := range []string{"businessIdentityRequired", "businessJWTRequired"} {
+			message := Error(code, "fallback")
+			if message == "fallback" || message == code || !strings.Contains(message, "Runtime") {
+				t.Fatalf("missing %s translation for %s: %s", locale, code, message)
+			}
+		}
+		pending := UI("Recover the original assistant: original-id")
+		if !strings.Contains(pending, "original-id") || strings.Contains(pending, "恢复原助手") || strings.Contains(pending, "Recover the original assistant") {
+			t.Fatalf("misleading pending creation label in %s: %s", locale, pending)
+		}
+	}
+}
 
 func testStore(t *testing.T) *configstore.Store {
 	t.Helper()

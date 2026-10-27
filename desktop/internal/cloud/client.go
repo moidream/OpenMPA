@@ -147,7 +147,7 @@ func (c *Client) Action(ctx context.Context, region, action string, input, outpu
 		return dto.Failure("invalidInput", "platform", "never", 0)
 	}
 	switch action {
-	case "ListRuntimes", "GetRuntime", "ListRuntimeVersions", "GetRuntimeVersion", "GetTool", "UpdateRuntime", "UpdateTool":
+	case "ListRuntimes", "GetRuntime", "ListRuntimeVersions", "GetRuntimeVersion", "GetTool", "UpdateRuntime", "UpdateTool", "ListSkillsBySpaceId":
 	default:
 		return dto.Failure("actionUnsupported", "platform", "never", 0)
 	}

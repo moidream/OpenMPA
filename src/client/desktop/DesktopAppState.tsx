@@ -4,26 +4,50 @@ import {
   useEffectEvent,
   useRef,
   useState,
+  type SetStateAction,
 } from 'react';
 
 import type {
+  ComposerDraft,
   ConnectionVM,
   DesktopServices,
+  DesktopView,
   RecoveryDraftVM,
   SessionVM,
   Space,
+  UsageRequestVM,
 } from './models';
-type View = 'chat' | 'pages' | 'tasks' | 'channels' | 'settings' | 'knowledge';
+
+interface SessionDraft {
+  value: string | undefined;
+  revision: number;
+  usage: string[];
+}
+
+const maxUsageBytes = 64 * 1024;
+
+function applyUsage(draft: string, text: string): string {
+  return text.startsWith('@')
+    ? `${text}${draft ? `\n${draft}` : ''}`
+    : `${draft}${draft && !/\s$/.test(draft) ? '\n' : ''}${text}`;
+}
+
 export function useDesktopAppState({
   services,
 }: {
   services: DesktopServices;
 }) {
-  const [view, setView] = useState<View>('chat');
+  const [view, setView] = useState<DesktopView>('chat');
   const [connection, setConnection] = useState<ConnectionVM>();
   const [sessions, setSessions] = useState<SessionVM[]>([]);
   const [sessionEpoch, setSessionEpoch] = useState(0);
-  const [selected, setSelected] = useState<string>();
+  const [selected, updateSelected] = useState<string>();
+  const selectedId = useRef<string | undefined>(undefined);
+  const setSelected = useCallback((id: string | undefined) => {
+    selectedId.current = id;
+    updateSelected(id);
+  }, []);
+  const [drafts, setDrafts] = useState(() => new Map<string, SessionDraft>());
   const [spaces, setSpaces] = useState<Space[]>([]);
   const [spaceId, setSpaceId] = useState<string>();
   const [collapsed, setCollapsed] = useState(false);
@@ -59,6 +83,7 @@ export function useDesktopAppState({
   const connectionScope = useRef(connection?.scope);
   connectionScope.current = connection?.scope;
   const lifecycle = useRef(0);
+  const connectionGeneration = useRef(0);
   useEffect(() => {
     if (!services.host) return;
     let active = true;
@@ -108,6 +133,7 @@ export function useDesktopAppState({
   }, [services]);
   useEffect(() => {
     const current = ++lifecycle.current;
+    const request = ++connectionGeneration.current;
     void services.workspace
       .spaces()
       .then((list) => {
@@ -122,13 +148,22 @@ export function useDesktopAppState({
     void services.connection
       .status()
       .then((value) => {
-        if (lifecycle.current === current) setConnection(value);
+        if (
+          lifecycle.current === current &&
+          connectionGeneration.current === request
+        )
+          setConnection(value);
       })
       .catch((error: unknown) => {
-        if (lifecycle.current === current) reportFailure(error, 'connection');
+        if (
+          lifecycle.current === current &&
+          connectionGeneration.current === request
+        )
+          reportFailure(error, 'connection');
       });
     return () => {
       lifecycle.current++;
+      connectionGeneration.current++;
     };
   }, [services]);
   const refresh = useCallback(async () => {
@@ -149,7 +184,7 @@ export function useDesktopAppState({
       if (epoch.current === connection?.epoch) reportFailure(error, 'sessions');
     });
   }, [refresh, connection?.epoch]);
-  const navigate = (next: View) => {
+  const navigate = (next: DesktopView) => {
     if (
       dirty.current &&
       next !== view &&
@@ -165,10 +200,12 @@ export function useDesktopAppState({
     dirty.current = value;
   }, []);
   const connect = useCallback((next: ConnectionVM | undefined) => {
+    epoch.current = next?.epoch;
     setConnection(next);
     setSessions([]);
     setSessionEpoch(0);
     setSelected(undefined);
+    setDrafts(new Map());
     if (['sessions', 'bots', 'connection'].includes(errorSource.current))
       setError('');
   }, []);
@@ -202,14 +239,87 @@ export function useDesktopAppState({
   };
   const session = sessions.find((session) => session.id === selected);
   const space = spaces.find((space) => space.id === spaceId);
+  const renderedDraft = selected ? drafts.get(selected) : undefined;
+  const setDraft = useCallback(
+    (value: SetStateAction<string | undefined>) => {
+      const current = connection?.epoch;
+      if (current === undefined || !selected || epoch.current !== current)
+        return;
+      setDrafts((previous) => {
+        if (epoch.current !== current) return previous;
+        const draft = previous.get(selected);
+        let next = typeof value === 'function' ? value(draft?.value) : value;
+        // Receipts compare their rendered snapshot. Keep only later native
+        // choices when that snapshot clears; manual edits invalidate it.
+        if (
+          typeof value === 'function' &&
+          next === draft?.value &&
+          renderedDraft?.value &&
+          draft?.revision === renderedDraft.revision &&
+          draft.usage.length > renderedDraft.usage.length &&
+          value(renderedDraft.value) === ''
+        )
+          next = draft.usage
+            .slice(renderedDraft.usage.length)
+            .reduce(applyUsage, '');
+        if (next === draft?.value) return previous;
+        return new Map(previous).set(selected, {
+          value: next,
+          revision: (draft?.revision ?? 0) + 1,
+          usage: [],
+        });
+      });
+    },
+    [connection?.epoch, selected, renderedDraft],
+  );
+  const composerDraft: ComposerDraft = {
+    value: renderedDraft?.value,
+    setValue: setDraft,
+  };
+  const onNativeUsage = useEffectEvent((request: UsageRequestVM) => {
+    if (
+      !connection ||
+      request.connectionEpoch !== connection.epoch ||
+      request.connectionEpoch !== epoch.current ||
+      request.connectionEpoch !== sessionEpoch ||
+      !request.sessionId ||
+      request.sessionId !== selectedId.current ||
+      !sessions.some((item) => item.id === request.sessionId) ||
+      typeof request.text !== 'string' ||
+      request.text.length > maxUsageBytes ||
+      request.text.includes('\0') ||
+      new TextEncoder().encode(request.text).byteLength > maxUsageBytes ||
+      !request.text.trim() ||
+      !navigate('chat')
+    )
+      return;
+    // Apply at the event boundary, never replay a pending prefill on remount.
+    setDrafts((previous) => {
+      if (epoch.current !== request.connectionEpoch) return previous;
+      const draft = previous.get(request.sessionId);
+      return new Map(previous).set(request.sessionId, {
+        value: applyUsage(draft?.value ?? '', request.text),
+        revision: draft?.revision ?? 0,
+        usage: [...(draft?.usage ?? []), request.text],
+      });
+    });
+  });
+  useEffect(() => services.host?.onUsage?.(onNativeUsage), [services]);
   const shellRevision = useRef(Date.now() * 1000);
   const onNativeNavigation = useEffectEvent((action: string, id?: string) => {
-    if (action === 'connectionChanged')
+    if (action === 'connectionChanged') {
+      const request = ++connectionGeneration.current;
+      connect(undefined);
       void services.connection
         .status()
-        .then(connect)
-        .catch((error: unknown) => reportFailure(error, 'connection'));
-    else if (
+        .then((value) => {
+          if (connectionGeneration.current === request) connect(value);
+        })
+        .catch((error: unknown) => {
+          if (connectionGeneration.current === request)
+            reportFailure(error, 'connection');
+        });
+    } else if (
       (action === 'sessionCreated' ||
         action === 'sessionChanged' ||
         action === 'sessionDeleted') &&
@@ -225,6 +335,11 @@ export function useDesktopAppState({
           setSessionEpoch(current);
           if (action === 'sessionDeleted') {
             if (selected === id) setSelected(undefined);
+            setDrafts((previous) => {
+              const next = new Map(previous);
+              next.delete(id);
+              return next;
+            });
           } else if (list.some((item) => item.id === id)) {
             setSelected(id);
             navigate('chat');
@@ -284,7 +399,9 @@ export function useDesktopAppState({
       action === 'tasks' ||
       action === 'settings' ||
       action === 'channels' ||
-      action === 'knowledge'
+      action === 'knowledge' ||
+      action === 'resources' ||
+      action === 'collaboration'
     )
       navigate(action);
   });
@@ -300,7 +417,14 @@ export function useDesktopAppState({
         collapsed,
         pane,
         location: connection?.runtimeId ?? 'Your workspace',
-        pageTitle: view === 'pages' ? (space?.name ?? 'Spaces') : view,
+        pageTitle:
+          view === 'pages'
+            ? (space?.name ?? 'Spaces')
+            : view === 'resources'
+              ? 'Resources'
+              : view === 'collaboration'
+                ? 'Collaboration'
+                : view,
         selectedSession: selected ?? '',
         selectedSpace: spaceId ?? '',
         sessions: sessions.map((item) => ({
@@ -339,6 +463,7 @@ export function useDesktopAppState({
     navigate,
     setSelected,
     session,
+    composerDraft,
     reportFailure,
     epoch,
     refresh,

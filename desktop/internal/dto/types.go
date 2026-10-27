@@ -42,6 +42,10 @@ func SafeMessage(code string) string {
 		return "The resource changed. Reload and review the current state."
 	case "invalidInput":
 		return "The request contains invalid input."
+	case "businessIdentityRequired":
+		return "This Runtime requires an explicit business user ID (x-user-id). Configure the identity required by this deployment in Settings > Authentication."
+	case "businessJWTRequired":
+		return "This Runtime requires a business JWT (X-Jwt-Token). Configure a valid JWT in Settings > Authentication."
 	case "notConnected":
 		return "Choose and connect a Runtime first."
 	case "localConfigUnavailable":

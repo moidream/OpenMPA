@@ -146,6 +146,9 @@ func (c *Client) Request(ctx context.Context, epoch uint64, method, path string,
 	}
 	if b.RuntimeKey != "" {
 		req.Header.Set("Authorization", "Bearer "+b.RuntimeKey)
+		if studioMetadataPath(parsed.Path) {
+			req.Header.Set("X-MPA-Studio-Key", b.RuntimeKey)
+		}
 	}
 	if id != "" {
 		req.Header.Set("X-User-Id", id)
@@ -153,7 +156,7 @@ func (c *Client) Request(ctx context.Context, epoch uint64, method, path string,
 	if jwt != "" {
 		req.Header.Set("X-Jwt-Token", jwt)
 	}
-	for _, k := range []string{"Idempotency-Key", "If-Match", "X-MPA-Channel-Key", "X-Jwt-Token", "Content-Type"} {
+	for _, k := range []string{"Idempotency-Key", "If-Match", "If-None-Match", "X-MPA-Channel-Key", "X-Jwt-Token", "Content-Type"} {
 		if v := headers.Get(k); v != "" {
 			req.Header.Set(k, v)
 		}
@@ -182,6 +185,22 @@ func (c *Client) Request(ctx context.Context, epoch uint64, method, path string,
 	resp.Body = &epochBody{ReadCloser: resp.Body, stop: stop, cancel: cancel}
 	transferred = true
 	return resp, nil
+}
+
+// Studio metadata uses the current Runtime key in a dedicated credential slot.
+// Callers cannot forward arbitrary Studio headers or select an external host.
+func studioMetadataPath(path string) bool {
+	switch path {
+	case "/api/v1/studio/agents-md", "/api/v1/studio/agent-info",
+		"/api/v1/studio/collaborators/registry/spaces",
+		"/api/v1/studio/collaborators/registry/agents",
+		"/api/v1/studio/collaborators/registry/binding":
+		return true
+	}
+	if id, ok := strings.CutPrefix(path, "/api/v1/studio/collaborators/registry/aliases/"); ok {
+		return strings.HasPrefix(id, "a-") && len(id) > 2 && len(id) <= 102 && !strings.ContainsAny(id, "/\\%?#")
+	}
+	return false
 }
 
 type epochBody struct {
@@ -249,6 +268,17 @@ func ErrorFromResponse(status int, data []byte) *dto.SafeError {
 	if json.Unmarshal(wire.Detail, &detailCode) == nil && knownCode(detailCode) {
 		out.Code = detailCode
 		out.Message = dto.SafeMessage(detailCode)
+	}
+	// Older Runtime deployments require an explicit subject even when the
+	// gateway accepted the Runtime key. Project only these exact, known
+	// messages; arbitrary provider responses can contain credentials or input.
+	if status == http.StatusUnprocessableEntity && detailCode == "x-user-id header is required" {
+		out.Code = "businessIdentityRequired"
+		out.Message = dto.SafeMessage(out.Code)
+	}
+	if status == http.StatusUnauthorized && detailCode == "X-Jwt-Token header is required" {
+		out.Code = "businessJWTRequired"
+		out.Message = dto.SafeMessage(out.Code)
 	}
 	var detail struct {
 		Code         string          `json:"code"`

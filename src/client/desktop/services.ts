@@ -111,6 +111,7 @@ export function createDesktopServices(): DesktopServices {
         events.navigationRequested.on((request) =>
           listener(request.action, request.id),
         ),
+      onUsage: (listener) => events.usageRequested.on(listener),
       setShellState: async (state) => {
         unwrap(await Host.setShellState(state));
       },

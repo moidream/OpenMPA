@@ -11,6 +11,21 @@ import (
 	"github.com/superops-team/OpenMPA/desktop/internal/localization"
 )
 
+func TestAuthenticationShowsFailedProbeReasonAndHTTPStatus(t *testing.T) {
+	p := testController(t)
+	if _, err := p.services.Connection.Client.Bind(connection.Binding{Endpoint: "https://runtime.example.com", RuntimeID: "runtime", RuntimeKey: "secret"}, false); err != nil {
+		t.Fatal(err)
+	}
+	p.settings.capabilities = []dto.Capability{
+		{Name: "sessions", State: "unknown", Error: dto.Failure("businessIdentityRequired", "runtimeIngress", "never", 422)},
+	}
+	tt := ui.NewTester(func(c *ui.Context) { p.renderAuthentication(c) }, 1000, 1000)
+	want := localization.Error("businessIdentityRequired", "") + " (HTTP 422)"
+	if _, ok := tt.Find(want); !ok {
+		t.Fatal("connection probe hides its actionable error")
+	}
+}
+
 func TestRegionCatalogIsAClosedDropdownAndRegionChangeInvalidatesRuntime(t *testing.T) {
 	p := testController(t)
 	options := p.regionOptions()

@@ -11,6 +11,30 @@ import (
 	"testing"
 )
 
+func TestBusinessIdentityErrorsKeepActionableReasonWithoutRawResponse(t *testing.T) {
+	for _, tc := range []struct {
+		name, body, code string
+		status           int
+	}{
+		{"missing user ID", `{"detail":"x-user-id header is required"}`, "businessIdentityRequired", 422},
+		{"missing JWT", `{"detail":"X-Jwt-Token header is required"}`, "businessJWTRequired", 401},
+		{"other validation failure", `{"detail":[{"loc":["body","content"],"msg":"SECRET input","input":"SECRET token"}]}`, "invalidInput", 422},
+		{"unrecognized detail", `{"detail":"SECRET x-user-id header is required"}`, "invalidInput", 422},
+		{"different status", `{"detail":"x-user-id header is required"}`, "denied", 403},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			err := ErrorFromResponse(tc.status, []byte(tc.body))
+			wire, _ := json.Marshal(err)
+			if err.Code != tc.code || err.HTTPStatus != tc.status || strings.Contains(string(wire), "SECRET") {
+				t.Fatalf("unexpected or unsafe error projection: %s", wire)
+			}
+			if strings.HasPrefix(tc.code, "business") && !strings.Contains(err.Message, "Settings > Authentication") {
+				t.Fatalf("missing recovery instructions: %s", err.Message)
+			}
+		})
+	}
+}
+
 func TestPrefixAndSecretSlots(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/runtime/abc/api/v1/sessions" {

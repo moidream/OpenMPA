@@ -246,7 +246,7 @@ func (r *nativeRail) sidebar(c *ui.Context) {
 		}).Grow(1).MinHeight(0).Gap(3)
 
 		ui.Divider(c).Margin(8, 0)
-		for _, item := range []struct{ action, label string }{{"tasks", "Scheduled & activity"}, {"knowledge", "Knowledge"}, {"channels", "Channels & templates"}, {"settings", "Settings & setup"}} {
+		for _, item := range []struct{ action, label string }{{"tasks", "Scheduled & activity"}, {"knowledge", "Knowledge"}, {"resources", "Skills, MCP & instructions"}, {"collaboration", "A2A collaboration"}, {"channels", "Channels & templates"}, {"settings", "Settings & setup"}} {
 			row(item.action, "", item.label, "", state.View == item.action)
 		}
 	})
@@ -320,7 +320,7 @@ func NewDesktopWindow(h *Host, options mygo.WindowOptions) (*mygo.Window, *mygo.
 }
 func validShellState(state ShellState) bool {
 	switch state.View {
-	case "chat", "pages", "tasks", "channels", "settings", "knowledge":
+	case "chat", "pages", "tasks", "channels", "settings", "knowledge", "resources", "collaboration":
 	default:
 		return false
 	}

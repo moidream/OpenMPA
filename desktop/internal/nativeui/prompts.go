@@ -104,7 +104,7 @@ func (p *Controller) RenderOverlay(c *ui.Context, state host.ShellState) {
 		})
 	})
 	p.renderSessionDialog(c)
-	if p.err != nil && !p.prompt.open && !p.sessionDialog.open && !state.Pane && state.View != "settings" && state.View != "channels" && state.View != "tasks" && state.View != "knowledge" {
+	if p.err != nil && !p.prompt.open && !p.sessionDialog.open && !state.Pane && state.View != "settings" && state.View != "channels" && state.View != "tasks" && state.View != "knowledge" && state.View != "resources" && state.View != "collaboration" {
 		ui.Column(c.Key("native-operation-feedback")).Absolute().Bottom(20).Right(20).Width(400).Padding(14).Gap(10).Background(ui.RGB(255, 255, 255)).Border(1, ui.RGB(225, 225, 225)).Radius(8).Label("Native operation status").Children(func() {
 			ui.Text(c, localization.Error(p.err.Code, p.err.Message)+statusSuffix(p.err)).FontSize(12)
 			ui.Button(c, localization.Text("dismiss", nil)).OnClick(func() { p.err = nil })

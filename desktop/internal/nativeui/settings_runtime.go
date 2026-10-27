@@ -221,6 +221,9 @@ func (p *Controller) renderAuthentication(c *ui.Context) {
 		})
 		for _, probe := range s.capabilities {
 			p.note(c, probe.Name+": "+probe.State)
+			if probe.Error != nil {
+				p.note(c, localization.Error(probe.Error.Code, probe.Error.Message)+statusSuffix(probe.Error))
+			}
 		}
 	})
 	p.section(c, "Channel administrator", func() {

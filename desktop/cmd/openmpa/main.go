@@ -17,6 +17,7 @@ import (
 	"github.com/superops-team/OpenMPA/desktop/internal/runtimeconfig"
 	"github.com/superops-team/OpenMPA/desktop/internal/schedule"
 	"github.com/superops-team/OpenMPA/desktop/internal/session"
+	"github.com/superops-team/OpenMPA/desktop/internal/usage"
 	"github.com/superops-team/OpenMPA/desktop/internal/vault"
 	"github.com/superops-team/OpenMPA/desktop/internal/workspace"
 	"log"
@@ -63,6 +64,7 @@ func main() {
 	connectionService := &ipc.Connection{Client: conn, Platform: platform}
 	channelService := channels.New(conn)
 	knowledgeService := knowledge.New(conn)
+	usageService := usage.New(conn, cloudClient)
 	scheduleService := schedule.New(conn)
 	deploymentService := deployment.NewWithLedger(cloud.DeploymentProvider{Client: cloudClient}, func() deployment.Target { return ipc.DeploymentTarget(platform) }, func() (string, error) { return dataPath("deployment-operations.json") })
 	configService := runtimeconfig.New(cloudClient, func() deployment.Target { return ipc.DeploymentTarget(platform) }, func() (string, error) { return dataPath("runtime-config-operations") })
@@ -86,7 +88,7 @@ func main() {
 			log.Fatal("OpenMPA desktop view could not start")
 		}
 		host.Attach(shell, w)
-		nativeui.Attach(shell, w, nativeui.Services{Workspace: documents, Artifact: artifactService, Session: sessions, TaskIntentPath: func() (string, error) { return dataPath("native-task-intents.json") }, Platform: platform, Connection: connectionService, Channels: channelService, Knowledge: knowledgeService, Schedule: scheduleService, Deployment: deploymentService, RuntimeConfig: configService, Localization: languageService, Config: settingsDB})
+		nativeui.Attach(shell, w, nativeui.Services{Workspace: documents, Artifact: artifactService, Session: sessions, TaskIntentPath: func() (string, error) { return dataPath("native-task-intents.json") }, Platform: platform, Connection: connectionService, Channels: channelService, Knowledge: knowledgeService, Usage: usageService, Schedule: scheduleService, Deployment: deploymentService, RuntimeConfig: configService, Localization: languageService, Config: settingsDB})
 		host.RestrictPageNavigation(page)
 		host.RestrictPagePermissions(page)
 	})

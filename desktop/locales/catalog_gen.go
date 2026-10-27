@@ -782,11 +782,11 @@ func (msgs Messages) FinishCurrentOperation() string {
 	return Catalog.Format(msgs.locale, "finishCurrentOperation", nil)
 }
 
-// RecoverAssistant says "恢复原助手：{session}"
+// RecoverAssistant says "待完成的创建请求（重试将沿用此 ID）：{session}"
 // in the language the app shows.
 func RecoverAssistant(session string) string { return In(i18n.Locale()).RecoverAssistant(session) }
 
-// RecoverAssistant says "恢复原助手：{session}"
+// RecoverAssistant says "待完成的创建请求（重试将沿用此 ID）：{session}"
 // in the language of msgs.
 func (msgs Messages) RecoverAssistant(session string) string {
 	return Catalog.Format(msgs.locale, "recoverAssistant", map[string]any{"session": session})
@@ -1252,6 +1252,26 @@ func InvalidInput() string { return In(i18n.Locale()).InvalidInput() }
 // in the language of msgs.
 func (msgs Messages) InvalidInput() string {
 	return Catalog.Format(msgs.locale, "invalidInput", nil)
+}
+
+// BusinessIdentityRequired says "此 Runtime 要求业务用户 ID（x-user-id）。请在「设置 → …"
+// in the language the app shows.
+func BusinessIdentityRequired() string { return In(i18n.Locale()).BusinessIdentityRequired() }
+
+// BusinessIdentityRequired says "此 Runtime 要求业务用户 ID（x-user-id）。请在「设置 → …"
+// in the language of msgs.
+func (msgs Messages) BusinessIdentityRequired() string {
+	return Catalog.Format(msgs.locale, "businessIdentityRequired", nil)
+}
+
+// BusinessJWTRequired says "此 Runtime 要求业务 JWT（X-Jwt-Token）。请在「设置 → 身份认证」中配置有效的 JWT。"
+// in the language the app shows.
+func BusinessJWTRequired() string { return In(i18n.Locale()).BusinessJWTRequired() }
+
+// BusinessJWTRequired says "此 Runtime 要求业务 JWT（X-Jwt-Token）。请在「设置 → 身份认证」中配置有效的 JWT。"
+// in the language of msgs.
+func (msgs Messages) BusinessJWTRequired() string {
+	return Catalog.Format(msgs.locale, "businessJWTRequired", nil)
 }
 
 // RequestFailed says "无法完成请求。"
@@ -1898,4 +1918,996 @@ func ForgetVaultConfirm() string { return In(i18n.Locale()).ForgetVaultConfirm()
 // in the language of msgs.
 func (msgs Messages) ForgetVaultConfirm() string {
 	return Catalog.Format(msgs.locale, "forgetVaultConfirm", nil)
+}
+
+// Resources says "资源"
+// in the language the app shows.
+func Resources() string { return In(i18n.Locale()).Resources() }
+
+// Resources says "资源"
+// in the language of msgs.
+func (msgs Messages) Resources() string {
+	return Catalog.Format(msgs.locale, "resources", nil)
+}
+
+// Collaboration says "协作"
+// in the language the app shows.
+func Collaboration() string { return In(i18n.Locale()).Collaboration() }
+
+// Collaboration says "协作"
+// in the language of msgs.
+func (msgs Messages) Collaboration() string {
+	return Catalog.Format(msgs.locale, "collaboration", nil)
+}
+
+// SkillsMcpInstructions says "技能、MCP 与指令"
+// in the language the app shows.
+func SkillsMcpInstructions() string { return In(i18n.Locale()).SkillsMcpInstructions() }
+
+// SkillsMcpInstructions says "技能、MCP 与指令"
+// in the language of msgs.
+func (msgs Messages) SkillsMcpInstructions() string {
+	return Catalog.Format(msgs.locale, "skillsMcpInstructions", nil)
+}
+
+// A2aCollaboration says "A2A 协作"
+// in the language the app shows.
+func A2aCollaboration() string { return In(i18n.Locale()).A2aCollaboration() }
+
+// A2aCollaboration says "A2A 协作"
+// in the language of msgs.
+func (msgs Messages) A2aCollaboration() string {
+	return Catalog.Format(msgs.locale, "a2aCollaboration", nil)
+}
+
+// UsagePage says "页码"
+// in the language the app shows.
+func UsagePage() string { return In(i18n.Locale()).UsagePage() }
+
+// UsagePage says "页码"
+// in the language of msgs.
+func (msgs Messages) UsagePage() string {
+	return Catalog.Format(msgs.locale, "usagePage", nil)
+}
+
+// UsageTotal says "总数"
+// in the language the app shows.
+func UsageTotal() string { return In(i18n.Locale()).UsageTotal() }
+
+// UsageTotal says "总数"
+// in the language of msgs.
+func (msgs Messages) UsageTotal() string {
+	return Catalog.Format(msgs.locale, "usageTotal", nil)
+}
+
+// UseInConversation says "在会话中使用"
+// in the language the app shows.
+func UseInConversation() string { return In(i18n.Locale()).UseInConversation() }
+
+// UseInConversation says "在会话中使用"
+// in the language of msgs.
+func (msgs Messages) UseInConversation() string {
+	return Catalog.Format(msgs.locale, "useInConversation", nil)
+}
+
+// ConnectRuntimeCollaboration says "请连接 Runtime 以管理协作。"
+// in the language the app shows.
+func ConnectRuntimeCollaboration() string { return In(i18n.Locale()).ConnectRuntimeCollaboration() }
+
+// ConnectRuntimeCollaboration says "请连接 Runtime 以管理协作。"
+// in the language of msgs.
+func (msgs Messages) ConnectRuntimeCollaboration() string {
+	return Catalog.Format(msgs.locale, "connectRuntimeCollaboration", nil)
+}
+
+// RefreshCollaboration says "刷新协作"
+// in the language the app shows.
+func RefreshCollaboration() string { return In(i18n.Locale()).RefreshCollaboration() }
+
+// RefreshCollaboration says "刷新协作"
+// in the language of msgs.
+func (msgs Messages) RefreshCollaboration() string {
+	return Catalog.Format(msgs.locale, "refreshCollaboration", nil)
+}
+
+// CollaborationReadOnly says "浏览和刷新不会修改 Runtime。写入操作需要确认。"
+// in the language the app shows.
+func CollaborationReadOnly() string { return In(i18n.Locale()).CollaborationReadOnly() }
+
+// CollaborationReadOnly says "浏览和刷新不会修改 Runtime。写入操作需要确认。"
+// in the language of msgs.
+func (msgs Messages) CollaborationReadOnly() string {
+	return Catalog.Format(msgs.locale, "collaborationReadOnly", nil)
+}
+
+// CollaborationRefreshRequired says "请先刷新协作，再提交更改。你的草稿会保留。"
+// in the language the app shows.
+func CollaborationRefreshRequired() string { return In(i18n.Locale()).CollaborationRefreshRequired() }
+
+// CollaborationRefreshRequired says "请先刷新协作，再提交更改。你的草稿会保留。"
+// in the language of msgs.
+func (msgs Messages) CollaborationRefreshRequired() string {
+	return Catalog.Format(msgs.locale, "collaborationRefreshRequired", nil)
+}
+
+// CurrentBinding says "当前绑定"
+// in the language the app shows.
+func CurrentBinding() string { return In(i18n.Locale()).CurrentBinding() }
+
+// CurrentBinding says "当前绑定"
+// in the language of msgs.
+func (msgs Messages) CurrentBinding() string {
+	return Catalog.Format(msgs.locale, "currentBinding", nil)
+}
+
+// BindingNotLoaded says "尚未加载当前绑定。"
+// in the language the app shows.
+func BindingNotLoaded() string { return In(i18n.Locale()).BindingNotLoaded() }
+
+// BindingNotLoaded says "尚未加载当前绑定。"
+// in the language of msgs.
+func (msgs Messages) BindingNotLoaded() string {
+	return Catalog.Format(msgs.locale, "bindingNotLoaded", nil)
+}
+
+// UnbindSpace says "解绑空间"
+// in the language the app shows.
+func UnbindSpace() string { return In(i18n.Locale()).UnbindSpace() }
+
+// UnbindSpace says "解绑空间"
+// in the language of msgs.
+func (msgs Messages) UnbindSpace() string {
+	return Catalog.Format(msgs.locale, "unbindSpace", nil)
+}
+
+// NoBoundA2aSpace says "尚未绑定 A2A 空间。"
+// in the language the app shows.
+func NoBoundA2aSpace() string { return In(i18n.Locale()).NoBoundA2aSpace() }
+
+// NoBoundA2aSpace says "尚未绑定 A2A 空间。"
+// in the language of msgs.
+func (msgs Messages) NoBoundA2aSpace() string {
+	return Catalog.Format(msgs.locale, "noBoundA2aSpace", nil)
+}
+
+// A2aSpaces says "A2A 空间"
+// in the language the app shows.
+func A2aSpaces() string { return In(i18n.Locale()).A2aSpaces() }
+
+// A2aSpaces says "A2A 空间"
+// in the language of msgs.
+func (msgs Messages) A2aSpaces() string {
+	return Catalog.Format(msgs.locale, "a2aSpaces", nil)
+}
+
+// RefreshCollaborationSpaces says "请刷新协作以加载空间。"
+// in the language the app shows.
+func RefreshCollaborationSpaces() string { return In(i18n.Locale()).RefreshCollaborationSpaces() }
+
+// RefreshCollaborationSpaces says "请刷新协作以加载空间。"
+// in the language of msgs.
+func (msgs Messages) RefreshCollaborationSpaces() string {
+	return Catalog.Format(msgs.locale, "refreshCollaborationSpaces", nil)
+}
+
+// CollaborationSpace says "协作空间"
+// in the language the app shows.
+func CollaborationSpace() string { return In(i18n.Locale()).CollaborationSpace() }
+
+// CollaborationSpace says "协作空间"
+// in the language of msgs.
+func (msgs Messages) CollaborationSpace() string {
+	return Catalog.Format(msgs.locale, "collaborationSpace", nil)
+}
+
+// NoVisibleA2aSpaces says "没有可见的 A2A 空间。"
+// in the language the app shows.
+func NoVisibleA2aSpaces() string { return In(i18n.Locale()).NoVisibleA2aSpaces() }
+
+// NoVisibleA2aSpaces says "没有可见的 A2A 空间。"
+// in the language of msgs.
+func (msgs Messages) NoVisibleA2aSpaces() string {
+	return Catalog.Format(msgs.locale, "noVisibleA2aSpaces", nil)
+}
+
+// BindSelectedSpace says "绑定所选空间"
+// in the language the app shows.
+func BindSelectedSpace() string { return In(i18n.Locale()).BindSelectedSpace() }
+
+// BindSelectedSpace says "绑定所选空间"
+// in the language of msgs.
+func (msgs Messages) BindSelectedSpace() string {
+	return Catalog.Format(msgs.locale, "bindSelectedSpace", nil)
+}
+
+// SpaceMembers says "空间成员"
+// in the language the app shows.
+func SpaceMembers() string { return In(i18n.Locale()).SpaceMembers() }
+
+// SpaceMembers says "空间成员"
+// in the language of msgs.
+func (msgs Messages) SpaceMembers() string {
+	return Catalog.Format(msgs.locale, "spaceMembers", nil)
+}
+
+// SelectSpaceMembers says "请选择空间以读取成员。"
+// in the language the app shows.
+func SelectSpaceMembers() string { return In(i18n.Locale()).SelectSpaceMembers() }
+
+// SelectSpaceMembers says "请选择空间以读取成员。"
+// in the language of msgs.
+func (msgs Messages) SelectSpaceMembers() string {
+	return Catalog.Format(msgs.locale, "selectSpaceMembers", nil)
+}
+
+// NoVisibleSpaceMembers says "此空间中没有可见成员。"
+// in the language the app shows.
+func NoVisibleSpaceMembers() string { return In(i18n.Locale()).NoVisibleSpaceMembers() }
+
+// NoVisibleSpaceMembers says "此空间中没有可见成员。"
+// in the language of msgs.
+func (msgs Messages) NoVisibleSpaceMembers() string {
+	return Catalog.Format(msgs.locale, "noVisibleSpaceMembers", nil)
+}
+
+// SelectMember says "选择成员"
+// in the language the app shows.
+func SelectMember() string { return In(i18n.Locale()).SelectMember() }
+
+// SelectMember says "选择成员"
+// in the language of msgs.
+func (msgs Messages) SelectMember() string {
+	return Catalog.Format(msgs.locale, "selectMember", nil)
+}
+
+// PreviousMembersPage says "上一页成员"
+// in the language the app shows.
+func PreviousMembersPage() string { return In(i18n.Locale()).PreviousMembersPage() }
+
+// PreviousMembersPage says "上一页成员"
+// in the language of msgs.
+func (msgs Messages) PreviousMembersPage() string {
+	return Catalog.Format(msgs.locale, "previousMembersPage", nil)
+}
+
+// NextMembersPage says "下一页成员"
+// in the language the app shows.
+func NextMembersPage() string { return In(i18n.Locale()).NextMembersPage() }
+
+// NextMembersPage says "下一页成员"
+// in the language of msgs.
+func (msgs Messages) NextMembersPage() string {
+	return Catalog.Format(msgs.locale, "nextMembersPage", nil)
+}
+
+// PreviousSpacesPage says "上一页空间"
+// in the language the app shows.
+func PreviousSpacesPage() string { return In(i18n.Locale()).PreviousSpacesPage() }
+
+// PreviousSpacesPage says "上一页空间"
+// in the language of msgs.
+func (msgs Messages) PreviousSpacesPage() string {
+	return Catalog.Format(msgs.locale, "previousSpacesPage", nil)
+}
+
+// NextSpacesPage says "下一页空间"
+// in the language the app shows.
+func NextSpacesPage() string { return In(i18n.Locale()).NextSpacesPage() }
+
+// NextSpacesPage says "下一页空间"
+// in the language of msgs.
+func (msgs Messages) NextSpacesPage() string {
+	return Catalog.Format(msgs.locale, "nextSpacesPage", nil)
+}
+
+// MemberDetails says "成员详情"
+// in the language the app shows.
+func MemberDetails() string { return In(i18n.Locale()).MemberDetails() }
+
+// MemberDetails says "成员详情"
+// in the language of msgs.
+func (msgs Messages) MemberDetails() string {
+	return Catalog.Format(msgs.locale, "memberDetails", nil)
+}
+
+// AgentCardUnavailable says "此 Runtime 不提供 Agent Card。"
+// in the language the app shows.
+func AgentCardUnavailable() string { return In(i18n.Locale()).AgentCardUnavailable() }
+
+// AgentCardUnavailable says "此 Runtime 不提供 Agent Card。"
+// in the language of msgs.
+func (msgs Messages) AgentCardUnavailable() string {
+	return Catalog.Format(msgs.locale, "agentCardUnavailable", nil)
+}
+
+// CurrentAlias says "当前别名"
+// in the language the app shows.
+func CurrentAlias() string { return In(i18n.Locale()).CurrentAlias() }
+
+// CurrentAlias says "当前别名"
+// in the language of msgs.
+func (msgs Messages) CurrentAlias() string {
+	return Catalog.Format(msgs.locale, "currentAlias", nil)
+}
+
+// MemberAlias says "成员别名"
+// in the language the app shows.
+func MemberAlias() string { return In(i18n.Locale()).MemberAlias() }
+
+// MemberAlias says "成员别名"
+// in the language of msgs.
+func (msgs Messages) MemberAlias() string {
+	return Catalog.Format(msgs.locale, "memberAlias", nil)
+}
+
+// RemoveAliasHint says "将别名留空即可移除。"
+// in the language the app shows.
+func RemoveAliasHint() string { return In(i18n.Locale()).RemoveAliasHint() }
+
+// RemoveAliasHint says "将别名留空即可移除。"
+// in the language of msgs.
+func (msgs Messages) RemoveAliasHint() string {
+	return Catalog.Format(msgs.locale, "removeAliasHint", nil)
+}
+
+// SaveMemberAlias says "保存成员别名"
+// in the language the app shows.
+func SaveMemberAlias() string { return In(i18n.Locale()).SaveMemberAlias() }
+
+// SaveMemberAlias says "保存成员别名"
+// in the language of msgs.
+func (msgs Messages) SaveMemberAlias() string {
+	return Catalog.Format(msgs.locale, "saveMemberAlias", nil)
+}
+
+// AliasesUnavailable says "此 Runtime 不支持别名。"
+// in the language the app shows.
+func AliasesUnavailable() string { return In(i18n.Locale()).AliasesUnavailable() }
+
+// AliasesUnavailable says "此 Runtime 不支持别名。"
+// in the language of msgs.
+func (msgs Messages) AliasesUnavailable() string {
+	return Catalog.Format(msgs.locale, "aliasesUnavailable", nil)
+}
+
+// CollaborationTask says "协作任务"
+// in the language the app shows.
+func CollaborationTask() string { return In(i18n.Locale()).CollaborationTask() }
+
+// CollaborationTask says "协作任务"
+// in the language of msgs.
+func (msgs Messages) CollaborationTask() string {
+	return Catalog.Format(msgs.locale, "collaborationTask", nil)
+}
+
+// CollaborationDraftHint says "此操作会将 @提及添加到会话草稿。请在会话中检查后发送。"
+// in the language the app shows.
+func CollaborationDraftHint() string { return In(i18n.Locale()).CollaborationDraftHint() }
+
+// CollaborationDraftHint says "此操作会将 @提及添加到会话草稿。请在会话中检查后发送。"
+// in the language of msgs.
+func (msgs Messages) CollaborationDraftHint() string {
+	return Catalog.Format(msgs.locale, "collaborationDraftHint", nil)
+}
+
+// ConfirmSpaceBinding says "更改 Runtime 的 A2A 空间绑定？"
+// in the language the app shows.
+func ConfirmSpaceBinding() string { return In(i18n.Locale()).ConfirmSpaceBinding() }
+
+// ConfirmSpaceBinding says "更改 Runtime 的 A2A 空间绑定？"
+// in the language of msgs.
+func (msgs Messages) ConfirmSpaceBinding() string {
+	return Catalog.Format(msgs.locale, "confirmSpaceBinding", nil)
+}
+
+// SpaceBindingSaved says "空间绑定已保存。"
+// in the language the app shows.
+func SpaceBindingSaved() string { return In(i18n.Locale()).SpaceBindingSaved() }
+
+// SpaceBindingSaved says "空间绑定已保存。"
+// in the language of msgs.
+func (msgs Messages) SpaceBindingSaved() string {
+	return Catalog.Format(msgs.locale, "spaceBindingSaved", nil)
+}
+
+// ConfirmMemberAlias says "更新所选空间中此成员的别名？"
+// in the language the app shows.
+func ConfirmMemberAlias() string { return In(i18n.Locale()).ConfirmMemberAlias() }
+
+// ConfirmMemberAlias says "更新所选空间中此成员的别名？"
+// in the language of msgs.
+func (msgs Messages) ConfirmMemberAlias() string {
+	return Catalog.Format(msgs.locale, "confirmMemberAlias", nil)
+}
+
+// MemberAliasSaved says "成员别名已保存。"
+// in the language the app shows.
+func MemberAliasSaved() string { return In(i18n.Locale()).MemberAliasSaved() }
+
+// MemberAliasSaved says "成员别名已保存。"
+// in the language of msgs.
+func (msgs Messages) MemberAliasSaved() string {
+	return Catalog.Format(msgs.locale, "memberAliasSaved", nil)
+}
+
+// CapabilityUnavailable says "当前 Runtime 不提供此功能。"
+// in the language the app shows.
+func CapabilityUnavailable() string { return In(i18n.Locale()).CapabilityUnavailable() }
+
+// CapabilityUnavailable says "当前 Runtime 不提供此功能。"
+// in the language of msgs.
+func (msgs Messages) CapabilityUnavailable() string {
+	return Catalog.Format(msgs.locale, "capabilityUnavailable", nil)
+}
+
+// Conflict says "资源已发生变化。请重新读取并检查当前状态，再提交更改。"
+// in the language the app shows.
+func Conflict() string { return In(i18n.Locale()).Conflict() }
+
+// Conflict says "资源已发生变化。请重新读取并检查当前状态，再提交更改。"
+// in the language of msgs.
+func (msgs Messages) Conflict() string {
+	return Catalog.Format(msgs.locale, "conflict", nil)
+}
+
+// OutcomeUnknown says "服务器可能已接受此操作。请先读回并核对状态，再决定是否重新提交。"
+// in the language the app shows.
+func OutcomeUnknown() string { return In(i18n.Locale()).OutcomeUnknown() }
+
+// OutcomeUnknown says "服务器可能已接受此操作。请先读回并核对状态，再决定是否重新提交。"
+// in the language of msgs.
+func (msgs Messages) OutcomeUnknown() string {
+	return Catalog.Format(msgs.locale, "outcomeUnknown", nil)
+}
+
+// ConversationRequired says "请先选择会话，再使用此资源。"
+// in the language the app shows.
+func ConversationRequired() string { return In(i18n.Locale()).ConversationRequired() }
+
+// ConversationRequired says "请先选择会话，再使用此资源。"
+// in the language of msgs.
+func (msgs Messages) ConversationRequired() string {
+	return Catalog.Format(msgs.locale, "conversationRequired", nil)
+}
+
+// StaleConnection says "连接已发生变化。请重新加载此页面。"
+// in the language the app shows.
+func StaleConnection() string { return In(i18n.Locale()).StaleConnection() }
+
+// StaleConnection says "连接已发生变化。请重新加载此页面。"
+// in the language of msgs.
+func (msgs Messages) StaleConnection() string {
+	return Catalog.Format(msgs.locale, "staleConnection", nil)
+}
+
+// ResourceNotVisible says "当前 Runtime 中已不可见此资源。请刷新资源列表。"
+// in the language the app shows.
+func ResourceNotVisible() string { return In(i18n.Locale()).ResourceNotVisible() }
+
+// ResourceNotVisible says "当前 Runtime 中已不可见此资源。请刷新资源列表。"
+// in the language of msgs.
+func (msgs Messages) ResourceNotVisible() string {
+	return Catalog.Format(msgs.locale, "resourceNotVisible", nil)
+}
+
+// InvalidResponse says "服务器返回了无效响应。请刷新以读取当前状态。"
+// in the language the app shows.
+func InvalidResponse() string { return In(i18n.Locale()).InvalidResponse() }
+
+// InvalidResponse says "服务器返回了无效响应。请刷新以读取当前状态。"
+// in the language of msgs.
+func (msgs Messages) InvalidResponse() string {
+	return Catalog.Format(msgs.locale, "invalidResponse", nil)
+}
+
+// Denied says "无权执行此操作。请检查当前账户和 Runtime 的权限。"
+// in the language the app shows.
+func Denied() string { return In(i18n.Locale()).Denied() }
+
+// Denied says "无权执行此操作。请检查当前账户和 Runtime 的权限。"
+// in the language of msgs.
+func (msgs Messages) Denied() string {
+	return Catalog.Format(msgs.locale, "denied", nil)
+}
+
+// Unavailable says "服务暂时不可用。"
+// in the language the app shows.
+func Unavailable() string { return In(i18n.Locale()).Unavailable() }
+
+// Unavailable says "服务暂时不可用。"
+// in the language of msgs.
+func (msgs Messages) Unavailable() string {
+	return Catalog.Format(msgs.locale, "unavailable", nil)
+}
+
+// ConnectionFailure says "无法连接服务器。请检查连接后刷新。"
+// in the language the app shows.
+func ConnectionFailure() string { return In(i18n.Locale()).ConnectionFailure() }
+
+// ConnectionFailure says "无法连接服务器。请检查连接后刷新。"
+// in the language of msgs.
+func (msgs Messages) ConnectionFailure() string {
+	return Catalog.Format(msgs.locale, "connectionFailure", nil)
+}
+
+// Skills says "技能"
+// in the language the app shows.
+func Skills() string { return In(i18n.Locale()).Skills() }
+
+// Skills says "技能"
+// in the language of msgs.
+func (msgs Messages) Skills() string {
+	return Catalog.Format(msgs.locale, "skills", nil)
+}
+
+// Mcp says "MCP"
+// in the language the app shows.
+func Mcp() string { return In(i18n.Locale()).Mcp() }
+
+// Mcp says "MCP"
+// in the language of msgs.
+func (msgs Messages) Mcp() string {
+	return Catalog.Format(msgs.locale, "mcp", nil)
+}
+
+// AgentsMd says "AGENTS.md"
+// in the language the app shows.
+func AgentsMd() string { return In(i18n.Locale()).AgentsMd() }
+
+// AgentsMd says "AGENTS.md"
+// in the language of msgs.
+func (msgs Messages) AgentsMd() string {
+	return Catalog.Format(msgs.locale, "agentsMd", nil)
+}
+
+// MainProfile says "Main 配置"
+// in the language the app shows.
+func MainProfile() string { return In(i18n.Locale()).MainProfile() }
+
+// MainProfile says "Main 配置"
+// in the language of msgs.
+func (msgs Messages) MainProfile() string {
+	return Catalog.Format(msgs.locale, "mainProfile", nil)
+}
+
+// ResourceSections says "资源分类"
+// in the language the app shows.
+func ResourceSections() string { return In(i18n.Locale()).ResourceSections() }
+
+// ResourceSections says "资源分类"
+// in the language of msgs.
+func (msgs Messages) ResourceSections() string {
+	return Catalog.Format(msgs.locale, "resourceSections", nil)
+}
+
+// ResourceError says "资源错误"
+// in the language the app shows.
+func ResourceError() string { return In(i18n.Locale()).ResourceError() }
+
+// ResourceError says "资源错误"
+// in the language of msgs.
+func (msgs Messages) ResourceError() string {
+	return Catalog.Format(msgs.locale, "resourceError", nil)
+}
+
+// Model says "模型"
+// in the language the app shows.
+func Model() string { return In(i18n.Locale()).Model() }
+
+// Model says "模型"
+// in the language of msgs.
+func (msgs Messages) Model() string {
+	return Catalog.Format(msgs.locale, "model", nil)
+}
+
+// ConnectRuntimeResources says "请连接 Runtime 以使用资源。"
+// in the language the app shows.
+func ConnectRuntimeResources() string { return In(i18n.Locale()).ConnectRuntimeResources() }
+
+// ConnectRuntimeResources says "请连接 Runtime 以使用资源。"
+// in the language of msgs.
+func (msgs Messages) ConnectRuntimeResources() string {
+	return Catalog.Format(msgs.locale, "connectRuntimeResources", nil)
+}
+
+// RefreshSkills says "刷新技能"
+// in the language the app shows.
+func RefreshSkills() string { return In(i18n.Locale()).RefreshSkills() }
+
+// RefreshSkills says "刷新技能"
+// in the language of msgs.
+func (msgs Messages) RefreshSkills() string {
+	return Catalog.Format(msgs.locale, "refreshSkills", nil)
+}
+
+// MountedSkillSpacesOnly says "仅显示此 Runtime 已挂载的技能空间。"
+// in the language the app shows.
+func MountedSkillSpacesOnly() string { return In(i18n.Locale()).MountedSkillSpacesOnly() }
+
+// MountedSkillSpacesOnly says "仅显示此 Runtime 已挂载的技能空间。"
+// in the language of msgs.
+func (msgs Messages) MountedSkillSpacesOnly() string {
+	return Catalog.Format(msgs.locale, "mountedSkillSpacesOnly", nil)
+}
+
+// SkillSpacesNotLoaded says "尚未加载技能空间。"
+// in the language the app shows.
+func SkillSpacesNotLoaded() string { return In(i18n.Locale()).SkillSpacesNotLoaded() }
+
+// SkillSpacesNotLoaded says "尚未加载技能空间。"
+// in the language of msgs.
+func (msgs Messages) SkillSpacesNotLoaded() string {
+	return Catalog.Format(msgs.locale, "skillSpacesNotLoaded", nil)
+}
+
+// NoMountedSkillSpaces says "尚未挂载技能空间。"
+// in the language the app shows.
+func NoMountedSkillSpaces() string { return In(i18n.Locale()).NoMountedSkillSpaces() }
+
+// NoMountedSkillSpaces says "尚未挂载技能空间。"
+// in the language of msgs.
+func (msgs Messages) NoMountedSkillSpaces() string {
+	return Catalog.Format(msgs.locale, "noMountedSkillSpaces", nil)
+}
+
+// MountedSkillSpace says "已挂载技能空间"
+// in the language the app shows.
+func MountedSkillSpace() string { return In(i18n.Locale()).MountedSkillSpace() }
+
+// MountedSkillSpace says "已挂载技能空间"
+// in the language of msgs.
+func (msgs Messages) MountedSkillSpace() string {
+	return Catalog.Format(msgs.locale, "mountedSkillSpace", nil)
+}
+
+// SkillDirectoryUnavailable says "技能目录不可用。请检查平台访问权限后刷新。"
+// in the language the app shows.
+func SkillDirectoryUnavailable() string { return In(i18n.Locale()).SkillDirectoryUnavailable() }
+
+// SkillDirectoryUnavailable says "技能目录不可用。请检查平台访问权限后刷新。"
+// in the language of msgs.
+func (msgs Messages) SkillDirectoryUnavailable() string {
+	return Catalog.Format(msgs.locale, "skillDirectoryUnavailable", nil)
+}
+
+// SkillDraftHint says "所选技能会添加到当前会话草稿，不会自动发送。"
+// in the language the app shows.
+func SkillDraftHint() string { return In(i18n.Locale()).SkillDraftHint() }
+
+// SkillDraftHint says "所选技能会添加到当前会话草稿，不会自动发送。"
+// in the language of msgs.
+func (msgs Messages) SkillDraftHint() string {
+	return Catalog.Format(msgs.locale, "skillDraftHint", nil)
+}
+
+// NoVisibleSkills says "此页没有可见技能。"
+// in the language the app shows.
+func NoVisibleSkills() string { return In(i18n.Locale()).NoVisibleSkills() }
+
+// NoVisibleSkills says "此页没有可见技能。"
+// in the language of msgs.
+func (msgs Messages) NoVisibleSkills() string {
+	return Catalog.Format(msgs.locale, "noVisibleSkills", nil)
+}
+
+// SkillNameNotUsable says "此技能名称无法用作 Runtime 命令。"
+// in the language the app shows.
+func SkillNameNotUsable() string { return In(i18n.Locale()).SkillNameNotUsable() }
+
+// SkillNameNotUsable says "此技能名称无法用作 Runtime 命令。"
+// in the language of msgs.
+func (msgs Messages) SkillNameNotUsable() string {
+	return Catalog.Format(msgs.locale, "skillNameNotUsable", nil)
+}
+
+// PreviousSkillsPage says "上一页技能"
+// in the language the app shows.
+func PreviousSkillsPage() string { return In(i18n.Locale()).PreviousSkillsPage() }
+
+// PreviousSkillsPage says "上一页技能"
+// in the language of msgs.
+func (msgs Messages) PreviousSkillsPage() string {
+	return Catalog.Format(msgs.locale, "previousSkillsPage", nil)
+}
+
+// NextSkillsPage says "下一页技能"
+// in the language the app shows.
+func NextSkillsPage() string { return In(i18n.Locale()).NextSkillsPage() }
+
+// NextSkillsPage says "下一页技能"
+// in the language of msgs.
+func (msgs Messages) NextSkillsPage() string {
+	return Catalog.Format(msgs.locale, "nextSkillsPage", nil)
+}
+
+// SelectConversationMcp says "请选择会话以查看其 MCP 服务器。"
+// in the language the app shows.
+func SelectConversationMcp() string { return In(i18n.Locale()).SelectConversationMcp() }
+
+// SelectConversationMcp says "请选择会话以查看其 MCP 服务器。"
+// in the language of msgs.
+func (msgs Messages) SelectConversationMcp() string {
+	return Catalog.Format(msgs.locale, "selectConversationMcp", nil)
+}
+
+// RefreshMcpServers says "刷新 MCP 服务器"
+// in the language the app shows.
+func RefreshMcpServers() string { return In(i18n.Locale()).RefreshMcpServers() }
+
+// RefreshMcpServers says "刷新 MCP 服务器"
+// in the language of msgs.
+func (msgs Messages) RefreshMcpServers() string {
+	return Catalog.Format(msgs.locale, "refreshMcpServers", nil)
+}
+
+// ConfigureConversationMcp says "配置会话 MCP"
+// in the language the app shows.
+func ConfigureConversationMcp() string { return In(i18n.Locale()).ConfigureConversationMcp() }
+
+// ConfigureConversationMcp says "配置会话 MCP"
+// in the language of msgs.
+func (msgs Messages) ConfigureConversationMcp() string {
+	return Catalog.Format(msgs.locale, "configureConversationMcp", nil)
+}
+
+// McpServersNotLoaded says "尚未加载此会话的 MCP 服务器。"
+// in the language the app shows.
+func McpServersNotLoaded() string { return In(i18n.Locale()).McpServersNotLoaded() }
+
+// McpServersNotLoaded says "尚未加载此会话的 MCP 服务器。"
+// in the language of msgs.
+func (msgs Messages) McpServersNotLoaded() string {
+	return Catalog.Format(msgs.locale, "mcpServersNotLoaded", nil)
+}
+
+// NoConfiguredMcpServers says "此会话尚未配置 MCP 服务器。"
+// in the language the app shows.
+func NoConfiguredMcpServers() string { return In(i18n.Locale()).NoConfiguredMcpServers() }
+
+// NoConfiguredMcpServers says "此会话尚未配置 MCP 服务器。"
+// in the language of msgs.
+func (msgs Messages) NoConfiguredMcpServers() string {
+	return Catalog.Format(msgs.locale, "noConfiguredMcpServers", nil)
+}
+
+// ToolDetailsUnavailable says "此 Runtime 不提供工具详情。"
+// in the language the app shows.
+func ToolDetailsUnavailable() string { return In(i18n.Locale()).ToolDetailsUnavailable() }
+
+// ToolDetailsUnavailable says "此 Runtime 不提供工具详情。"
+// in the language of msgs.
+func (msgs Messages) ToolDetailsUnavailable() string {
+	return Catalog.Format(msgs.locale, "toolDetailsUnavailable", nil)
+}
+
+// NoServerTools says "此服务器未列出工具。"
+// in the language the app shows.
+func NoServerTools() string { return In(i18n.Locale()).NoServerTools() }
+
+// NoServerTools says "此服务器未列出工具。"
+// in the language of msgs.
+func (msgs Messages) NoServerTools() string {
+	return Catalog.Format(msgs.locale, "noServerTools", nil)
+}
+
+// SharedAgentsMdScope says "共享 AGENTS.md 可能同时影响 Main 和 Worker。"
+// in the language the app shows.
+func SharedAgentsMdScope() string { return In(i18n.Locale()).SharedAgentsMdScope() }
+
+// SharedAgentsMdScope says "共享 AGENTS.md 可能同时影响 Main 和 Worker。"
+// in the language of msgs.
+func (msgs Messages) SharedAgentsMdScope() string {
+	return Catalog.Format(msgs.locale, "sharedAgentsMdScope", nil)
+}
+
+// MainProfileScope says "Main 配置仅影响 Main。保存指令会保留其模型和技能配置。"
+// in the language the app shows.
+func MainProfileScope() string { return In(i18n.Locale()).MainProfileScope() }
+
+// MainProfileScope says "Main 配置仅影响 Main。保存指令会保留其模型和技能配置。"
+// in the language of msgs.
+func (msgs Messages) MainProfileScope() string {
+	return Catalog.Format(msgs.locale, "mainProfileScope", nil)
+}
+
+// MainProfileUnsupportedOrUnconfigured says "Main 配置不受支持或尚未设置。不会创建配置。"
+// in the language the app shows.
+func MainProfileUnsupportedOrUnconfigured() string {
+	return In(i18n.Locale()).MainProfileUnsupportedOrUnconfigured()
+}
+
+// MainProfileUnsupportedOrUnconfigured says "Main 配置不受支持或尚未设置。不会创建配置。"
+// in the language of msgs.
+func (msgs Messages) MainProfileUnsupportedOrUnconfigured() string {
+	return Catalog.Format(msgs.locale, "mainProfileUnsupportedOrUnconfigured", nil)
+}
+
+// MainProfileUnconfigured says "Main 配置尚未设置。不会创建配置。"
+// in the language the app shows.
+func MainProfileUnconfigured() string { return In(i18n.Locale()).MainProfileUnconfigured() }
+
+// MainProfileUnconfigured says "Main 配置尚未设置。不会创建配置。"
+// in the language of msgs.
+func (msgs Messages) MainProfileUnconfigured() string {
+	return Catalog.Format(msgs.locale, "mainProfileUnconfigured", nil)
+}
+
+// MainProfileUnsupported says "此 Runtime 不支持 Main 配置。"
+// in the language the app shows.
+func MainProfileUnsupported() string { return In(i18n.Locale()).MainProfileUnsupported() }
+
+// MainProfileUnsupported says "此 Runtime 不支持 Main 配置。"
+// in the language of msgs.
+func (msgs Messages) MainProfileUnsupported() string {
+	return Catalog.Format(msgs.locale, "mainProfileUnsupported", nil)
+}
+
+// MainProfileUnavailable says "Main 配置的实例身份或配置信息不可用。"
+// in the language the app shows.
+func MainProfileUnavailable() string { return In(i18n.Locale()).MainProfileUnavailable() }
+
+// MainProfileUnavailable says "Main 配置的实例身份或配置信息不可用。"
+// in the language of msgs.
+func (msgs Messages) MainProfileUnavailable() string {
+	return Catalog.Format(msgs.locale, "mainProfileUnavailable", nil)
+}
+
+// ReloadInstructions says "重新读取指令"
+// in the language the app shows.
+func ReloadInstructions() string { return In(i18n.Locale()).ReloadInstructions() }
+
+// ReloadInstructions says "重新读取指令"
+// in the language of msgs.
+func (msgs Messages) ReloadInstructions() string {
+	return Catalog.Format(msgs.locale, "reloadInstructions", nil)
+}
+
+// ConfirmReloadInstructions says "读取最新指令？你的草稿会保留，以供检查。"
+// in the language the app shows.
+func ConfirmReloadInstructions() string { return In(i18n.Locale()).ConfirmReloadInstructions() }
+
+// ConfirmReloadInstructions says "读取最新指令？你的草稿会保留，以供检查。"
+// in the language of msgs.
+func (msgs Messages) ConfirmReloadInstructions() string {
+	return Catalog.Format(msgs.locale, "confirmReloadInstructions", nil)
+}
+
+// DiscardInstructionDraft says "放弃指令草稿"
+// in the language the app shows.
+func DiscardInstructionDraft() string { return In(i18n.Locale()).DiscardInstructionDraft() }
+
+// DiscardInstructionDraft says "放弃指令草稿"
+// in the language of msgs.
+func (msgs Messages) DiscardInstructionDraft() string {
+	return Catalog.Format(msgs.locale, "discardInstructionDraft", nil)
+}
+
+// ConfirmDiscardInstructions says "用上次成功读取的指令替换你的草稿？"
+// in the language the app shows.
+func ConfirmDiscardInstructions() string { return In(i18n.Locale()).ConfirmDiscardInstructions() }
+
+// ConfirmDiscardInstructions says "用上次成功读取的指令替换你的草稿？"
+// in the language of msgs.
+func (msgs Messages) ConfirmDiscardInstructions() string {
+	return Catalog.Format(msgs.locale, "confirmDiscardInstructions", nil)
+}
+
+// InstructionsSaved says "指令已保存。"
+// in the language the app shows.
+func InstructionsSaved() string { return In(i18n.Locale()).InstructionsSaved() }
+
+// InstructionsSaved says "指令已保存。"
+// in the language of msgs.
+func (msgs Messages) InstructionsSaved() string {
+	return Catalog.Format(msgs.locale, "instructionsSaved", nil)
+}
+
+// UnsavedInstructionDraft says "指令草稿尚未保存。"
+// in the language the app shows.
+func UnsavedInstructionDraft() string { return In(i18n.Locale()).UnsavedInstructionDraft() }
+
+// UnsavedInstructionDraft says "指令草稿尚未保存。"
+// in the language of msgs.
+func (msgs Messages) UnsavedInstructionDraft() string {
+	return Catalog.Format(msgs.locale, "unsavedInstructionDraft", nil)
+}
+
+// LatestSavedInstructions says "最新已保存指令"
+// in the language the app shows.
+func LatestSavedInstructions() string { return In(i18n.Locale()).LatestSavedInstructions() }
+
+// LatestSavedInstructions says "最新已保存指令"
+// in the language of msgs.
+func (msgs Messages) LatestSavedInstructions() string {
+	return Catalog.Format(msgs.locale, "latestSavedInstructions", nil)
+}
+
+// LoadedRevision says "已读取版本"
+// in the language the app shows.
+func LoadedRevision() string { return In(i18n.Locale()).LoadedRevision() }
+
+// LoadedRevision says "已读取版本"
+// in the language of msgs.
+func (msgs Messages) LoadedRevision() string {
+	return Catalog.Format(msgs.locale, "loadedRevision", nil)
+}
+
+// ReadInstructionsBeforeSaving says "请先读取最新指令，再保存。你的草稿会保留。"
+// in the language the app shows.
+func ReadInstructionsBeforeSaving() string { return In(i18n.Locale()).ReadInstructionsBeforeSaving() }
+
+// ReadInstructionsBeforeSaving says "请先读取最新指令，再保存。你的草稿会保留。"
+// in the language of msgs.
+func (msgs Messages) ReadInstructionsBeforeSaving() string {
+	return Catalog.Format(msgs.locale, "readInstructionsBeforeSaving", nil)
+}
+
+// ReloadAgentsMd says "重新读取 AGENTS.md"
+// in the language the app shows.
+func ReloadAgentsMd() string { return In(i18n.Locale()).ReloadAgentsMd() }
+
+// ReloadAgentsMd says "重新读取 AGENTS.md"
+// in the language of msgs.
+func (msgs Messages) ReloadAgentsMd() string {
+	return Catalog.Format(msgs.locale, "reloadAgentsMd", nil)
+}
+
+// ReloadMainProfile says "重新读取 Main 配置"
+// in the language the app shows.
+func ReloadMainProfile() string { return In(i18n.Locale()).ReloadMainProfile() }
+
+// ReloadMainProfile says "重新读取 Main 配置"
+// in the language of msgs.
+func (msgs Messages) ReloadMainProfile() string {
+	return Catalog.Format(msgs.locale, "reloadMainProfile", nil)
+}
+
+// AgentsMdInstructions says "AGENTS.md 指令"
+// in the language the app shows.
+func AgentsMdInstructions() string { return In(i18n.Locale()).AgentsMdInstructions() }
+
+// AgentsMdInstructions says "AGENTS.md 指令"
+// in the language of msgs.
+func (msgs Messages) AgentsMdInstructions() string {
+	return Catalog.Format(msgs.locale, "agentsMdInstructions", nil)
+}
+
+// MainProfileInstructions says "Main 配置指令"
+// in the language the app shows.
+func MainProfileInstructions() string { return In(i18n.Locale()).MainProfileInstructions() }
+
+// MainProfileInstructions says "Main 配置指令"
+// in the language of msgs.
+func (msgs Messages) MainProfileInstructions() string {
+	return Catalog.Format(msgs.locale, "mainProfileInstructions", nil)
+}
+
+// SaveAgentsMd says "保存 AGENTS.md"
+// in the language the app shows.
+func SaveAgentsMd() string { return In(i18n.Locale()).SaveAgentsMd() }
+
+// SaveAgentsMd says "保存 AGENTS.md"
+// in the language of msgs.
+func (msgs Messages) SaveAgentsMd() string {
+	return Catalog.Format(msgs.locale, "saveAgentsMd", nil)
+}
+
+// SaveMainProfile says "保存 Main 配置"
+// in the language the app shows.
+func SaveMainProfile() string { return In(i18n.Locale()).SaveMainProfile() }
+
+// SaveMainProfile says "保存 Main 配置"
+// in the language of msgs.
+func (msgs Messages) SaveMainProfile() string {
+	return Catalog.Format(msgs.locale, "saveMainProfile", nil)
+}
+
+// CollaborationAliasRequired says "请先为此协作者保存唯一的成员别名，再发起协作。"
+// in the language the app shows.
+func CollaborationAliasRequired() string { return In(i18n.Locale()).CollaborationAliasRequired() }
+
+// CollaborationAliasRequired says "请先为此协作者保存唯一的成员别名，再发起协作。"
+// in the language of msgs.
+func (msgs Messages) CollaborationAliasRequired() string {
+	return Catalog.Format(msgs.locale, "collaborationAliasRequired", nil)
 }

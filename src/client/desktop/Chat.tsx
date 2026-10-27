@@ -4,7 +4,12 @@ import ReactMarkdown from 'react-markdown';
 import { submitComposerOnEnter } from '../chat-composer';
 import { Mascot } from '../Mascot';
 import { type DisplayMessage } from './projection';
-import type { ConnectionVM, DesktopServices, SessionVM } from './models';
+import type {
+  ComposerDraft,
+  ConnectionVM,
+  DesktopServices,
+  SessionVM,
+} from './models';
 import { useDesktopChatState } from './ChatState';
 import { useMessages } from './locale';
 
@@ -25,6 +30,7 @@ export function DesktopChat({
   services,
   connection,
   session,
+  composerDraft,
   material,
   onSchedule,
   onSaveReply,
@@ -32,6 +38,7 @@ export function DesktopChat({
   services: DesktopServices;
   connection: ConnectionVM;
   session: SessionVM;
+  composerDraft?: ComposerDraft;
   material?: () => Promise<string>;
   onSchedule: () => void;
   onSaveReply?: (message: DisplayMessage) => Promise<void>;
@@ -41,6 +48,7 @@ export function DesktopChat({
     services,
     connection,
     session,
+    composerDraft,
     material,
     onSchedule,
     onSaveReply,

@@ -6,6 +6,7 @@ import {
   type DisplayMessage,
 } from './projection';
 import type {
+  ComposerDraft,
   ConnectionVM,
   DesktopServices,
   PendingRunVM,
@@ -15,6 +16,7 @@ export function useDesktopChatState({
   services,
   connection,
   session,
+  composerDraft,
   material,
   onSchedule,
   onSaveReply,
@@ -22,6 +24,7 @@ export function useDesktopChatState({
   services: DesktopServices;
   connection: ConnectionVM;
   session: SessionVM;
+  composerDraft?: ComposerDraft;
   material?: () => Promise<string>;
   onSchedule: () => void;
   onSaveReply?: (message: DisplayMessage) => Promise<void>;
@@ -33,7 +36,9 @@ export function useDesktopChatState({
       sessionId: session.id,
     }),
   );
-  const [draft, setDraft] = useState('');
+  const [localDraft, setLocalDraft] = useState<string>();
+  const draft = (composerDraft ? composerDraft.value : localDraft) ?? '';
+  const setDraft = composerDraft?.setValue ?? setLocalDraft;
   const [submitting, setSubmitting] = useState(false);
   const [historyLoaded, setHistoryLoaded] = useState(false);
   const [historyScope, setHistoryScope] = useState('');
@@ -92,7 +97,7 @@ export function useDesktopChatState({
           activeInvocation.current = invocation;
           setResumeInvocation(invocation);
           if (saved.length) {
-            setDraft(saved[0].content);
+            setDraft((previous) => previous ?? saved[0].content);
             setExecution('unknown');
           } else if (
             ['running', 'queued', 'accepted'].includes(
@@ -178,9 +183,15 @@ export function useDesktopChatState({
         context ? `${prompt}\n\n${context}` : prompt,
         configVersion,
       );
+      // The app owns this draft across native-page visits. Its setter checks
+      // the original connection epoch and session before reconciling a receipt.
+      composerDraft?.setValue((previous) =>
+        previous === draft ? '' : previous,
+      );
       if (generation.current !== current) return;
       const subscriptionEpoch = ++subscriptionGeneration.current;
-      setDraft('');
+      if (!composerDraft)
+        setDraft((previous) => (previous === draft ? '' : previous));
       setExecution(receipt.status);
       activeInvocation.current = receipt.invocationId;
       setResumeInvocation(receipt.invocationId);

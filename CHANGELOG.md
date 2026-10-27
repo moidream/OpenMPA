@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+### Features
+
+- Add native Skill/MCP discovery, shared AGENTS.md editing with revision checks, and instruction editing for existing Main Profiles on compatible Runtimes.
+- Add A2A space binding, member and Agent Card details, alias editing, and conversation draft selection. Skill and collaborator choices preserve unsent text and require the user to send the message.
+
+### Fixes
+
+- Explain Runtime responses that require a business user ID or JWT, show failed connection-probe reasons, and clarify that a pending assistant creation ID is retained for retries. Identity and retry behavior are unchanged.
+
 ## 0.1.1 — 2026-10-26
 
 ### Features
