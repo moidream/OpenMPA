@@ -251,3 +251,12 @@ archive 的 SHA-256 一致；临时诊断时修改的旧缓存代码已恢复。
 最终浏览器报告更新为 `.openmpa/lifecycle-verification/2026-10-29T07-40-02.106Z/`，
 并断言预检查初始调用只发送一次、重新检查成功后错误块消失。开发版真实进程确认
 使用新打包引擎 `engine-4de99c1a64cfabcfd6dd`，最终 App/DMG 与签名检查通过。
+
+## 对齐官方 main 并建立 PR（2026-10-29）
+
+合入官方 `93f1cac`（v0.1.5），保留官方的会话、模型目录、执行归档、Trace、窗口关闭
+和设置变更，以及本分支的 MPA 生命周期管理、完整 Main 配置编辑。导航仍按本任务
+要求保留最左栏的“+”，管理 Runtime 位于其上方；按钮名称跟随官方“新建助手”文案。
+词典按三方变更合并，Go/TypeScript 消息和 IPC 绑定重新生成。
+合并后前端全量 109 文件/651 项、Go 全量 race/vet、typecheck、lint、check-format、
+design:check 和 Web 构建通过。
