@@ -31,11 +31,13 @@ import { createLifecycleServices } from './lifecycle-services';
 export { displayEvent } from './service-events';
 
 const platformVM = (state: {
+  provider?: string;
   signedIn: boolean;
   principal?: { accountId?: string; scope?: string } | null;
   region?: string;
   epoch?: number;
 }) => ({
+  provider: state.provider || 'volcengine',
   signedIn: state.signedIn,
   accountId: state.principal?.accountId || '',
   region: state.region || 'cn-beijing',
@@ -112,6 +114,7 @@ export function createDesktopServices(): DesktopServices {
       },
       regions: async () =>
         unwrap(await Platform.regions()).regions.map((region) => ({
+          provider: region.provider || 'volcengine',
           id: region.region,
           name: region.displayName,
           endpointHost: region.endpointHost,

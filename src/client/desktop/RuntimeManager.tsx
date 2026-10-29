@@ -1,3 +1,4 @@
+import { regionsForProvider } from './cloud-provider';
 import { useEffect, useRef, useState } from 'react';
 import { Plus, RefreshCw, Server, Trash2 } from 'lucide-react';
 import { Button } from '../ui';
@@ -64,6 +65,11 @@ export function RuntimeManager({
         setRuntimes([]);
         setCreations([]);
         setDeletions([]);
+        return;
+      }
+      const supported = regionsForProvider(current.provider);
+      if (!supported.some((item) => item.id === region)) {
+        setRegion(current.region || supported[0].id);
         return;
       }
       const result = await services.platform.list(
@@ -238,16 +244,21 @@ export function RuntimeManager({
           <label>
             {m.region()}
             <select
+              aria-label={m.region()}
               disabled={loading || Boolean(connecting)}
               value={region}
               onChange={(event) => setRegion(event.target.value)}
             >
-              <option value="cn-beijing">
-                {m.settingsRegionBeijing()} (cn-beijing)
-              </option>
-              <option value="cn-shanghai">
-                {m.settingsRegionShanghai()} (cn-shanghai)
-              </option>
+              {regionsForProvider(platform?.provider).map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.id === 'cn-beijing'
+                    ? m.settingsRegionBeijing()
+                    : item.id === 'cn-shanghai'
+                      ? m.settingsRegionShanghai()
+                      : m.settingsRegionSingapore()}{' '}
+                  ({item.id})
+                </option>
+              ))}
             </select>
           </label>
           <label>

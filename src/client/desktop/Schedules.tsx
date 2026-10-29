@@ -1,631 +1,598 @@
-import {
-  errorMessage,
-  localized,
-  useMessages,
-  useMessageState,
-} from './locale';
 import { useEffect, useRef, useState } from 'react';
-import { Clock3, Plus, Play, Pause, Trash2, RefreshCw } from 'lucide-react';
+import {
+  CalendarDays,
+  Clock3,
+  List,
+  Play,
+  Plus,
+  Power,
+  PowerOff,
+  RefreshCw,
+} from 'lucide-react';
+import { Button, IconButton } from '../ui';
+import { ModalDialog } from '../ui/ModalDialog';
+import { localized, useMessages, useMessageState } from './locale';
+import { ScheduleCalendar } from './ScheduleCalendar';
+import { ScheduleDetail } from './ScheduleDetail';
+import { ScheduleEditor } from './ScheduleEditor';
+import { ScheduleTaskMenu } from './ScheduleTaskMenu';
+import { scheduleFailure } from './schedule-failure';
+import {
+  formatTime,
+  runStatuses,
+  scheduleStatusLabel,
+  scheduleText,
+  taskStatus,
+} from './schedule-view';
 import type {
   ConnectionVM,
   DesktopServices,
-  RunVM,
+  ScheduleDirectoryVM,
   ScheduleVM,
   SessionVM,
 } from './models';
+import './schedule-page.css';
+
 export function DesktopSchedules({
   services,
   connection,
-  sessions: _sessions,
+  onConfigure,
 }: {
   services: DesktopServices;
   connection?: ConnectionVM;
   sessions: SessionVM[];
+  onConfigure?(): void;
 }) {
   const m = useMessages();
-  const [tasks, setTasks] = useState<ScheduleVM[]>([]);
-  const [detail, setDetail] = useState<{
-    task: ScheduleVM;
-    runs: RunVM[];
-    count?: number;
-    hasMore?: boolean;
-    nextOffset?: number;
-  }>();
-  const [draft, setDraft] = useState<ScheduleVM>();
-  const [targets, setTargets] = useState<
-    Array<{ appId?: string; targetId: string; name: string; channel: string }>
-  >([]);
-  const [query, setQuery] = useState('');
-  const [error, setError] = useMessageState();
-  const [notice, setNotice] = useMessageState();
-  const typeLabels: Record<string, string> = {
-    Once: m.scheduleOnce(),
-    Interval: m.scheduleInterval(),
-    Daily: m.scheduleDaily(),
-    Weekly: m.scheduleWeekly(),
-    Monthly: m.scheduleMonthly(),
-    Cron: m.scheduleCron(),
-  };
-  const typeLabel = (type: string) =>
-    Object.hasOwn(typeLabels, type) ? typeLabels[type] : type;
-  const statusLabel = (status: string) => {
-    const labels: Record<string, string> = {
-      queued: m.scheduleQueued(),
-      pending: m.pagePending(),
-      running: m.desktopRunning(),
-      succeeded: m.desktopSuccess(),
-      success: m.desktopSuccess(),
-      completed: m.pageCompleted(),
-      failed: m.desktopFailed(),
-      cancelled: m.pageCancelled(),
-      canceled: m.pageCancelled(),
-    };
-    const key = status.toLowerCase();
-    return Object.hasOwn(labels, key) ? labels[key] : status;
-  };
-  const [busy, setBusy] = useState(false);
-  const epoch = useRef(connection?.epoch);
-  epoch.current = connection?.epoch;
-  const refresh = async () => {
-    if (!connection || !services.schedules) return;
-    const next = await services.schedules.list(connection.epoch);
-    if (epoch.current === connection.epoch) setTasks(next);
-  };
-  useEffect(() => {
-    void refresh().catch((error: unknown) =>
-      setError(
-        error instanceof Error
-          ? error.message
-          : localized((m) => m.desktopCouldNotLoadSchedules()),
-      ),
-    );
-  }, [services, connection?.epoch]);
-  const action = async (run: () => Promise<void>) => {
-    setBusy(true);
-    setError('');
-    try {
-      await run();
-      await refresh();
-    } catch (error) {
-      setError(
-        errorMessage(
-          error,
-          localized((m) => m.desktopScheduleOperationFailed()),
-        ),
-      );
-    } finally {
-      setBusy(false);
-    }
-  };
-  return (
-    <main className="main-content">
-      <div className="page-heading">
-        <div>
-          <span className="eyebrow">{m.desktopYOURWORKSPACE()}</span>
-          <h1>{m.desktopALittleFollowThrough()}</h1>
-          <p>{m.desktopScheduledTasksExecuteOnTheRuntimeAndContinueWhen()}</p>
+  if (!connection || !services.schedules)
+    return (
+      <main className="main-content schedule-page">
+        <div className="page-heading">
+          <h1>{m.scheduledTasks()}</h1>
         </div>
-        <button
-          className="primary"
-          disabled={!connection || !services.schedules}
-          onClick={() =>
-            setDraft({
-              id: '',
-              name: '',
-              prompt: '',
-              agentId: '',
-              enabled: true,
-              version: '',
-              schedule: { type: 'Cron', cronExpression: '' },
-              timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-            })
-          }
-        >
-          <Plus size={15} /> {m.desktopNewScheduledTask()}
-        </button>
-      </div>
-      {error && (
-        <div role="alert" className="error-banner">
-          {error}
-        </div>
-      )}
-      {notice && (
-        <div className="notice" role="status">
-          {notice}
-        </div>
-      )}
-      {!services.schedules || !connection ? (
         <div className="setup-card">
           <Clock3 size={24} />
           <p>{m.desktopConnectARuntimeWithAVerifiedScheduledTaskIdentity()}</p>
         </div>
-      ) : (
-        <>
-          <label className="search-box">
-            <input
-              aria-label={m.desktopSearchTasks()}
-              placeholder={m.scheduleFindTask()}
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-            />
-          </label>
-          <div className="task-list">
-            {tasks
-              .filter((task) =>
-                `${task.name} ${task.prompt}`
-                  .toLowerCase()
-                  .includes(query.toLowerCase()),
-              )
-              .map((task) => (
-                <button
-                  className="task-row"
-                  key={task.id}
-                  onClick={() =>
-                    void action(async () => {
-                      const next = await services.schedules!.read(
-                        connection.epoch,
-                        task.id,
-                      );
-                      if (epoch.current === connection.epoch) setDetail(next);
-                    })
-                  }
-                >
-                  <Clock3 size={18} />
-                  <div>
-                    <strong>{task.name || task.prompt}</strong>
-                    <span>
-                      {task.enabled ? m.pageEnabled() : m.pageDisabled()} ·{' '}
-                      {typeLabel(task.schedule.type)}{' '}
-                      {task.schedule.cronExpression ||
-                        task.schedule.time ||
-                        task.schedule.runAt ||
-                        task.schedule.intervalSeconds}{' '}
-                      · {task.timezone}
-                    </span>
-                  </div>
-                </button>
-              ))}
-          </div>
-          {!tasks.length && (
-            <div className="large-empty">
-              <Clock3 size={32} />
-              <h2>{m.desktopLetAThoughtComeBackAround()}</h2>
-              <p>{m.desktopCreateAServerScheduleForThisRuntime()}</p>
-            </div>
-          )}
-          {!!tasks.length &&
-            !tasks.some((task) =>
-              `${task.name} ${task.prompt}`
-                .toLowerCase()
-                .includes(query.toLowerCase()),
-            ) && (
-              <div className="large-empty">
-                <h2>{m.scheduleNoMatches()}</h2>
-                <p>{m.tryDifferentSearch()}</p>
-              </div>
-            )}
-        </>
+      </main>
+    );
+  return (
+    <RuntimeSchedules
+      key={`${connection.epoch}:${connection.scope}`}
+      services={services}
+      connection={connection}
+      onConfigure={onConfigure}
+    />
+  );
+}
+
+function RuntimeSchedules({
+  services,
+  connection,
+  onConfigure,
+}: {
+  services: DesktopServices;
+  connection: ConnectionVM;
+  onConfigure?(): void;
+}) {
+  const m = useMessages();
+  const api = services.schedules!;
+  const [directory, setDirectory] = useState<ScheduleDirectoryVM>();
+  const [selected, setSelected] = useState<ScheduleVM>();
+  const [draft, setDraft] = useState<ScheduleVM>();
+  const [deleting, setDeleting] = useState<ScheduleVM>();
+  const [view, setView] = useState('list');
+  const [query, setQuery] = useState('');
+  const [status, setStatus] = useState('all');
+  const [index, setIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [busy, setBusy] = useState(false);
+  const [loadError, setLoadError] = useMessageState();
+  const [needsIdentity, setNeedsIdentity] = useState(false);
+  const [error, setError] = useMessageState();
+  const [notice, setNotice] = useMessageState();
+  const alive = useRef(true);
+  const writing = useRef(false);
+  const sequence = useRef(0);
+  useEffect(() => {
+    alive.current = true;
+    return () => {
+      alive.current = false;
+      sequence.current++;
+    };
+  }, []);
+  async function refresh() {
+    const request = ++sequence.current;
+    setLoading(true);
+    setLoadError('');
+    setNeedsIdentity(false);
+    try {
+      const value = await api.list(connection.epoch);
+      if (alive.current && request === sequence.current) {
+        setDirectory(value);
+        setSelected((current) =>
+          current
+            ? value.items.find((task) => task.id === current.id) || current
+            : undefined,
+        );
+        setIndex((current) =>
+          Math.min(
+            current,
+            Math.max(0, Math.floor((value.items.length - 1) / 10) * 10),
+          ),
+        );
+      }
+    } catch (reason) {
+      if (alive.current && request === sequence.current) {
+        setLoadError(scheduleFailure(reason));
+        const code =
+          reason && typeof reason === 'object' && 'code' in reason
+            ? reason.code
+            : '';
+        setNeedsIdentity(
+          code === 'businessIdentityRequired' || code === 'businessJWTRequired',
+        );
+      }
+    } finally {
+      if (alive.current && request === sequence.current) setLoading(false);
+    }
+  }
+  useEffect(() => {
+    void refresh();
+  }, [services, connection.epoch]);
+  async function mutate<T>(
+    operation: () => Promise<T>,
+    accepted: (value: T) => void,
+  ): Promise<T | undefined> {
+    if (writing.current) return;
+    writing.current = true;
+    setBusy(true);
+    setError('');
+    setNotice('');
+    try {
+      const value = await operation();
+      if (alive.current) {
+        accepted(value);
+        await refresh();
+      }
+      return alive.current ? value : undefined;
+    } catch (reason) {
+      if (alive.current) setError(scheduleFailure(reason));
+    } finally {
+      writing.current = false;
+      if (alive.current) setBusy(false);
+    }
+  }
+  function editor(task?: ScheduleVM, copy = false) {
+    setError('');
+    setSelected(undefined);
+    setDraft(
+      task
+        ? {
+            ...structuredClone(task),
+            ...(copy
+              ? {
+                  id: '',
+                  version: '',
+                  name: m.scheduleCopyName(task.name),
+                  nextRun: undefined,
+                  lastRun: undefined,
+                  runningAt: undefined,
+                  createdAt: undefined,
+                  status: undefined,
+                  schedule: { ...task.schedule, anchorAt: undefined },
+                }
+              : {}),
+          }
+        : {
+            id: '',
+            version: '',
+            name: '',
+            prompt: '',
+            agentId: '',
+            enabled: true,
+            schedule: { type: 'Daily', time: '09:00' },
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            delivery: {
+              channel: 'Web',
+              receiveIdType: 'chat_id',
+              bestEffort: true,
+            },
+          },
+    );
+  }
+  const toggle = (task: ScheduleVM) => {
+    void mutate(
+      () => api.enable(connection.epoch, task, !task.enabled),
+      (next) => {
+        setSelected((current) => (current?.id === next.id ? next : current));
+        setNotice(
+          localized((m) =>
+            next.enabled
+              ? m.scheduleEnabledNotice()
+              : m.scheduleDisabledNotice(),
+          ),
+        );
+      },
+    );
+  };
+  const run = (task: ScheduleVM) =>
+    mutate(
+      () => api.trigger(connection.epoch, task),
+      (run) => {
+        setNotice(
+          localized((m) =>
+            m.runAcceptedNotice(run.id, scheduleStatusLabel(run.status, m)),
+          ),
+        );
+      },
+    );
+  const filtered = (directory?.items || []).filter(
+    (task) =>
+      `${task.name} ${task.prompt} ${task.agentId}`
+        .toLowerCase()
+        .includes(query.toLowerCase()) &&
+      (status === 'all' ||
+        (status === 'Enabled' && task.enabled) ||
+        (status === 'Disabled' && !task.enabled) ||
+        taskStatus(task) === status),
+  );
+  const visibleIndex = Math.min(
+    index,
+    Math.max(0, Math.floor((filtered.length - 1) / 10) * 10),
+  );
+  const visible = filtered.slice(visibleIndex, visibleIndex + 10);
+  const open = (task: ScheduleVM) => {
+    setError('');
+    setSelected(task);
+  };
+  const remove = (task: ScheduleVM) => {
+    setSelected(undefined);
+    setError('');
+    setDeleting(task);
+  };
+  return (
+    <main className="main-content schedule-page">
+      <div className="page-heading">
+        <div>
+          <h1>{m.scheduledTasks()}</h1>
+          <p>{m.desktopScheduledTasksExecuteOnTheRuntimeAndContinueWhen()}</p>
+        </div>
+        <Button
+          variant="primary"
+          disabled={busy}
+          leading={<Plus size={15} />}
+          onClick={() => editor()}
+        >
+          {m.desktopNewScheduledTask()}
+        </Button>
+      </div>
+      <div className="schedule-runtime">
+        <strong>{connection.runtimeName || connection.runtimeId}</strong>
+        <span>{m.scheduleScopeHint()}</span>
+      </div>
+      {notice && (
+        <p className="notice" role="status">
+          {notice}
+        </p>
       )}
-      {detail && connection && services.schedules && (
-        <section className="task-detail-card">
-          <h2>{detail.task.name}</h2>
-          <p>{detail.task.prompt}</p>
-          <p>
-            {typeLabel(detail.task.schedule.type)}{' '}
-            {detail.task.schedule.cronExpression ||
-              detail.task.schedule.time ||
-              detail.task.schedule.runAt ||
-              detail.task.schedule.intervalSeconds}{' '}
-            · {detail.task.timezone} {m.desktopNext()}{' '}
-            {detail.task.nextRun ?? m.valueUnavailable()}
-          </p>
-          <div className="task-controls">
-            <button disabled={busy} onClick={() => setDraft(detail.task)}>
-              {m.desktopEdit()}
-            </button>
-            <button
-              disabled={busy}
-              onClick={() =>
-                void action(async () => {
-                  const next = await services.schedules!.enable(
-                    connection.epoch,
-                    detail.task,
-                    !detail.task.enabled,
-                  );
-                  setDetail({ ...detail, task: next });
-                })
-              }
-            >
-              {detail.task.enabled ? <Pause size={14} /> : <Play size={14} />}
-              {detail.task.enabled ? m.scheduleDisable() : m.scheduleEnable()}
-            </button>
-            <button
-              disabled={busy}
-              onClick={() =>
-                void action(async () => {
-                  const run = await services.schedules!.trigger(
-                    connection.epoch,
-                    detail.task,
-                  );
-                  if (epoch.current === connection.epoch) {
-                    setDetail((previous) =>
-                      previous && previous.task.id === detail.task.id
-                        ? {
-                            ...previous,
-                            runs: [
-                              run,
-                              ...previous.runs.filter(
-                                (item) => item.id !== run.id,
-                              ),
-                            ],
-                          }
-                        : previous,
-                    );
-                    setNotice(
-                      localized((m) => m.runAcceptedNotice(run.id, run.status)),
-                    );
-                  }
-                })
-              }
-            >
-              <Play size={14} /> {m.desktopRunNow()}
-            </button>
-            <button
-              disabled={busy}
-              onClick={() =>
-                void action(async () => {
-                  const value = await services.schedules!.read(
-                    connection.epoch,
-                    detail.task.id,
-                  );
-                  if (epoch.current === connection.epoch) setDetail(value);
-                })
-              }
-            >
-              <RefreshCw size={14} /> {m.desktopRefreshHistory()}
-            </button>
-            <button
-              disabled={busy}
-              onClick={() => {
-                if (window.confirm(m.scheduleDeleteConfirm(detail.task.id)))
-                  void action(async () => {
-                    await services.schedules!.remove(
-                      connection.epoch,
-                      detail.task,
-                    );
-                    setDetail(undefined);
-                  });
-              }}
-            >
-              <Trash2 size={14} /> {m.delete()}
-            </button>
-          </div>
-          <p>
-            {detail.count === undefined
-              ? m.scheduleCountUnavailable()
-              : `${detail.count} runs`}
-          </p>
-          <p>
-            {detail.runs.length} {m.desktopRunsShown()}
-            {detail.hasMore === undefined
-              ? ' · History pagination metadata unavailable'
-              : detail.hasMore
-                ? ' · More available'
-                : ' · History page complete'}
-          </p>
-          {detail.hasMore === true && typeof detail.nextOffset === 'number' && (
-            <button
-              className="text-button"
-              disabled={busy}
-              onClick={() =>
-                void action(async () => {
-                  const page = await services.schedules!.runs(
-                    connection.epoch,
-                    detail.task.id,
-                    detail.nextOffset!,
-                  );
-                  if (epoch.current === connection.epoch)
-                    setDetail({
-                      ...detail,
-                      ...page,
-                      runs: [...detail.runs, ...page.runs],
-                    });
-                })
-              }
-            >
-              {m.desktopLoadMoreHistory()}
-            </button>
-          )}
-          {detail.runs.map((run) => (
-            <article className="task-event" key={run.id}>
-              <strong>{statusLabel(run.status)}</strong> · {run.startedAt}
-              <p>
-                {[
-                  run.sessionId ? m.runSessionLabel(run.sessionId) : '',
-                  run.invocationId
-                    ? m.runInvocationLabel(run.invocationId)
-                    : '',
-                  run.output || '',
-                ]
-                  .filter(Boolean)
-                  .join(' · ')}
-              </p>
-              {run.error && <p role="alert">{run.error}</p>}
-            </article>
-          ))}
-        </section>
+      {error && !draft && !deleting && !selected && (
+        <p className="error-banner" role="alert">
+          {error}
+        </p>
       )}
-      {draft && connection && services.schedules && (
-        <form
-          className="task-detail-card desktop-form"
-          onSubmit={(event) => {
-            event.preventDefault();
-            void action(async () => {
-              const next = draft.id
-                ? await services.schedules!.update(connection.epoch, draft)
-                : await services.schedules!.create(connection.epoch, draft);
-              setDraft(undefined);
-              setDetail({ task: next, runs: [] });
-            });
+      <div className="schedule-toolbar">
+        <div
+          className="schedule-view-switch"
+          role="group"
+          aria-label={m.scheduleView()}
+        >
+          <Button
+            variant={view === 'list' ? 'secondary' : 'ghost'}
+            aria-pressed={view === 'list'}
+            leading={<List size={15} />}
+            onClick={() => setView('list')}
+          >
+            {m.scheduleListView()}
+          </Button>
+          <Button
+            variant={view === 'calendar' ? 'secondary' : 'ghost'}
+            aria-pressed={view === 'calendar'}
+            leading={<CalendarDays size={15} />}
+            onClick={() => setView('calendar')}
+          >
+            {m.scheduleCalendarView()}
+          </Button>
+        </div>
+        <label className="schedule-search">
+          <span className="sr-only">{m.desktopSearchTasks()}</span>
+          <input
+            type="search"
+            aria-label={m.desktopSearchTasks()}
+            placeholder={m.scheduleFindTask()}
+            value={query}
+            onChange={(event) => {
+              setQuery(event.target.value);
+              setIndex(0);
+            }}
+          />
+        </label>
+        <select
+          aria-label={m.scheduleLastStatus()}
+          value={status}
+          onChange={(event) => {
+            setStatus(event.target.value);
+            setIndex(0);
           }}
         >
-          <h2>{draft.id ? m.scheduleEdit() : m.desktopNewScheduledTask()}</h2>
-          <label>
-            {m.desktopName()}
-            <input
-              required
-              value={draft.name}
-              onChange={(event) =>
-                setDraft({ ...draft, name: event.target.value })
-              }
-            />
-          </label>
-          <label>
-            {m.desktopAgentIDOptional()}
-            <input
-              value={draft.agentId}
-              onChange={(event) =>
-                setDraft({ ...draft, agentId: event.target.value })
-              }
-            />
-          </label>
-          <label>
-            {m.desktopPrompt()}
-            <textarea
-              required
-              value={draft.prompt}
-              onChange={(event) =>
-                setDraft({ ...draft, prompt: event.target.value })
-              }
-            />
-          </label>
-          <label>
-            {m.desktopScheduleType()}
-            <select
-              value={draft.schedule.type}
-              onChange={(event) =>
-                setDraft({ ...draft, schedule: { type: event.target.value } })
-              }
-            >
-              {['Once', 'Interval', 'Daily', 'Weekly', 'Monthly', 'Cron'].map(
-                (type) => (
-                  <option key={type} value={type}>
-                    {typeLabels[type]}
-                  </option>
-                ),
+          <option value="all">{m.scheduleAllStatuses()}</option>
+          <option value="Enabled">{m.pageEnabled()}</option>
+          <option value="Disabled">{m.pageDisabled()}</option>
+          {['Pending', ...runStatuses, 'Stuck'].map((value) => (
+            <option key={value} value={value}>
+              {scheduleStatusLabel(value, m)}
+            </option>
+          ))}
+        </select>
+        <IconButton
+          label={m.desktopRefresh()}
+          disabled={loading || busy}
+          onClick={() => {
+            void refresh();
+          }}
+        >
+          <RefreshCw size={16} />
+        </IconButton>
+      </div>
+      {directory?.overview && (
+        <div className="schedule-overview">
+          {directory.overview.executionCount != null && (
+            <span>
+              {m.scheduleExecutionCount(
+                String(directory.overview.executionCount),
               )}
-            </select>
-          </label>
-          {draft.schedule.type === 'Cron' && (
-            <label>
-              {m.desktopCronExpression()}
-              <input
-                required
-                placeholder="0 9 * * *"
-                value={draft.schedule.cronExpression || ''}
-                onChange={(event) =>
-                  setDraft({
-                    ...draft,
-                    schedule: {
-                      ...draft.schedule,
-                      cronExpression: event.target.value,
-                    },
-                  })
-                }
-              />
-            </label>
+            </span>
           )}
-          {draft.schedule.type === 'Once' && (
-            <label>
-              {m.desktopRunAtRFC3339()}
-              <input
-                required
-                placeholder="2026-10-26T09:00:00+08:00"
-                value={draft.schedule.runAt || ''}
-                onChange={(event) =>
-                  setDraft({
-                    ...draft,
-                    schedule: { ...draft.schedule, runAt: event.target.value },
-                  })
-                }
-              />
-            </label>
+          {directory.overview.successRate != null && (
+            <span>
+              {m.scheduleSuccessRate(
+                String(Math.round(directory.overview.successRate * 100)),
+              )}
+            </span>
           )}
-          {draft.schedule.type === 'Interval' && (
-            <label>
-              {m.desktopIntervalSeconds()}
-              <input
-                required
-                type="number"
-                min={30}
-                max={31536000}
-                value={draft.schedule.intervalSeconds || ''}
-                onChange={(event) =>
-                  setDraft({
-                    ...draft,
-                    schedule: {
-                      ...draft.schedule,
-                      intervalSeconds: Number(event.target.value),
-                    },
-                  })
-                }
-              />
-            </label>
+        </div>
+      )}
+      {loadError && (
+        <div className="error-banner">
+          <p role="alert">{loadError}</p>
+          {onConfigure && needsIdentity && (
+            <Button onClick={onConfigure}>
+              {m.scheduleConfigureIdentity()}
+            </Button>
           )}
-          {['Daily', 'Weekly', 'Monthly'].includes(draft.schedule.type) && (
-            <label>
-              {m.scheduleTime()}
-              <input
-                required
-                type="time"
-                value={draft.schedule.time || ''}
-                onChange={(event) =>
-                  setDraft({
-                    ...draft,
-                    schedule: { ...draft.schedule, time: event.target.value },
-                  })
-                }
-              />
-            </label>
-          )}
-          {draft.schedule.type === 'Weekly' && (
-            <label>
-              {m.desktopWeekdays1MondayThrough7Sunday()}
-              <input
-                required
-                value={draft.schedule.weekdays?.join(',') || ''}
-                onChange={(event) =>
-                  setDraft({
-                    ...draft,
-                    schedule: {
-                      ...draft.schedule,
-                      weekdays: event.target.value.split(',').map(Number),
-                    },
-                  })
-                }
-              />
-            </label>
-          )}
-          {draft.schedule.type === 'Monthly' && (
-            <label>
-              {m.desktopMonthDays1Through31()}
-              <input
-                required
-                value={draft.schedule.monthDays?.join(',') || ''}
-                onChange={(event) =>
-                  setDraft({
-                    ...draft,
-                    schedule: {
-                      ...draft.schedule,
-                      monthDays: event.target.value.split(',').map(Number),
-                    },
-                  })
-                }
-              />
-            </label>
-          )}
-          <label>
-            {m.desktopTimeZone()}
-            <input
-              required
-              value={draft.timezone}
-              onChange={(event) =>
-                setDraft({ ...draft, timezone: event.target.value })
-              }
-            />
-          </label>
-          <label>
-            {m.desktopDeliveryChannel()}
-            <select
-              value={draft.delivery?.channel || 'Web'}
-              onChange={(event) =>
-                setDraft({
-                  ...draft,
-                  delivery: {
-                    channel: event.target.value,
-                    receiveIdType: 'chat_id',
-                    bestEffort: true,
-                  },
-                })
-              }
+        </div>
+      )}
+      {loading && (
+        <div className="schedule-state" role="status">
+          {m.scheduleLoading()}
+        </div>
+      )}
+      {!loading &&
+        !loadError &&
+        directory &&
+        (view === 'calendar' ? (
+          <ScheduleCalendar tasks={filtered} onOpen={open} />
+        ) : (
+          <>
+            <div
+              className="schedule-table-scroll"
+              role="region"
+              aria-label={m.scheduledTasks()}
+              tabIndex={0}
             >
-              <option value="Web">{m.desktopWeb()}</option>
-              <option value="Feishu">{m.desktopFeishu()}</option>
-            </select>
-          </label>
-          {draft.delivery?.channel === 'Feishu' && (
-            <>
-              <label>
-                {m.desktopFeishuAppID()}
-                <input
-                  value={draft.delivery.appId || ''}
-                  onChange={(event) =>
-                    setDraft({
-                      ...draft,
-                      delivery: {
-                        ...draft.delivery!,
-                        appId: event.target.value,
-                      },
-                    })
-                  }
-                />
-              </label>
-              <button
-                type="button"
-                className="text-button"
-                disabled={busy}
-                onClick={() =>
-                  void action(async () => {
-                    const value = await services.schedules!.deliveryTargets(
-                      connection.epoch,
-                      'Feishu',
-                      draft.delivery?.appId || '',
-                    );
-                    if (epoch.current === connection.epoch) setTargets(value);
-                  })
-                }
-              >
-                {m.desktopReadPermittedDeliveryTargets()}
-              </button>
-              <label>
-                {m.desktopDeliveryTarget()}
-                <select
-                  required
-                  value={draft.delivery.targetId || ''}
-                  onChange={(event) =>
-                    setDraft({
-                      ...draft,
-                      delivery: {
-                        ...draft.delivery!,
-                        targetId: event.target.value,
-                      },
-                    })
-                  }
-                >
-                  <option value="">{m.desktopChooseAPermittedGroup()}</option>
-                  {targets.map((target) => (
-                    <option
-                      key={`${target.appId}:${target.targetId}`}
-                      value={target.targetId}
-                    >
-                      {target.name || target.targetId}
-                    </option>
+              <table className="schedule-table">
+                <thead>
+                  <tr>
+                    <th>{m.desktopName()}</th>
+                    <th>{m.scheduleExecutionPlan()}</th>
+                    <th>{m.scheduleLastRun()}</th>
+                    <th>{m.scheduleNextRun()}</th>
+                    <th>{m.scheduleLastStatus()}</th>
+                    <th>{m.scheduleAgent()}</th>
+                    <th>{m.scheduleActions()}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {visible.map((task) => (
+                    <tr key={task.id}>
+                      <td>
+                        <button
+                          className="task-row"
+                          disabled={busy}
+                          onClick={() => open(task)}
+                        >
+                          {task.name || task.prompt}
+                        </button>
+                        <span
+                          className="schedule-badge"
+                          data-status={task.enabled ? 'enabled' : 'disabled'}
+                        >
+                          {task.enabled ? m.pageEnabled() : m.pageDisabled()}
+                        </span>
+                      </td>
+                      <td>{scheduleText(task, m)}</td>
+                      <td>
+                        {formatTime(task.lastRun, undefined, task.timezone)}
+                      </td>
+                      <td>
+                        {formatTime(task.nextRun, undefined, task.timezone)}
+                      </td>
+                      <td>
+                        <span
+                          className="schedule-badge"
+                          data-status={taskStatus(task).toLowerCase()}
+                        >
+                          {scheduleStatusLabel(taskStatus(task), m)}
+                        </span>
+                      </td>
+                      <td>{task.agentId || 'Main'}</td>
+                      <td>
+                        <div className="schedule-actions">
+                          <IconButton
+                            label={`${m.desktopRunNow()} · ${task.name}`}
+                            disabled={busy}
+                            onClick={() => {
+                              void run(task);
+                            }}
+                          >
+                            <Play size={14} />
+                          </IconButton>
+                          <IconButton
+                            label={`${task.enabled ? m.scheduleDisable() : m.scheduleEnable()} · ${task.name}`}
+                            disabled={busy}
+                            onClick={() => toggle(task)}
+                          >
+                            {task.enabled ? (
+                              <PowerOff size={14} aria-hidden="true" />
+                            ) : (
+                              <Power size={14} aria-hidden="true" />
+                            )}
+                          </IconButton>
+                          <ScheduleTaskMenu
+                            task={task}
+                            busy={busy}
+                            onOpen={() => open(task)}
+                            onEdit={() => editor(task)}
+                            onCopy={() => editor(task, true)}
+                            onDelete={() => remove(task)}
+                          />
+                        </div>
+                      </td>
+                    </tr>
                   ))}
-                </select>
-              </label>
+                </tbody>
+              </table>
+            </div>
+            {!filtered.length && (
+              <div className="schedule-state">
+                <Clock3 size={28} />
+                <h2>
+                  {directory.items.length
+                    ? m.scheduleNoMatches()
+                    : m.scheduleEmptyTitle()}
+                </h2>
+                <p>
+                  {directory.items.length
+                    ? m.tryDifferentSearch()
+                    : m.desktopCreateAServerScheduleForThisRuntime()}
+                </p>
+                {!directory.items.length && (
+                  <Button disabled={busy} onClick={() => editor()}>
+                    {m.desktopNewScheduledTask()}
+                  </Button>
+                )}
+              </div>
+            )}
+            <nav
+              className="schedule-pagination"
+              aria-label={m.scheduledTasks()}
+            >
+              <span>{m.scheduleTaskCount(String(filtered.length))}</span>
+              <Button
+                disabled={visibleIndex === 0}
+                onClick={() => setIndex(visibleIndex - 10)}
+              >
+                {m.schedulePreviousPage()}
+              </Button>
+              <span>
+                {m.schedulePage(String(Math.floor(visibleIndex / 10) + 1))}
+              </span>
+              <Button
+                disabled={visibleIndex + 10 >= filtered.length}
+                onClick={() => setIndex(visibleIndex + 10)}
+              >
+                {m.scheduleNextPage()}
+              </Button>
+            </nav>
+          </>
+        ))}
+      {draft && (
+        <ScheduleEditor
+          task={draft}
+          services={services}
+          epoch={connection.epoch}
+          busy={busy}
+          error={error}
+          onClose={() => {
+            setDraft(undefined);
+            setError('');
+          }}
+          onSave={(task) => {
+            void mutate(
+              () =>
+                task.id
+                  ? api.update(connection.epoch, task)
+                  : api.create(connection.epoch, task),
+              () => {
+                setDraft(undefined);
+                setNotice(localized((m) => m.scheduleSaved()));
+              },
+            );
+          }}
+        />
+      )}
+      {selected && (
+        <ScheduleDetail
+          key={selected.id}
+          task={selected}
+          services={services}
+          epoch={connection.epoch}
+          busy={busy}
+          error={error}
+          onRun={run}
+          onToggle={toggle}
+          onEdit={editor}
+          onDelete={remove}
+          onClose={() => setSelected(undefined)}
+        />
+      )}
+      {deleting && (
+        <ModalDialog
+          title={m.delete()}
+          closeLabel={m.closeDialog(m.scheduledTasks())}
+          description={m.scheduleDeleteDescription(deleting.name)}
+          onClose={() => {
+            if (!busy) setDeleting(undefined);
+          }}
+          footer={
+            <>
+              <Button disabled={busy} onClick={() => setDeleting(undefined)}>
+                {m.cancel()}
+              </Button>
+              <Button
+                variant="destructive"
+                disabled={busy}
+                onClick={() => {
+                  void mutate(
+                    () => api.remove(connection.epoch, deleting),
+                    () => {
+                      setDeleting(undefined);
+                      setNotice(localized((m) => m.scheduleDeleted()));
+                    },
+                  );
+                }}
+              >
+                {busy ? m.working() : m.delete()}
+              </Button>
             </>
+          }
+        >
+          {error && (
+            <p className="error-banner" role="alert">
+              {error}
+            </p>
           )}
-          <button className="primary" disabled={busy}>
-            {m.desktopSaveSchedule()}
-          </button>
-          <button
-            type="button"
-            className="text-button"
-            onClick={() => setDraft(undefined)}
-          >
-            {m.cancel()}
-          </button>
-        </form>
+        </ModalDialog>
       )}
     </main>
   );

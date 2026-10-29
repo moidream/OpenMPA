@@ -213,13 +213,26 @@ func TestBundledEngineStartsFromExtractedResources(t *testing.T) {
 	}
 	s.mu.Lock()
 	python := s.process.command.Path
+	script := s.process.command.Args[len(s.process.command.Args)-1]
 	s.mu.Unlock()
-	imports := exec.CommandContext(ctx, python, "-I", "-c", `import volcenginesdkaidap,volcenginesdkecs,volcenginesdkvpc
+	imports := exec.CommandContext(ctx, python, "-I", "-c", `import runpy,sys
+import volcenginesdkaidap,volcenginesdkecs,volcenginesdkvpc,volcenginesdkcloudtrail,volcenginesdkvefaas
 from volcenginesdkcore.universal import UniversalApi,UniversalInfo
 assert '.zip/' in volcenginesdkaidap.__file__
 assert '.zip/' in volcenginesdkecs.__file__
 assert '.zip/' in volcenginesdkvpc.__file__
-print('packaged PG, network and universal SDK imports verified')`)
+assert '.zip/' in volcenginesdkcloudtrail.__file__
+assert '.zip/' in volcenginesdkvefaas.__file__
+adapter = runpy.run_path(sys.argv[1], run_name='packaged_diagnostics_test')
+assert callable(adapter['audit_diagnostic'])
+assert adapter['DiagnosticRuntimeDeployer']
+adapter['install_diagnostics']()
+from veadk.integrations.mpa.managed import service, pg_cloud, runner
+assert service.WorkerCloud.__name__ == 'DiagnosticWorkerCloud'
+assert service.GatewayCloud.__name__ == 'DiagnosticGatewayCloud'
+assert pg_cloud.PGCloud.__name__ == 'DiagnosticPGCloud'
+assert callable(runner.provision)
+print('packaged Worker, PG, network, APIG, audit and Runtime diagnostics verified')`, filepath.Join(filepath.Dir(script), "creation_runner.py"))
 	if output, err := imports.CombinedOutput(); err != nil {
 		t.Fatalf("packaged SDK imports failed: %v %s", err, output)
 	}
@@ -299,5 +312,34 @@ func TestAcceptedDeletionIsMonitoredWithoutAWebView(t *testing.T) {
 	}
 	if p.next.Load() != 1 {
 		t.Fatal("duplicate monitors issued additional requests")
+	}
+}
+
+func TestBundledEngineKeepsBytePlusProviderAcrossPrivateBridge(t *testing.T) {
+	archive := os.Getenv("OPENMPA_ENGINE_ARCHIVE")
+	if archive == "" {
+		t.Skip("set OPENMPA_ENGINE_ARCHIVE for packaged provider smoke test")
+	}
+	platform := cloud.NewWithTransport(identityTransport{})
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)
+	defer cancel()
+	state, failure := platform.SignIn(ctx, dto.SignInRequest{Provider: "byteplus", Region: "ap-southeast-1", AccessKey: "TEST_AK", SecretKey: "TEST_SK"})
+	if failure != nil {
+		t.Fatal(failure)
+	}
+	root := t.TempDir()
+	service := New(platform, func() (string, error) { return root, nil }, func() (string, error) { return archive, nil }, nil)
+	defer Shutdown(service)
+	config := service.Config(ctx, Scope{PlatformEpoch: state.Epoch, Region: "ap-southeast-1"})
+	if !config.OK || !config.Value.Configured || !strings.Contains(config.Value.RuntimeImage, ".cr.bytepluses.com/") || !strings.Contains(config.Value.WorkerImage, ".cr.bytepluses.com/") {
+		t.Fatalf("bad BP config: %+v", config)
+	}
+	tasks := service.ListCreations(ctx, Scope{PlatformEpoch: state.Epoch, Region: "ap-southeast-1"})
+	if !tasks.OK || len(tasks.Value.Tasks) != 0 {
+		t.Fatalf("bad BP journal: %+v", tasks)
+	}
+	wrong := service.Config(ctx, Scope{PlatformEpoch: state.Epoch, Region: "cn-beijing"})
+	if wrong.OK || wrong.Error.Code != "invalidInput" {
+		t.Fatal("cross-provider creation accepted")
 	}
 }

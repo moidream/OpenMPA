@@ -33,9 +33,12 @@ func (c *Client) PutSkillArchive(ctx context.Context, region, project string, da
 	bucket := fmt.Sprintf("openmpa-skills-%x-%s", owner[:8], region)
 	digest := sha256.Sum256(data)
 	key := fmt.Sprintf("agentkit/skills/%x.zip", digest)
+	if !ValidProviderRegion(cred.Provider, region) {
+		return empty, dto.Failure("invalidInput", "platform", "never", 0)
+	}
 	credentials := tos.NewStaticCredentials(cred.AccessKey, cred.SecretKey)
 	credentials.WithSecurityToken(cred.Token)
-	client, e := tos.NewClientV2("https://tos-"+region+".volces.com", tos.WithRegion(region), tos.WithCredentials(credentials), tos.WithMaxRetryCount(0), tos.WithHTTPTransport(c.transport))
+	client, e := tos.NewClientV2("https://tos-"+region+"."+storageDomain(cred.Provider), tos.WithRegion(region), tos.WithCredentials(credentials), tos.WithMaxRetryCount(0), tos.WithHTTPTransport(c.transport))
 	if e != nil {
 		return empty, storageFailure(e)
 	}
@@ -86,7 +89,7 @@ func (c *Client) PutSkillArchive(ctx context.Context, region, project string, da
 	if c.Epoch() != epoch {
 		return empty, dto.Failure("staleConnection", "platform", "reload", 0)
 	}
-	return SkillArchiveObject{URL: "https://" + bucket + ".tos-" + region + ".volces.com/" + key, Bucket: bucket}, nil
+	return SkillArchiveObject{URL: "https://" + bucket + ".tos-" + region + "." + storageDomain(cred.Provider) + "/" + key, Bucket: bucket}, nil
 }
 func storageFailure(err error) *dto.SafeError {
 	code := "skillStorageFailed"

@@ -105,6 +105,7 @@ export interface AssistantSetupInput {
   model: string;
 }
 export interface PlatformVM {
+  provider?: string;
   scope?: string;
   signedIn: boolean;
   accountId: string;
@@ -118,6 +119,7 @@ export interface VaultStatusVM {
   updatedAt?: string;
 }
 export interface RegionVM {
+  provider?: string;
   id: string;
   name: string;
   endpointHost: string;
@@ -164,13 +166,24 @@ export interface ScheduleVM {
   timezone: string;
   nextRun?: string;
   status?: string;
+  lastRun?: string;
+  runningAt?: string;
+  createdAt?: string;
+  jitterSeconds?: number;
+  timeoutSeconds?: number;
   delivery?: {
     channel: string;
     appId?: string;
     targetId?: string;
     receiveIdType: string;
     bestEffort: boolean;
+    threadId?: string;
+    replyMessageId?: string;
   };
+}
+export interface ScheduleDirectoryVM {
+  items: ScheduleVM[];
+  overview?: { executionCount?: number; successRate?: number };
 }
 export interface RunVM {
   id: string;
@@ -180,6 +193,9 @@ export interface RunVM {
   output?: string;
   sessionId?: string;
   invocationId?: string;
+  scheduledAt?: string;
+  finishedAt?: string;
+  durationMs?: number;
 }
 export interface ChannelVM {
   id: string;
@@ -248,6 +264,7 @@ export interface DesktopServices {
     unlockVault?(passphrase: string): Promise<PlatformVM>;
     forgetVault?(): Promise<void>;
     signIn(input: {
+      provider?: string;
       accessKey: string;
       secretKey: string;
       securityToken: string;
@@ -427,7 +444,7 @@ export interface DesktopServices {
     ): Promise<
       Array<{ appId?: string; targetId: string; name: string; channel: string }>
     >;
-    list(epoch: number): Promise<ScheduleVM[]>;
+    list(epoch: number): Promise<ScheduleDirectoryVM>;
     read(
       epoch: number,
       id: string,

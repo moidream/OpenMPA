@@ -392,7 +392,7 @@ it('renders saved credential unlock copy in Chinese without crowding labels', as
   });
   await act(async () => {});
   const rendered = JSON.stringify(renderer.toJSON());
-  expect(rendered).toContain('火山引擎账户');
+  expect(rendered).toContain('云账号');
   expect(rendered).toContain('输入口令解锁已保存的 AK/SK。');
   expect(rendered).toContain('口令');
   expect(rendered).toContain('解锁并登录');

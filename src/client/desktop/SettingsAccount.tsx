@@ -90,7 +90,13 @@ export function SettingsAccount({
   return (
     <>
       <section className="task-detail-card">
-        <h2>{m.volcengineAccount()}</h2>
+        <h2>
+          {platform?.signedIn
+            ? platform.provider === 'byteplus'
+              ? m.byteplusAccount()
+              : m.volcengineAccount()
+            : m.cloudAccount()}
+        </h2>
         {platform?.signedIn ? (
           <>
             <p>

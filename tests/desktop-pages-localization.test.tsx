@@ -204,18 +204,20 @@ it('retains unknown status values that match object prototype names', async () =
   );
   const schedules = {
     schedules: {
-      list: vi.fn(async () => [
-        {
-          id: 'task',
-          name: 'Remote task',
-          prompt: 'Prompt',
-          enabled: true,
-          version: '1',
-          schedule: { type: 'constructor' },
-          timezone: 'UTC',
-          status: 'constructor',
-        },
-      ]),
+      list: vi.fn(async () => ({
+        items: [
+          {
+            id: 'task',
+            name: 'Remote task',
+            prompt: 'Prompt',
+            enabled: true,
+            version: '1',
+            schedule: { type: 'constructor' },
+            timezone: 'UTC',
+            status: 'constructor',
+          },
+        ],
+      })),
     },
   } as unknown as DesktopServices;
   const schedulePage = await renderPage(
@@ -324,7 +326,7 @@ it('localizes schedule notices and labels while preserving delivery protocol val
     timezone: 'UTC',
   };
   const output = 'REMOTE output:\n  untouched.';
-  const list = vi.fn(async () => [task]);
+  const list = vi.fn(async () => ({ items: [task] }));
   const trigger = vi.fn(async () => ({
     id: 'run-id',
     status: 'Queued',

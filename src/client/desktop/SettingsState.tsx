@@ -15,11 +15,11 @@ import type {
   RuntimeVM,
   VaultStatusVM,
 } from './models';
+import { cloudRegions } from './cloud-provider';
 import { reviewImages } from './image-review';
 import {
   errorMessage,
   localized,
-  useMessages,
   useMessageState,
   type MessageText,
 } from './locale';
@@ -33,9 +33,9 @@ export function useDesktopSettingsState({
   connection?: ConnectionVM;
   onConnection: (connection: ConnectionVM | undefined) => void;
 }) {
-  const m = useMessages();
   const [platform, setPlatform] = useState<PlatformVM>();
   const [credentials, setCredentials] = useState({
+    provider: 'volcengine',
     accessKey: '',
     secretKey: '',
     securityToken: '',
@@ -50,18 +50,14 @@ export function useDesktopSettingsState({
   const [showVaultPassphrase, setShowVaultPassphrase] = useState(false);
   const [region, setRegion] = useState('cn-beijing');
   const [regionCatalog, setRegions] = useState<RegionVM[]>();
-  const regions = regionCatalog || [
-    {
-      id: 'cn-beijing',
-      name: m.settingsRegionBeijing(),
-      endpointHost: 'agentkit.cn-beijing.volcengineapi.com',
-    },
-    {
-      id: 'cn-shanghai',
-      name: m.settingsRegionShanghai(),
-      endpointHost: 'agentkit.cn-shanghai.volcengineapi.com',
-    },
-  ];
+  const allRegions = regionCatalog || cloudRegions;
+  const accountRegions = allRegions.filter(
+    (item) => (item.provider || 'volcengine') === credentials.provider,
+  );
+  const regions = allRegions.filter(
+    (item) =>
+      (item.provider || 'volcengine') === (platform?.provider || 'volcengine'),
+  );
   const [project, setProject] = useState('default');
   const [runtimes, setRuntimes] = useState<RuntimeVM[]>([]);
   const [directoryScope, setDirectoryScope] = useState('');
@@ -200,7 +196,13 @@ export function useDesktopSettingsState({
       }
     }
   };
-  const scope = JSON.stringify([platform?.accountId, region, project]);
+  const scope = JSON.stringify([
+    platform?.scope || platform?.accountId,
+    platform?.provider,
+    platform?.epoch,
+    region,
+    project,
+  ]);
   const load = useCallback(
     async (forceRefresh = false) => {
       if (!platform?.signedIn) return;
@@ -277,6 +279,7 @@ export function useDesktopSettingsState({
     setNotice,
     region,
     regions,
+    accountRegions,
     project,
     setProject,
     directoryLoading,

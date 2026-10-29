@@ -1581,6 +1581,7 @@ export interface PlanStage {
 }
 
 export interface PlatformState {
+  provider?: string;
   signedIn: boolean;
   hasCredential: boolean;
   expiresAt?: string;
@@ -1746,6 +1747,7 @@ export interface RegionListResult {
 }
 
 export interface RegionSummary {
+  provider?: string;
   region: string;
   displayName: string;
   endpointHost: string;
@@ -2187,6 +2189,7 @@ export interface ShellState {
 }
 
 export interface SignInRequest {
+  provider?: string;
   accessKey: string;
   secretKey: string;
   securityToken?: string;

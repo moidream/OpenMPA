@@ -20,9 +20,14 @@ const taskVM = (task: NativeTask): ScheduleVM => ({
     ...task.schedule,
     intervalSeconds: task.schedule.intervalSeconds ?? undefined,
   },
-  timezone: task.schedule.timezone || 'UTC',
+  timezone: task.schedule.timezone || 'Asia/Shanghai',
   nextRun: task.nextRunAt ?? undefined,
   status: task.lastRunStatus ?? undefined,
+  lastRun: task.lastRunAt ?? undefined,
+  runningAt: task.runningAt ?? undefined,
+  createdAt: task.createdAt,
+  jitterSeconds: task.jitterSeconds,
+  timeoutSeconds: task.timeoutSeconds,
   delivery: task.delivery,
 });
 const config = (task: Pick<ScheduleVM, 'schedule' | 'timezone'>) => ({
@@ -75,6 +80,7 @@ export function desktopFeatures(): Pick<
         ).items,
       list: async (connectionEpoch) => {
         const all: NativeTask[] = [];
+        let overview;
         let offset = 0;
         for (let page = 0; page < 100; page++) {
           const value = unwrap(
@@ -85,8 +91,20 @@ export function desktopFeatures(): Pick<
               offset,
             }),
           );
+          if (page === 0 && value.countAvailable) overview = value.overview;
           all.push(...value.items);
-          if (value.hasMore === false) break;
+          if (value.hasMore === false)
+            return {
+              items: [
+                ...new Map(all.map((task) => [task.id, taskVM(task)])).values(),
+              ],
+              overview: overview
+                ? {
+                    executionCount: overview.executionCount ?? undefined,
+                    successRate: overview.successRate ?? undefined,
+                  }
+                : undefined,
+            };
           if (value.hasMore === undefined)
             throw new LocalizedError(
               localized((m) =>
@@ -100,7 +118,9 @@ export function desktopFeatures(): Pick<
             );
           offset = next;
         }
-        return all.map(taskVM);
+        throw new LocalizedError(
+          localized((m) => m.scheduleDirectoryTooLarge()),
+        );
       },
       read: async (connectionEpoch, taskId) => {
         const task = unwrap(
@@ -128,6 +148,9 @@ export function desktopFeatures(): Pick<
             error: run.errorCode ?? undefined,
             sessionId: run.sessionId ?? undefined,
             invocationId: run.invocationId ?? undefined,
+            scheduledAt: run.scheduledAt,
+            finishedAt: run.finishedAt ?? undefined,
+            durationMs: run.durationMs ?? undefined,
           })),
         };
       },
@@ -148,6 +171,9 @@ export function desktopFeatures(): Pick<
             error: run.errorCode ?? undefined,
             sessionId: run.sessionId ?? undefined,
             invocationId: run.invocationId ?? undefined,
+            scheduledAt: run.scheduledAt,
+            finishedAt: run.finishedAt ?? undefined,
+            durationMs: run.durationMs ?? undefined,
           })),
         };
       },
@@ -162,6 +188,8 @@ export function desktopFeatures(): Pick<
           enabled: task.enabled,
           schedule: config(task),
           delivery: task.delivery,
+          jitterSeconds: task.jitterSeconds,
+          timeoutSeconds: task.timeoutSeconds,
         };
         if (
           pendingCreate &&
@@ -209,6 +237,8 @@ export function desktopFeatures(): Pick<
               enabled: task.enabled,
               schedule: config(task),
               delivery: task.delivery,
+              jitterSeconds: task.jitterSeconds,
+              timeoutSeconds: task.timeoutSeconds,
             }),
           ).task,
         ),

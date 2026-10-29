@@ -242,9 +242,14 @@ function DesktopAppContent({ services }: { services: DesktopServices }) {
           <DesktopKnowledge connection={connection} sessions={state.sessions} />
         ) : view === 'tasks' ? (
           <DesktopSchedules
+            key={`schedules:${connection?.epoch}:${connection?.scope}`}
             services={services}
             connection={connection}
             sessions={state.sessions}
+            onConfigure={() => {
+              setSettingsSection('Authentication');
+              navigate('settings');
+            }}
           />
         ) : (
           <div className="chat-workspace">

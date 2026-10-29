@@ -36,7 +36,7 @@ from veadk.integrations.mpa.managed.tasks import CreationTasks
 from veadk.integrations.mpa.managed.tasks import owner_key
 from veadk.integrations.mpa.managed.tasks import STAGES
 
-REGIONS = {"cn-beijing", "cn-shanghai"}
+REGIONS = {"volcengine": {"cn-beijing", "cn-shanghai"}, "byteplus": {"ap-southeast-1"}}
 ACTIVE = {"running", "queued", "pending", "starting", "cancelling", "stopping", "pausing", "paused", "resuming"}
 IDENTIFIER = re.compile(r"[A-Za-z0-9_-]{1,128}\Z")
 _delete_phase = ContextVar("desktop_delete_phase", default=("checking", "preview_delete"))
@@ -172,6 +172,9 @@ class DesktopCreationTasks(CreationTasks):
                 END;
             """)
 
+    def command(self):
+        return [sys.executable, "-I", str(Path(__file__).with_name("creation_runner.py"))]
+
     def get(self, owner, task_id):
         value = super().get(owner, task_id)
         with self.db() as db:
@@ -196,17 +199,20 @@ class DesktopCreationTasks(CreationTasks):
 
 
 class Engine:
-    def __init__(self, account: str, owner: str, directory: Path, *, cloud_factory=None,
+    def __init__(self, account: str, owner: str, directory: Path, *, provider="volcengine", cloud_factory=None,
                  runtime_client=None, cleanup=None, creations=None):
+        if provider not in REGIONS:
+            raise LifecycleError("invalidInput", 400)
+        self.provider = provider
         self.account, self.owner = account, owner
         self.directory = directory
         directory.mkdir(mode=0o700, parents=True, exist_ok=True)
         os.chmod(directory, 0o700)
         self.creations = creations or DesktopCreationTasks(directory / "creations.sqlite3")
         self.app = FastAPI()
-        mount_mpa_creation_routes(self.app, owner=lambda _request: owner, service=self.creations)
+        mount_mpa_creation_routes(self.app, owner=lambda _request: owner, service=self.creations, provider=provider)
         self.http = httpx.AsyncClient(transport=httpx.ASGITransport(app=self.app), base_url="http://engine")
-        self.cloud_factory = cloud_factory or (lambda region: DeletionCloud(region=region, credential_file=""))
+        self.cloud_factory = cloud_factory or (lambda region: DeletionCloud(region=region, credential_file="", provider=provider))
         self.runtime = runtime_client or MpaRuntimeClient()
         self.cleanup = cleanup or diagnostic_cleanup
         self.deleting: dict[str, asyncio.Task] = {}
@@ -226,8 +232,8 @@ class Engine:
         return contextlib.closing(sqlite3.connect(self.dbpath, isolation_level=None))
 
     async def dispatch(self, operation: str, body: dict) -> Any:
-        region = body.get("region", "cn-beijing")
-        if region not in REGIONS:
+        region = body.get("region", "ap-southeast-1" if self.provider == "byteplus" else "cn-beijing")
+        if region not in REGIONS[self.provider]:
             raise LifecycleError("invalidInput", 400)
         creation = {
             "config": ("GET", f"/web/mpa-creation/config?region={region}"),
@@ -277,7 +283,7 @@ class Engine:
 
     async def target(self, body):
         runtime_id, region = body.get("runtimeId", ""), body.get("region", "")
-        if not IDENTIFIER.fullmatch(runtime_id) or region not in REGIONS:
+        if not IDENTIFIER.fullmatch(runtime_id) or region not in REGIONS[self.provider]:
             raise LifecycleError("invalidInput", 400)
         cloud = self.cloud_factory(region)
         with deletion_step("checking", "get_caller_identity"):
@@ -472,9 +478,15 @@ async def serve():
     logging.disable(logging.CRITICAL)
     initial = json.loads(await asyncio.to_thread(sys.stdin.readline))
     credentials = initial.pop("credentials")
-    for name, value in zip(("VOLCENGINE_ACCESS_KEY", "VOLCENGINE_SECRET_KEY", "VOLCENGINE_SESSION_TOKEN"), credentials, strict=True):
+    provider = initial.get("provider") or "volcengine"
+    if provider not in REGIONS:
+        raise LifecycleError("invalidInput", 400)
+    prefix = "BYTEPLUS" if provider == "byteplus" else "VOLCENGINE"
+    os.environ["CLOUD_PROVIDER"] = provider
+    os.environ["AGENTKIT_CLOUD_PROVIDER"] = provider
+    for name, value in zip(tuple(prefix + suffix for suffix in ("_ACCESS_KEY", "_SECRET_KEY", "_SESSION_TOKEN")), credentials, strict=True):
         os.environ[name] = value
-    engine = Engine(initial["account"], initial["owner"], Path(initial["directory"]))
+    engine = Engine(initial["account"], initial["owner"], Path(initial["directory"]), provider=provider)
     pending: set[asyncio.Task] = set()
 
     def emit(value):

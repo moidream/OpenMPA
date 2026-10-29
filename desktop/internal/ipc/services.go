@@ -47,7 +47,7 @@ func (p *Platform) Status() dto.PlatformStateResult {
 	return dto.PlatformStateResult{OK: true, Value: &out}
 }
 func (p *Platform) Regions() dto.RegionListResult {
-	out := dto.RegionList{Regions: cloud.Regions()}
+	out := dto.RegionList{Regions: cloud.AllRegions()}
 	return dto.RegionListResult{OK: true, Value: &out}
 }
 
@@ -85,7 +85,7 @@ func (p *Platform) SaveVault(ctx context.Context, r dto.VaultPassphraseRequest) 
 	passphrase := []byte(r.Passphrase)
 	r.Passphrase = ""
 	defer clear(passphrase)
-	payload := vault.Payload{AccessKey: credential.AccessKey, SecretKey: credential.SecretKey, SecurityToken: credential.Token, ExpiresAt: credential.ExpiresAt}
+	payload := vault.Payload{Provider: state.Provider, AccessKey: credential.AccessKey, SecretKey: credential.SecretKey, SecurityToken: credential.Token, ExpiresAt: credential.ExpiresAt}
 	err := p.Vault.Save(ctx, passphrase, payload, state.Principal.AccountID, state.Region)
 	payload = vault.Payload{}
 	if err != nil {
@@ -120,6 +120,7 @@ func (p *Platform) UnlockVault(ctx context.Context, r dto.VaultPassphraseRequest
 		}
 	}
 	state, signInError := p.Cloud.SignIn(ctx, dto.SignInRequest{
+		Provider:      payload.Provider,
 		Region:        record.Region,
 		AccessKey:     payload.AccessKey,
 		SecretKey:     payload.SecretKey,

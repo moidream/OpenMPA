@@ -46,6 +46,7 @@ var (
 
 // Payload is the plaintext inside the encrypted envelope.
 type Payload struct {
+	Provider      string `json:"provider,omitempty"`
 	AccessKey     string `json:"accessKey"`
 	SecretKey     string `json:"secretKey"`
 	SecurityToken string `json:"securityToken,omitempty"`
@@ -117,7 +118,7 @@ func validPassphrase(passphrase []byte) bool {
 }
 
 func validPayload(p Payload) bool {
-	return p.AccessKey != "" && p.SecretKey != "" &&
+	return (p.Provider == "" || p.Provider == "volcengine" || p.Provider == "byteplus") && p.AccessKey != "" && p.SecretKey != "" &&
 		len(p.AccessKey) <= 2048 && len(p.SecretKey) <= 2048 &&
 		len(p.SecurityToken) <= 16384 && len(p.ExpiresAt) <= 64 &&
 		!strings.ContainsAny(p.AccessKey+p.SecretKey+p.SecurityToken+p.ExpiresAt, "\x00\r\n")

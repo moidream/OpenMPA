@@ -18,7 +18,7 @@ import (
 const APIVersion = "2025-10-30"
 const ArkAPIVersion = "2024-01-01"
 
-type Credentials struct{ AccessKey, SecretKey, Token, ExpiresAt string }
+type Credentials struct{ AccessKey, SecretKey, Token, ExpiresAt, Provider string }
 type Client struct {
 	mu         sync.RWMutex
 	credential Credentials
@@ -35,19 +35,7 @@ type Client struct {
 }
 
 func New() *Client {
-	return &Client{transport: http.DefaultTransport, endpoint: func(service, region string) string {
-		if service == "sts" {
-			return "https://sts.volcengineapi.com"
-		}
-		if service == "ark" || service == "vefaas" {
-			return "https://open.volcengineapi.com"
-		}
-		if service == "ark" {
-			return "https://ark." + region + ".volcengineapi.com"
-		}
-		endpoint, _ := AgentKitEndpoint(region)
-		return endpoint
-	}}
+	return &Client{transport: http.DefaultTransport}
 }
 func (c *Client) State() dto.PlatformState {
 	c.mu.RLock()
@@ -99,9 +87,11 @@ func AgentKitEndpoint(region string) (string, bool) {
 	}
 	return "", false
 }
-func ValidRegion(region string) bool { _, ok := AgentKitEndpoint(region); return ok }
+func ValidRegion(region string) bool {
+	return ValidProviderRegion("volcengine", region) || ValidProviderRegion("byteplus", region)
+}
 func (c *Client) SignIn(ctx context.Context, r dto.SignInRequest) (dto.PlatformState, *dto.SafeError) {
-	if !ValidRegion(r.Region) || r.AccessKey == "" || r.SecretKey == "" || len(r.AccessKey) > 2048 || len(r.SecretKey) > 2048 || len(r.SecurityToken) > 16384 {
+	if !ValidProviderRegion(r.Provider, r.Region) || r.AccessKey == "" || r.SecretKey == "" || len(r.AccessKey) > 2048 || len(r.SecretKey) > 2048 || len(r.SecurityToken) > 16384 {
 		return dto.PlatformState{}, dto.Failure("invalidInput", "platform", "never", 0)
 	}
 	if r.SecurityToken != "" && r.ExpiresAt != "" {
@@ -110,7 +100,8 @@ func (c *Client) SignIn(ctx context.Context, r dto.SignInRequest) (dto.PlatformS
 			return dto.PlatformState{}, dto.Failure("authRequired", "platform", "reauthenticate", 0)
 		}
 	}
-	cred := Credentials{r.AccessKey, r.SecretKey, r.SecurityToken, r.ExpiresAt}
+	provider := NormalizeProvider(r.Provider)
+	cred := Credentials{AccessKey: r.AccessKey, SecretKey: r.SecretKey, Token: r.SecurityToken, ExpiresAt: r.ExpiresAt, Provider: provider}
 	var identity struct {
 		AccountID    identifier `json:"AccountId"`
 		IdentityType string     `json:"IdentityType"`
@@ -127,7 +118,7 @@ func (c *Client) SignIn(ctx context.Context, r dto.SignInRequest) (dto.PlatformS
 	principalID := string(identity.UserID)
 	if principalID == "" {
 		var e error
-		principalID, e = c.profiles.ID(string(identity.AccountID), identity.IdentityType, r.AccessKey)
+		principalID, e = c.profiles.ID(providerScopeAccount(provider, string(identity.AccountID)), identity.IdentityType, r.AccessKey)
 		if e != nil {
 			return dto.PlatformState{}, dto.Failure("profilePersistenceFailed", "platform", "never", 0)
 		}
@@ -138,7 +129,7 @@ func (c *Client) SignIn(ctx context.Context, r dto.SignInRequest) (dto.PlatformS
 		return dto.PlatformState{}, dto.Failure("staleConnection", "platform", "reload", 0)
 	}
 	c.credential = cred
-	c.state = dto.PlatformState{SignedIn: true, HasCredential: true, ExpiresAt: r.ExpiresAt, Region: r.Region, Epoch: expected + 1, Principal: &dto.Principal{AccountID: string(identity.AccountID), IdentityType: identity.IdentityType, CloudPrincipalID: principalID, Scope: string(identity.AccountID) + "/" + identity.IdentityType + "/" + principalID}}
+	c.state = dto.PlatformState{Provider: provider, SignedIn: true, HasCredential: true, ExpiresAt: r.ExpiresAt, Region: r.Region, Epoch: expected + 1, Principal: &dto.Principal{AccountID: string(identity.AccountID), IdentityType: identity.IdentityType, CloudPrincipalID: principalID, Scope: providerScopeAccount(provider, string(identity.AccountID)) + "/" + identity.IdentityType + "/" + principalID}}
 	return c.state, nil
 }
 func (c *Client) snapshot() (Credentials, uint64, *dto.SafeError) {
@@ -215,7 +206,17 @@ func (c *Client) call(ctx context.Context, cred Credentials, service, region, ac
 	if service == "ark" {
 		version = "2024-01-01"
 	}
-	u, _ := url.Parse(c.endpoint(service, region))
+	if !ValidProviderRegion(cred.Provider, region) {
+		return dto.Failure("invalidInput", "platform", "never", 0)
+	}
+	endpoint := providerEndpoint(cred.Provider, service, region)
+	if c.endpoint != nil {
+		endpoint = c.endpoint(service, region)
+	}
+	u, parseErr := url.Parse(endpoint)
+	if parseErr != nil || u.Host == "" {
+		return dto.Failure("invalidInput", "platform", "never", 0)
+	}
 	q := u.Query()
 	q.Set("Action", action)
 	q.Set("Version", version)

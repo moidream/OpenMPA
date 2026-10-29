@@ -15,7 +15,7 @@ export function SettingsAccountForm(
     setNotice,
     loadVaultStatus,
     busy,
-    regions,
+    accountRegions,
   } = props;
   return (
     <form
@@ -28,6 +28,7 @@ export function SettingsAccountForm(
           if (generation.current !== current) return;
           setPlatform(value);
           setCredentials({
+            provider: credentials.provider,
             accessKey: '',
             secretKey: '',
             securityToken: '',
@@ -39,6 +40,29 @@ export function SettingsAccountForm(
         });
       }}
     >
+      <label>
+        {m.cloudProvider()}
+        <select
+          aria-label={m.cloudProvider()}
+          disabled={busy}
+          value={credentials.provider}
+          onChange={(event) =>
+            setCredentials({
+              provider: event.target.value,
+              region:
+                event.target.value === 'byteplus'
+                  ? 'ap-southeast-1'
+                  : 'cn-beijing',
+              accessKey: '',
+              secretKey: '',
+              securityToken: '',
+            })
+          }
+        >
+          <option value="volcengine">{m.providerVolcengine()}</option>
+          <option value="byteplus">BytePlus</option>
+        </select>
+      </label>
       <label>
         {m.accessKey()}
         <input
@@ -86,19 +110,22 @@ export function SettingsAccountForm(
       <label>
         {m.region()}
         <select
+          aria-label={m.region()}
           required
           value={credentials.region}
           onChange={(event) =>
             setCredentials({ ...credentials, region: event.target.value })
           }
         >
-          {regions.map((item) => (
+          {accountRegions.map((item) => (
             <option key={item.id} value={item.id}>
               {item.id === 'cn-beijing'
                 ? m.settingsRegionBeijing()
                 : item.id === 'cn-shanghai'
                   ? m.settingsRegionShanghai()
-                  : item.name}{' '}
+                  : item.id === 'ap-southeast-1'
+                    ? m.settingsRegionSingapore()
+                    : item.name}{' '}
               ({item.id})
             </option>
           ))}

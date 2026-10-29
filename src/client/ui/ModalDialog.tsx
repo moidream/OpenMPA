@@ -32,6 +32,8 @@ export function ModalDialog({
   closeLabel?: string;
 }) {
   const card = useRef<HTMLElement>(null);
+  const close = useRef(onClose);
+  close.current = onClose;
   const titleId = useId();
   const descriptionId = useId();
   useLayoutEffect(() => {
@@ -52,10 +54,25 @@ export function ModalDialog({
     for (const { item } of background) item.inert = true;
     const overflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
+    // Disabling the focused submit button during an async operation can move
+    // focus to body. Escape must still dismiss the topmost dialog in that case.
+    const escape = (event: globalThis.KeyboardEvent) => {
+      if (
+        event.key === 'Escape' &&
+        !event.defaultPrevented &&
+        !event.isComposing &&
+        [...document.querySelectorAll('.ui-modal-dialog')].at(-1) === node
+      ) {
+        event.preventDefault();
+        close.current();
+      }
+    };
+    document.addEventListener('keydown', escape);
     // Resolve focus before paint. Async content must not move focus again or
     // temporarily focus the close button while the form is loading.
     (preferred ?? node).focus({ preventScroll: true });
     return () => {
+      document.removeEventListener('keydown', escape);
       for (const { item, inert } of background) item.inert = inert;
       document.body.style.overflow = overflow;
       if (previous instanceof HTMLElement && previous.isConnected)

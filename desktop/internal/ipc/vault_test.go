@@ -141,3 +141,30 @@ func TestVaultStatusProjectsNoSecrets(t *testing.T) {
 		}
 	}
 }
+
+func TestBytePlusVaultPreservesProviderAndLegacyPayloadStillUnlocks(t *testing.T) {
+	p, service, _, _ := vaultPlatform(t)
+	ctx := context.Background()
+	state := p.SignIn(ctx, dto.SignInRequest{Provider: "byteplus", Region: "ap-southeast-1", AccessKey: "AK_FIXTURE", SecretKey: "SK_FIXTURE"})
+	if !state.OK {
+		t.Fatal(state.Error)
+	}
+	pass := dto.VaultPassphraseRequest{Passphrase: "correct horse battery"}
+	if saved := p.SaveVault(ctx, pass); !saved.OK {
+		t.Fatal(saved.Error)
+	}
+	p.SignOut()
+	restored := p.UnlockVault(ctx, pass)
+	if !restored.OK || restored.Value.Provider != "byteplus" || restored.Value.Principal.Scope != state.Value.Principal.Scope {
+		t.Fatalf("provider lost: %+v", restored)
+	}
+	// Existing vaults have no provider property in their encrypted payload.
+	if err := service.Save(ctx, []byte(pass.Passphrase), vault.Payload{AccessKey: "AK_FIXTURE", SecretKey: "SK_FIXTURE"}, "account-one", "cn-beijing"); err != nil {
+		t.Fatal(err)
+	}
+	p.SignOut()
+	legacy := p.UnlockVault(ctx, pass)
+	if !legacy.OK || legacy.Value.Provider != "volcengine" || legacy.Value.Principal.Scope != "account-one/User/user-one" {
+		t.Fatalf("legacy vault broken: %+v", legacy)
+	}
+}

@@ -142,9 +142,14 @@ it('supports repeated stages, configured skips and terminal success without a ru
 });
 it.each([
   ['ExceededQuota.Tool', 'quota'],
+  ['QuotaExceed', 'quota'],
+  ['QuotaExceed.Resource', 'quota'],
+  ['QuotaExceeded.Tool', 'quota'],
+  ['QuotaExceed.EndpointEachVpc', 'vpcEndpointQuota'],
   ['AccessDenied.Tool', 'permission'],
   ['DuplicateName.Tool', 'nameConflict'],
   ['PostgreSQL.28P01', 'databaseAuthentication'],
+  ['PostgreSQL.28000', 'databaseAuthentication'],
   ['PostgreSQL.42501', 'databasePermission'],
 ])('matches Studio reason for %s', (errorCode, reason) => {
   expect(
@@ -203,6 +208,95 @@ it('shows and copies the localized failure cause with structured cloud details',
   );
   expect(JSON.stringify(renderer!.toJSON())).toContain(m.mpaFailureCopied());
 });
+it.each(['en', 'zh-Hans'] as const)(
+  'shows and copies the recovered VPC quota error in %s',
+  async (language) => {
+    vi.stubGlobal('mygo', { locale: language });
+    const localized = messagesIn(language);
+    const writeText = vi.fn(async () => {});
+    vi.stubGlobal('navigator', { clipboard: { writeText } });
+    const recovered = {
+      ...diagnostic,
+      stage: 'verifying',
+      operation: 'wait_runtime',
+      category: 'resource_failed',
+      errorCode: 'QuotaExceed.EndpointEachVpc',
+      exceptionType: 'RuntimeError',
+      httpStatus: undefined,
+    };
+    await act(async () => {
+      renderer = create(
+        <MpaCreationDiagnostic
+          task={{
+            ...task,
+            state: 'failed',
+            stage: 'verifying',
+            latestDiagnostic: recovered,
+          }}
+        />,
+      );
+    });
+    const text = JSON.stringify(renderer!.toJSON());
+    expect(text).toContain(localized.mpaFailureReasonVpcEndpointQuota());
+    expect(text).toContain(recovered.errorCode);
+    expect(text).toContain(recovered.requestId);
+    expect(text).not.toContain(localized.mpaFailureReasonResourceFailed());
+    await act(async () => renderer!.root.findByType('button').props.onClick());
+    expect(writeText).toHaveBeenCalledWith(
+      expect.stringContaining(recovered.errorCode),
+    );
+    expect(writeText).toHaveBeenCalledWith(
+      expect.stringContaining(recovered.requestId),
+    );
+  },
+);
+it.each(['en', 'zh-Hans'] as const)(
+  'shows recovered errors for Worker, network, gateway and database in %s',
+  async (language) => {
+    vi.stubGlobal('mygo', { locale: language });
+    const localized = messagesIn(language);
+    for (const [stage, operation, errorCode] of [
+      ['worker', 'worker_state', 'ImagePullFailed'],
+      ['network', 'describe_subnet_attributes', 'InsufficientSubnetCapacity'],
+      ['gateway', 'GetGateway', 'GatewayProvisioningFailed'],
+      [
+        'admin_workspace',
+        'aidap_describe_workspace_detail',
+        'WorkspaceCreateFailed',
+      ],
+      ['business_workspace', 'aidap_describe_computes', 'ComputeCreateFailed'],
+    ]) {
+      const recovered = {
+        ...diagnostic,
+        stage,
+        operation,
+        category: 'resource_failed',
+        errorCode,
+      };
+      await act(async () => {
+        renderer?.unmount();
+        renderer = create(
+          <MpaCreationDiagnostic
+            task={{
+              ...task,
+              state: 'failed',
+              stage,
+              latestDiagnostic: recovered,
+            }}
+          />,
+        );
+      });
+      const text = JSON.stringify(renderer!.toJSON());
+      expect(text).toContain(
+        localized.mpaFailureReasonResourceFailedWithDetails(),
+      );
+      expect(text).toContain(errorCode);
+      expect(text).toContain(recovered.requestId);
+      expect(text).toContain(operation);
+      expect(text).not.toContain(localized.mpaFailureReasonResourceFailed());
+    }
+  },
+);
 it('does not misattribute an earlier retry diagnostic to a later failure', async () => {
   await act(async () => {
     renderer = create(

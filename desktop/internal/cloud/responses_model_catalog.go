@@ -32,7 +32,7 @@ func (c *Client) ModelCatalog(ctx context.Context) (dto.ModelCatalog, *dto.SafeE
 	if e != nil {
 		return dto.ModelCatalog{}, e
 	}
-	key := arkControlRegion + "|" + strconv.FormatUint(state.Epoch, 10)
+	key := modelRegion(cred.Provider) + "|" + strconv.FormatUint(state.Epoch, 10)
 	if state.Principal != nil {
 		key = state.Principal.Scope + "|" + key
 	}
@@ -53,7 +53,7 @@ func (c *Client) ModelCatalog(ctx context.Context) (dto.ModelCatalog, *dto.SafeE
 			// One caller closing a dialog must not cancel the shared catalog load.
 			queryCtx, cancel := context.WithTimeout(context.Background(), 45*time.Second)
 			defer cancel()
-			catalog, failure := c.fetchModelCatalog(queryCtx, cred)
+			catalog, failure := c.fetchModelCatalog(queryCtx, cred, state.Epoch)
 			c.modelMu.Lock()
 			defer c.modelMu.Unlock()
 			if c.Epoch() != state.Epoch {
@@ -79,8 +79,8 @@ func (c *Client) ModelCatalog(ctx context.Context) (dto.ModelCatalog, *dto.SafeE
 	}
 }
 
-func (c *Client) fetchModelCatalog(ctx context.Context, cred Credentials) (dto.ModelCatalog, *dto.SafeError) {
-	enabled, err := c.enabledFoundationModels(ctx, cred, arkControlRegion)
+func (c *Client) fetchModelCatalog(ctx context.Context, cred Credentials, epoch uint64) (dto.ModelCatalog, *dto.SafeError) {
+	enabled, err := c.enabledFoundationModels(ctx, cred, modelRegion(cred.Provider))
 	if err != nil {
 		return dto.ModelCatalog{}, err
 	}
@@ -92,7 +92,7 @@ func (c *Client) fetchModelCatalog(ctx context.Context, cred Credentials) (dto.M
 		names = append(names, name)
 	}
 	sort.Strings(names)
-	versions, err := c.foundationModels(ctx, cred, arkControlRegion, names)
+	versions, err := c.foundationModels(ctx, cred, modelRegion(cred.Provider), names)
 	if err != nil {
 		return dto.ModelCatalog{}, err
 	}
@@ -100,7 +100,7 @@ func (c *Client) fetchModelCatalog(ctx context.Context, cred Credentials) (dto.M
 	for _, model := range versions {
 		primary[model.Name] = model.PrimaryVersion
 	}
-	accountModels, availabilityError := c.accountModelVersions(ctx)
+	accountModels, availabilityError := c.accountModelVersionsSnapshot(ctx, cred, epoch)
 	if availabilityError != nil {
 		return dto.ModelCatalog{}, availabilityError
 	}
@@ -198,7 +198,7 @@ func (c *Client) modelSupportsResponses(ctx context.Context, cred Credentials, m
 		Keys                   []string
 		PageNum, PageSize      int
 	}{model.Name, model.PrimaryVersion, []string{"api.responses.support"}, 1, 1000}
-	if e := c.call(ctx, cred, "ark", arkControlRegion, "ListModelMetaDatas", input, &out); e != nil {
+	if e := c.call(ctx, cred, "ark", modelRegion(cred.Provider), "ListModelMetaDatas", input, &out); e != nil {
 		// Ark returns Result:null for models without this metadata key (verified
 		// for the enabled 3D models). No positive capability means not eligible.
 		if e.Code == "missingResult" && e.HTTPStatus == 200 {

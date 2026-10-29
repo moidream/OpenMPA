@@ -66,6 +66,7 @@ export function SettingsRuntime({
         <label>
           {m.region()}
           <select
+            aria-label={m.region()}
             disabled={busy}
             value={region}
             onChange={(event) => {
@@ -83,7 +84,9 @@ export function SettingsRuntime({
                   ? m.settingsRegionBeijing()
                   : item.id === 'cn-shanghai'
                     ? m.settingsRegionShanghai()
-                    : item.name}{' '}
+                    : item.id === 'ap-southeast-1'
+                      ? m.settingsRegionSingapore()
+                      : item.name}{' '}
                 ({item.id})
               </option>
             ))}

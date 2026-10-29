@@ -99,6 +99,7 @@ type ScopeRequest struct {
 	ForceRefresh    bool   `json:"forceRefresh,omitempty"`
 }
 type SignInRequest struct {
+	Provider      string `json:"provider,omitempty"`
 	AccessKey     string `json:"accessKey"`
 	SecretKey     string `json:"secretKey"`
 	SecurityToken string `json:"securityToken,omitempty"`
@@ -112,6 +113,7 @@ type Principal struct {
 	Scope            string `json:"scope"`
 }
 type PlatformState struct {
+	Provider      string     `json:"provider,omitempty"`
 	SignedIn      bool       `json:"signedIn"`
 	HasCredential bool       `json:"hasCredential"`
 	ExpiresAt     string     `json:"expiresAt,omitempty"`
@@ -120,6 +122,7 @@ type PlatformState struct {
 	Principal     *Principal `json:"principal,omitempty"`
 }
 type RegionSummary struct {
+	Provider     string `json:"provider,omitempty"`
 	Region       string `json:"region"`
 	DisplayName  string `json:"displayName"`
 	EndpointHost string `json:"endpointHost"`

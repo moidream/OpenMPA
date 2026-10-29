@@ -18,7 +18,7 @@ it('shows the accepted server run immediately while historical indexing is still
   const trigger = vi.fn(async () => ({ id: 'server-run', status: 'Queued' }));
   const services = {
     schedules: {
-      list: async () => [task],
+      list: async () => ({ items: [task] }),
       read: async () => ({ task, runs: [], hasMore: false }),
       trigger,
     },

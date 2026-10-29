@@ -4872,6 +4872,10 @@ export interface Messages {
    */
   mpaFailureReasonQuota(): string;
   /**
+   * `目标 VPC 的私网连接终端节点数量已达上限。请提高配额，或清理确认不再使用的终端节点后重试部署。`
+   */
+  mpaFailureReasonVpcEndpointQuota(): string;
+  /**
    * `当前凭据没有执行该操作的权限，或凭据已失效。`
    */
   mpaFailureReasonPermission(): string;
@@ -4931,6 +4935,10 @@ export interface Messages {
    * `云端资源进入失败状态，未返回更详细的原因。`
    */
   mpaFailureReasonResourceFailed(): string;
+  /**
+   * `云端资源创建失败，已获取具体错误，请查看下方错误码和诊断详情。`
+   */
+  mpaFailureReasonResourceFailedWithDetails(): string;
   /**
    * `当前配置与已登记的创建配置不一致。`
    */
@@ -5003,6 +5011,306 @@ export interface Messages {
    * `错误位置`
    */
   mpaDeleteErrorSource(): string;
+  /**
+   * `任务目录过大，无法完整读取，请缩小任务范围。`
+   */
+  scheduleDirectoryTooLarge(): string;
+  /**
+   * `尚未执行`
+   */
+  scheduleNotRun(): string;
+  /**
+   * `执行停滞`
+   */
+  scheduleStuck(): string;
+  /**
+   * `执行超时`
+   */
+  scheduleTimedOut(): string;
+  /**
+   * `已跳过`
+   */
+  scheduleSkipped(): string;
+  /**
+   * `每 {seconds} 秒`
+   */
+  scheduleEverySeconds(seconds: string): string;
+  /**
+   * `周一`
+   */
+  scheduleMonday(): string;
+  /**
+   * `周二`
+   */
+  scheduleTuesday(): string;
+  /**
+   * `周三`
+   */
+  scheduleWednesday(): string;
+  /**
+   * `周四`
+   */
+  scheduleThursday(): string;
+  /**
+   * `周五`
+   */
+  scheduleFriday(): string;
+  /**
+   * `周六`
+   */
+  scheduleSaturday(): string;
+  /**
+   * `周日`
+   */
+  scheduleSunday(): string;
+  /**
+   * `展示当前用户在此 Runtime 中配置的任务，包括聊天中创建的任务。`
+   */
+  scheduleScopeHint(): string;
+  /**
+   * `列表`
+   */
+  scheduleListView(): string;
+  /**
+   * `日历`
+   */
+  scheduleCalendarView(): string;
+  /**
+   * `任务视图`
+   */
+  scheduleView(): string;
+  /**
+   * `全部执行状态`
+   */
+  scheduleAllStatuses(): string;
+  /**
+   * `上次执行`
+   */
+  scheduleLastRun(): string;
+  /**
+   * `最近执行状态`
+   */
+  scheduleLastStatus(): string;
+  /**
+   * `执行周期`
+   */
+  scheduleExecutionPlan(): string;
+  /**
+   * `下次执行`
+   */
+  scheduleNextRun(): string;
+  /**
+   * `执行 Agent`
+   */
+  scheduleAgent(): string;
+  /**
+   * `操作`
+   */
+  scheduleActions(): string;
+  /**
+   * `复制任务`
+   */
+  scheduleCopy(): string;
+  /**
+   * `{name}（副本）`
+   */
+  scheduleCopyName(name: string): string;
+  /**
+   * `共 {count} 个任务`
+   */
+  scheduleTaskCount(count: string): string;
+  /**
+   * `执行次数：{count}`
+   */
+  scheduleExecutionCount(count: string): string;
+  /**
+   * `成功率：{rate}%`
+   */
+  scheduleSuccessRate(rate: string): string;
+  /**
+   * `正在读取定时任务…`
+   */
+  scheduleLoading(): string;
+  /**
+   * `暂无定时任务`
+   */
+  scheduleEmptyTitle(): string;
+  /**
+   * `定时任务已保存。`
+   */
+  scheduleSaved(): string;
+  /**
+   * `定时任务已删除。`
+   */
+  scheduleDeleted(): string;
+  /**
+   * `定时任务已启用。`
+   */
+  scheduleEnabledNotice(): string;
+  /**
+   * `定时任务已暂停。`
+   */
+  scheduleDisabledNotice(): string;
+  /**
+   * `定时任务按用户隔离。请在身份认证设置中配置与创建任务时相同的用户身份，再刷新。`
+   */
+  scheduleIdentityHint(): string;
+  /**
+   * `此 Runtime 尚未提供定时任务接口，请检查 Runtime 镜像版本。`
+   */
+  scheduleUnsupported(): string;
+  /**
+   * `配置任务身份`
+   */
+  scheduleConfigureIdentity(): string;
+  /**
+   * `每次执行会发送任务内容给 Agent，并创建独立会话。关闭应用后仍会按计划运行。`
+   */
+  scheduleEditorHint(): string;
+  /**
+   * `留空使用当前用户的 Main 助手。`
+   */
+  scheduleAgentHint(): string;
+  /**
+   * `执行时间（设备时区）`
+   */
+  scheduleRunAtLocal(): string;
+  /**
+   * `请输入有效的 IANA 时区，例如 Asia/Shanghai。`
+   */
+  scheduleTimezoneInvalid(): string;
+  /**
+   * `请选择未来的执行时间。`
+   */
+  scheduleFutureTime(): string;
+  /**
+   * `间隔须为 30–31536000 的整数秒。`
+   */
+  scheduleIntervalInvalid(): string;
+  /**
+   * `请选择有效且不重复的星期或日期。`
+   */
+  scheduleDaysInvalid(): string;
+  /**
+   * `Cron 表达式需要 5 个字段，例如 0 9 * * *。`
+   */
+  scheduleCronInvalid(): string;
+  /**
+   * `请填写任务名称和任务内容。`
+   */
+  scheduleRequired(): string;
+  /**
+   * `请选择有效的执行时间。`
+   */
+  scheduleTimeInvalid(): string;
+  /**
+   * `启用任务`
+   */
+  scheduleEnabledField(): string;
+  /**
+   * `投递机器人`
+   */
+  scheduleBot(): string;
+  /**
+   * `请选择已启用的飞书机器人`
+   */
+  scheduleSelectBot(): string;
+  /**
+   * `请选择此机器人有权投递的群聊。`
+   */
+  scheduleSelectTarget(): string;
+  /**
+   * `删除“{name}”后将不再调度此任务。`
+   */
+  scheduleDeleteDescription(name: string): string;
+  /**
+   * `执行记录`
+   */
+  scheduleHistory(): string;
+  /**
+   * `暂无执行记录。`
+   */
+  scheduleNoHistory(): string;
+  /**
+   * `耗时`
+   */
+  scheduleDuration(): string;
+  /**
+   * `上个月`
+   */
+  scheduleMonthPrevious(): string;
+  /**
+   * `下个月`
+   */
+  scheduleMonthNext(): string;
+  /**
+   * `今天`
+   */
+  scheduleToday(): string;
+  /**
+   * `显示设备时区下的预计执行安排；复杂 Cron 仅显示服务端提供的下次执行时间。`
+   */
+  scheduleCalendarHint(): string;
+  /**
+   * `仅下次`
+   */
+  scheduleNextOnly(): string;
+  /**
+   * `{count} 次`
+   */
+  scheduleOccurrences(count: string): string;
+  /**
+   * `上一页`
+   */
+  schedulePreviousPage(): string;
+  /**
+   * `下一页`
+   */
+  scheduleNextPage(): string;
+  /**
+   * `第 {page} 页`
+   */
+  schedulePage(page: string): string;
+  /**
+   * `任务已被修改，请刷新后重新编辑。`
+   */
+  scheduleConflictHint(): string;
+  /**
+   * `还有 {count} 个任务`
+   */
+  scheduleMoreTasks(count: string): string;
+  /**
+   * `定时调度服务暂不可用，请检查 Runtime 状态后重试。`
+   */
+  scheduleSchedulerUnavailable(): string;
+  /**
+   * `定时任务数量已达上限，请清理不再使用的任务后重试。`
+   */
+  scheduleQuotaExceeded(): string;
+  /**
+   * `此任务已不存在，请关闭详情并刷新列表。`
+   */
+  scheduleTaskMissing(): string;
+  /**
+   * `云平台`
+   */
+  cloudProvider(): string;
+  /**
+   * `火山引擎`
+   */
+  providerVolcengine(): string;
+  /**
+   * `云账号`
+   */
+  cloudAccount(): string;
+  /**
+   * `BytePlus 账号`
+   */
+  byteplusAccount(): string;
+  /**
+   * `新加坡`
+   */
+  settingsRegionSingapore(): string;
 }
 
 const catalog = createCatalog<Messages>({
@@ -6230,6 +6538,7 @@ const catalog = createCatalog<Messages>({
     "mpaFailureReasonModelConfiguration": [],
     "mpaFailureReasonCreationUnconfirmed": [],
     "mpaFailureReasonQuota": [],
+    "mpaFailureReasonVpcEndpointQuota": [],
     "mpaFailureReasonPermission": [],
     "mpaFailureReasonNameConflict": [],
     "mpaFailureReasonDatabaseAuthentication": [],
@@ -6245,6 +6554,7 @@ const catalog = createCatalog<Messages>({
     "mpaFailureReasonMetadataPending": [],
     "mpaFailureReasonMetadataMissing": [],
     "mpaFailureReasonResourceFailed": [],
+    "mpaFailureReasonResourceFailedWithDetails": [],
     "mpaFailureReasonConfigurationChanged": [],
     "mpaFailureReasonDeploymentError": [],
     "mpaFailureReasonUnknown": [],
@@ -6263,6 +6573,81 @@ const catalog = createCatalog<Messages>({
     "mpaDeleteFailureUnknown": [],
     "mpaDeleteResourceHost": [],
     "mpaDeleteErrorSource": [],
+    "scheduleDirectoryTooLarge": [],
+    "scheduleNotRun": [],
+    "scheduleStuck": [],
+    "scheduleTimedOut": [],
+    "scheduleSkipped": [],
+    "scheduleEverySeconds": ["seconds"],
+    "scheduleMonday": [],
+    "scheduleTuesday": [],
+    "scheduleWednesday": [],
+    "scheduleThursday": [],
+    "scheduleFriday": [],
+    "scheduleSaturday": [],
+    "scheduleSunday": [],
+    "scheduleScopeHint": [],
+    "scheduleListView": [],
+    "scheduleCalendarView": [],
+    "scheduleView": [],
+    "scheduleAllStatuses": [],
+    "scheduleLastRun": [],
+    "scheduleLastStatus": [],
+    "scheduleExecutionPlan": [],
+    "scheduleNextRun": [],
+    "scheduleAgent": [],
+    "scheduleActions": [],
+    "scheduleCopy": [],
+    "scheduleCopyName": ["name"],
+    "scheduleTaskCount": ["count"],
+    "scheduleExecutionCount": ["count"],
+    "scheduleSuccessRate": ["rate"],
+    "scheduleLoading": [],
+    "scheduleEmptyTitle": [],
+    "scheduleSaved": [],
+    "scheduleDeleted": [],
+    "scheduleEnabledNotice": [],
+    "scheduleDisabledNotice": [],
+    "scheduleIdentityHint": [],
+    "scheduleUnsupported": [],
+    "scheduleConfigureIdentity": [],
+    "scheduleEditorHint": [],
+    "scheduleAgentHint": [],
+    "scheduleRunAtLocal": [],
+    "scheduleTimezoneInvalid": [],
+    "scheduleFutureTime": [],
+    "scheduleIntervalInvalid": [],
+    "scheduleDaysInvalid": [],
+    "scheduleCronInvalid": [],
+    "scheduleRequired": [],
+    "scheduleTimeInvalid": [],
+    "scheduleEnabledField": [],
+    "scheduleBot": [],
+    "scheduleSelectBot": [],
+    "scheduleSelectTarget": [],
+    "scheduleDeleteDescription": ["name"],
+    "scheduleHistory": [],
+    "scheduleNoHistory": [],
+    "scheduleDuration": [],
+    "scheduleMonthPrevious": [],
+    "scheduleMonthNext": [],
+    "scheduleToday": [],
+    "scheduleCalendarHint": [],
+    "scheduleNextOnly": [],
+    "scheduleOccurrences": ["count"],
+    "schedulePreviousPage": [],
+    "scheduleNextPage": [],
+    "schedulePage": ["page"],
+    "scheduleConflictHint": [],
+    "scheduleMoreTasks": ["count"],
+    "scheduleSchedulerUnavailable": [],
+    "scheduleQuotaExceeded": [],
+    "scheduleTaskMissing": [],
+    "cloudProvider": [],
+    "providerVolcengine": [],
+    "cloudAccount": [],
+    "byteplusAccount": [],
+    "settingsRegionSingapore": [],
   },
   messages: {
     "zh-Hans": {
@@ -7483,6 +7868,7 @@ const catalog = createCatalog<Messages>({
       "mpaFailureReasonModelConfiguration": "OpenViking 拒绝了模型调用配置。",
       "mpaFailureReasonCreationUnconfirmed": "OpenViking 创建结果尚未确认。",
       "mpaFailureReasonQuota": "该资源的配额已达到上限。",
+      "mpaFailureReasonVpcEndpointQuota": "目标 VPC 的私网连接终端节点数量已达上限。请提高配额，或清理确认不再使用的终端节点后重试部署。",
       "mpaFailureReasonPermission": "当前凭据没有执行该操作的权限，或凭据已失效。",
       "mpaFailureReasonNameConflict": "资源名称已被占用。",
       "mpaFailureReasonDatabaseAuthentication": "数据库连接认证失败。",
@@ -7498,6 +7884,7 @@ const catalog = createCatalog<Messages>({
       "mpaFailureReasonMetadataPending": "资源归属信息尚未就绪。",
       "mpaFailureReasonMetadataMissing": "缺少所需的资源归属信息。",
       "mpaFailureReasonResourceFailed": "云端资源进入失败状态，未返回更详细的原因。",
+      "mpaFailureReasonResourceFailedWithDetails": "云端资源创建失败，已获取具体错误，请查看下方错误码和诊断详情。",
       "mpaFailureReasonConfigurationChanged": "当前配置与已登记的创建配置不一致。",
       "mpaFailureReasonDeploymentError": "资源准备未完成，未提供可安全展示的详细原因。",
       "mpaFailureReasonUnknown": "本次创建失败，未提供可安全展示的详细原因。",
@@ -7516,6 +7903,81 @@ const catalog = createCatalog<Messages>({
       "mpaDeleteFailureUnknown": "删除检查或清理未完成，未返回进一步的详细原因。",
       "mpaDeleteResourceHost": "资源服务地址",
       "mpaDeleteErrorSource": "错误位置",
+      "scheduleDirectoryTooLarge": "任务目录过大，无法完整读取，请缩小任务范围。",
+      "scheduleNotRun": "尚未执行",
+      "scheduleStuck": "执行停滞",
+      "scheduleTimedOut": "执行超时",
+      "scheduleSkipped": "已跳过",
+      "scheduleEverySeconds": "每 {seconds} 秒",
+      "scheduleMonday": "周一",
+      "scheduleTuesday": "周二",
+      "scheduleWednesday": "周三",
+      "scheduleThursday": "周四",
+      "scheduleFriday": "周五",
+      "scheduleSaturday": "周六",
+      "scheduleSunday": "周日",
+      "scheduleScopeHint": "展示当前用户在此 Runtime 中配置的任务，包括聊天中创建的任务。",
+      "scheduleListView": "列表",
+      "scheduleCalendarView": "日历",
+      "scheduleView": "任务视图",
+      "scheduleAllStatuses": "全部执行状态",
+      "scheduleLastRun": "上次执行",
+      "scheduleLastStatus": "最近执行状态",
+      "scheduleExecutionPlan": "执行周期",
+      "scheduleNextRun": "下次执行",
+      "scheduleAgent": "执行 Agent",
+      "scheduleActions": "操作",
+      "scheduleCopy": "复制任务",
+      "scheduleCopyName": "{name}（副本）",
+      "scheduleTaskCount": "共 {count} 个任务",
+      "scheduleExecutionCount": "执行次数：{count}",
+      "scheduleSuccessRate": "成功率：{rate}%",
+      "scheduleLoading": "正在读取定时任务…",
+      "scheduleEmptyTitle": "暂无定时任务",
+      "scheduleSaved": "定时任务已保存。",
+      "scheduleDeleted": "定时任务已删除。",
+      "scheduleEnabledNotice": "定时任务已启用。",
+      "scheduleDisabledNotice": "定时任务已暂停。",
+      "scheduleIdentityHint": "定时任务按用户隔离。请在身份认证设置中配置与创建任务时相同的用户身份，再刷新。",
+      "scheduleUnsupported": "此 Runtime 尚未提供定时任务接口，请检查 Runtime 镜像版本。",
+      "scheduleConfigureIdentity": "配置任务身份",
+      "scheduleEditorHint": "每次执行会发送任务内容给 Agent，并创建独立会话。关闭应用后仍会按计划运行。",
+      "scheduleAgentHint": "留空使用当前用户的 Main 助手。",
+      "scheduleRunAtLocal": "执行时间（设备时区）",
+      "scheduleTimezoneInvalid": "请输入有效的 IANA 时区，例如 Asia/Shanghai。",
+      "scheduleFutureTime": "请选择未来的执行时间。",
+      "scheduleIntervalInvalid": "间隔须为 30–31536000 的整数秒。",
+      "scheduleDaysInvalid": "请选择有效且不重复的星期或日期。",
+      "scheduleCronInvalid": "Cron 表达式需要 5 个字段，例如 0 9 * * *。",
+      "scheduleRequired": "请填写任务名称和任务内容。",
+      "scheduleTimeInvalid": "请选择有效的执行时间。",
+      "scheduleEnabledField": "启用任务",
+      "scheduleBot": "投递机器人",
+      "scheduleSelectBot": "请选择已启用的飞书机器人",
+      "scheduleSelectTarget": "请选择此机器人有权投递的群聊。",
+      "scheduleDeleteDescription": "删除“{name}”后将不再调度此任务。",
+      "scheduleHistory": "执行记录",
+      "scheduleNoHistory": "暂无执行记录。",
+      "scheduleDuration": "耗时",
+      "scheduleMonthPrevious": "上个月",
+      "scheduleMonthNext": "下个月",
+      "scheduleToday": "今天",
+      "scheduleCalendarHint": "显示设备时区下的预计执行安排；复杂 Cron 仅显示服务端提供的下次执行时间。",
+      "scheduleNextOnly": "仅下次",
+      "scheduleOccurrences": "{count} 次",
+      "schedulePreviousPage": "上一页",
+      "scheduleNextPage": "下一页",
+      "schedulePage": "第 {page} 页",
+      "scheduleConflictHint": "任务已被修改，请刷新后重新编辑。",
+      "scheduleMoreTasks": "还有 {count} 个任务",
+      "scheduleSchedulerUnavailable": "定时调度服务暂不可用，请检查 Runtime 状态后重试。",
+      "scheduleQuotaExceeded": "定时任务数量已达上限，请清理不再使用的任务后重试。",
+      "scheduleTaskMissing": "此任务已不存在，请关闭详情并刷新列表。",
+      "cloudProvider": "云平台",
+      "providerVolcengine": "火山引擎",
+      "cloudAccount": "云账号",
+      "byteplusAccount": "BytePlus 账号",
+      "settingsRegionSingapore": "新加坡",
     },
     "en": {
       "settings": "Settings",
@@ -8735,6 +9197,7 @@ const catalog = createCatalog<Messages>({
       "mpaFailureReasonModelConfiguration": "OpenViking rejected the model configuration.",
       "mpaFailureReasonCreationUnconfirmed": "The OpenViking creation result is unconfirmed.",
       "mpaFailureReasonQuota": "The resource quota has been reached.",
+      "mpaFailureReasonVpcEndpointQuota": "The target VPC has reached its PrivateLink endpoint limit. Increase the quota or remove confirmed unused endpoints before retrying deployment.",
       "mpaFailureReasonPermission": "The current credentials do not authorize this operation or are no longer valid.",
       "mpaFailureReasonNameConflict": "The resource name is already in use.",
       "mpaFailureReasonDatabaseAuthentication": "Database authentication failed.",
@@ -8750,6 +9213,7 @@ const catalog = createCatalog<Messages>({
       "mpaFailureReasonMetadataPending": "Resource ownership metadata is not ready.",
       "mpaFailureReasonMetadataMissing": "Required resource ownership metadata is missing.",
       "mpaFailureReasonResourceFailed": "The cloud resource entered a failed state without further details.",
+      "mpaFailureReasonResourceFailedWithDetails": "Cloud resource creation failed. The specific error is available in the error code and diagnostic details below.",
       "mpaFailureReasonConfigurationChanged": "The current configuration differs from the registered creation configuration.",
       "mpaFailureReasonDeploymentError": "Resource preparation did not complete; no further safely displayable details are available.",
       "mpaFailureReasonUnknown": "Creation failed without further safely displayable details.",
@@ -8768,6 +9232,81 @@ const catalog = createCatalog<Messages>({
       "mpaDeleteFailureUnknown": "The deletion check or cleanup did not complete without further safe error details.",
       "mpaDeleteResourceHost": "Resource service host",
       "mpaDeleteErrorSource": "Error location",
+      "scheduleDirectoryTooLarge": "The task directory is too large to read completely.",
+      "scheduleNotRun": "Not run yet",
+      "scheduleStuck": "Stuck",
+      "scheduleTimedOut": "Timed out",
+      "scheduleSkipped": "Skipped",
+      "scheduleEverySeconds": "Every {seconds} seconds",
+      "scheduleMonday": "Mon",
+      "scheduleTuesday": "Tue",
+      "scheduleWednesday": "Wed",
+      "scheduleThursday": "Thu",
+      "scheduleFriday": "Fri",
+      "scheduleSaturday": "Sat",
+      "scheduleSunday": "Sun",
+      "scheduleScopeHint": "Tasks configured by the current user on this Runtime, including tasks created in chat.",
+      "scheduleListView": "List",
+      "scheduleCalendarView": "Calendar",
+      "scheduleView": "Task view",
+      "scheduleAllStatuses": "All run statuses",
+      "scheduleLastRun": "Last run",
+      "scheduleLastStatus": "Last run status",
+      "scheduleExecutionPlan": "Schedule",
+      "scheduleNextRun": "Next run",
+      "scheduleAgent": "Agent",
+      "scheduleActions": "Actions",
+      "scheduleCopy": "Duplicate task",
+      "scheduleCopyName": "{name} (copy)",
+      "scheduleTaskCount": "{count} tasks",
+      "scheduleExecutionCount": "Executions: {count}",
+      "scheduleSuccessRate": "Success rate: {rate}%",
+      "scheduleLoading": "Loading scheduled tasks…",
+      "scheduleEmptyTitle": "No scheduled tasks yet",
+      "scheduleSaved": "Scheduled task saved.",
+      "scheduleDeleted": "Scheduled task deleted.",
+      "scheduleEnabledNotice": "Scheduled task enabled.",
+      "scheduleDisabledNotice": "Scheduled task paused.",
+      "scheduleIdentityHint": "Tasks are scoped to a user. Configure the same identity used to create the tasks in Authentication settings, then refresh.",
+      "scheduleUnsupported": "This Runtime does not provide scheduled task APIs. Check its image version.",
+      "scheduleConfigureIdentity": "Configure task identity",
+      "scheduleEditorHint": "Each execution sends the prompt to the Agent in a separate session. Schedules continue after closing this app.",
+      "scheduleAgentHint": "Leave blank to use the current user’s Main assistant.",
+      "scheduleRunAtLocal": "Run at (device time zone)",
+      "scheduleTimezoneInvalid": "Enter a valid IANA time zone, such as Asia/Shanghai.",
+      "scheduleFutureTime": "Choose a future execution time.",
+      "scheduleIntervalInvalid": "The interval must be an integer from 30 to 31536000 seconds.",
+      "scheduleDaysInvalid": "Choose valid, non-duplicate weekdays or dates.",
+      "scheduleCronInvalid": "Use five Cron fields, for example 0 9 * * *.",
+      "scheduleRequired": "Enter a task name and prompt.",
+      "scheduleTimeInvalid": "Choose a valid execution time.",
+      "scheduleEnabledField": "Enable task",
+      "scheduleBot": "Delivery bot",
+      "scheduleSelectBot": "Choose an enabled Feishu bot",
+      "scheduleSelectTarget": "Choose a group this bot can deliver to.",
+      "scheduleDeleteDescription": "“{name}” will no longer be scheduled after deletion.",
+      "scheduleHistory": "Execution history",
+      "scheduleNoHistory": "No executions yet.",
+      "scheduleDuration": "Duration",
+      "scheduleMonthPrevious": "Previous month",
+      "scheduleMonthNext": "Next month",
+      "scheduleToday": "Today",
+      "scheduleCalendarHint": "Estimated occurrences in the device time zone. Complex Cron schedules show only the next run reported by the server.",
+      "scheduleNextOnly": "Next run only",
+      "scheduleOccurrences": "{count} runs",
+      "schedulePreviousPage": "Previous",
+      "scheduleNextPage": "Next",
+      "schedulePage": "Page {page}",
+      "scheduleConflictHint": "The task has changed. Refresh and edit it again.",
+      "scheduleMoreTasks": "{count} more tasks",
+      "scheduleSchedulerUnavailable": "The scheduler is unavailable. Check the Runtime and retry.",
+      "scheduleQuotaExceeded": "The scheduled task quota has been reached. Remove unused tasks and retry.",
+      "scheduleTaskMissing": "This task no longer exists. Close its details and refresh the list.",
+      "cloudProvider": "Cloud platform",
+      "providerVolcengine": "Volcengine",
+      "cloudAccount": "Cloud account",
+      "byteplusAccount": "BytePlus account",
+      "settingsRegionSingapore": "Singapore",
     },
   },
 });

@@ -18,6 +18,7 @@ const files = [
   'src/client/desktop/collaboration-page.css',
   'src/client/desktop/channel-page.css',
   'src/client/desktop/runtime-manager.css',
+  'src/client/desktop/schedule-page.css',
 ];
 const failures = [];
 const declared = declaredDesignTokens(

@@ -123,7 +123,7 @@ func (s *Service) engine(ctx context.Context, epoch uint64) (*engineProcess, *dt
 	if err = os.MkdirAll(accountPath, 0700); err != nil {
 		return nil, engineFailure()
 	}
-	process, failure := launchEngine(ctx, python, script, map[string]any{"account": state.Principal.AccountID, "owner": owner, "directory": accountPath, "credentials": []string{credential.AccessKey, credential.SecretKey, credential.Token}})
+	process, failure := launchEngine(ctx, python, script, map[string]any{"provider": state.Provider, "account": state.Principal.AccountID, "owner": owner, "directory": accountPath, "credentials": []string{credential.AccessKey, credential.SecretKey, credential.Token}})
 	if failure != nil {
 		return nil, failure
 	}
@@ -135,7 +135,7 @@ func (s *Service) engine(ctx context.Context, epoch uint64) (*engineProcess, *dt
 	return process, nil
 }
 func (s *Service) call(ctx context.Context, epoch uint64, region, operation string, body, output any) *dto.SafeError {
-	if !cloud.ValidRegion(region) {
+	if !cloud.ValidProviderRegion(s.cloud.State().Provider, region) {
 		return dto.Failure("invalidInput", "desktop", "never", 0)
 	}
 	raw, err := json.Marshal(body)

@@ -36,9 +36,12 @@ func (c *Client) ListMPATOSBuckets(ctx context.Context, expected uint64, region 
 	}
 	ctx, cancel := context.WithTimeout(ctx, 20*time.Second)
 	defer cancel()
+	if !ValidProviderRegion(credential.Provider, region) {
+		return nil, dto.Failure("invalidInput", "platform", "never", 0)
+	}
 	credentials := tos.NewStaticCredentials(credential.AccessKey, credential.SecretKey)
 	credentials.WithSecurityToken(credential.Token)
-	client, err := tos.NewClientV2("https://tos-"+region+".volces.com", tos.WithRegion(region), tos.WithCredentials(credentials), tos.WithMaxRetryCount(0), tos.WithHTTPTransport(c.transport))
+	client, err := tos.NewClientV2("https://tos-"+region+"."+storageDomain(credential.Provider), tos.WithRegion(region), tos.WithCredentials(credentials), tos.WithMaxRetryCount(0), tos.WithHTTPTransport(c.transport))
 	if err != nil {
 		return nil, dto.Failure("connectionFailure", "platform", "readOnly", 0)
 	}

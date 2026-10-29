@@ -58,13 +58,17 @@ func (c *Client) accountModelVersions(ctx context.Context) ([]arkModelVersion, *
 	if err != nil {
 		return nil, err
 	}
+	return c.accountModelVersionsSnapshot(ctx, cred, epoch)
+}
+
+func (c *Client) accountModelVersionsSnapshot(ctx context.Context, cred Credentials, epoch uint64) ([]arkModelVersion, *dto.SafeError) {
 	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
 	defer cancel()
 	action := func(name string, body, output any) *dto.SafeError {
 		if c.Epoch() != epoch {
 			return modelCatalogStale()
 		}
-		err := c.call(ctx, cred, "ark", arkCatalogRegion, name, body, output)
+		err := c.call(ctx, cred, "ark", modelRegion(cred.Provider), name, body, output)
 		if c.Epoch() != epoch {
 			return modelCatalogStale()
 		}
@@ -137,7 +141,7 @@ func (c *Client) accountModelVersions(ctx context.Context) ([]arkModelVersion, *
 	if strings.TrimSpace(raw.Key) == "" {
 		return nil, modelCatalogInvalid()
 	}
-	models, err := c.arkModelVersions(ctx, strings.TrimSpace(raw.Key))
+	models, err := c.arkModelVersionsForProvider(ctx, strings.TrimSpace(raw.Key), cred.Provider)
 	if c.Epoch() != epoch {
 		return nil, modelCatalogStale()
 	}
@@ -207,7 +211,10 @@ func (m arkModelVersion) supportsAgent() bool {
 	return false
 }
 func (c *Client) arkModelVersions(ctx context.Context, key string) ([]arkModelVersion, *dto.SafeError) {
-	req, e := http.NewRequestWithContext(ctx, http.MethodGet, "https://ark.cn-beijing.volces.com/api/v3/models", nil)
+	return c.arkModelVersionsForProvider(ctx, key, "volcengine")
+}
+func (c *Client) arkModelVersionsForProvider(ctx context.Context, key, provider string) ([]arkModelVersion, *dto.SafeError) {
+	req, e := http.NewRequestWithContext(ctx, http.MethodGet, modelBase(provider)+"/models", nil)
 	if e != nil {
 		return nil, modelCatalogInvalid()
 	}

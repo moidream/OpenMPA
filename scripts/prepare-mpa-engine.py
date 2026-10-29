@@ -22,7 +22,7 @@ def main():
     subprocess.run(["uv", "sync", "--locked", "--no-dev", "--no-install-project", "--project", str(PROJECT)], check=True, cwd=ROOT)
     python = PROJECT / ".venv/bin/python"
     metadata = json.loads(run(str(python), "-c", "import sys,sysconfig,json,platform; print(json.dumps({'base':sys.base_prefix,'site':sysconfig.get_paths()['purelib'],'platform':platform.system(),'arch':platform.machine()}))"))
-    sources = {name: (PROJECT / name).read_bytes() for name in ("pyproject.toml", "uv.lock", "engine.py")}
+    sources = {name: (PROJECT / name).read_bytes() for name in ("pyproject.toml", "uv.lock", "engine.py", "creation_runner.py")}
     digest = hashlib.sha256(Path(__file__).read_bytes())
     for content in sources.values():
         digest.update(content)
@@ -35,6 +35,7 @@ def main():
     with tempfile.TemporaryDirectory(prefix="mpa-engine-", dir=OUTPUT.parent) as temporary:
         destination = Path(temporary)
         (destination / "engine.py").write_bytes(sources["engine.py"])
+        (destination / "creation_runner.py").write_bytes(sources["creation_runner.py"])
         (destination / "manifest.json").write_text(json.dumps({"veadk": "1.1.19", "python": "3.12", "platform": metadata["platform"], "architecture": metadata["arch"], "fingerprint": digest.hexdigest(), "sdkZip": True}))
         site = Path(metadata["site"])
         # Generated SDK service modules are pure Python with no package-relative
@@ -92,6 +93,7 @@ def main():
             for name in ("openmpa-sdk.zip", "openmpa-sdk.pth"):
                 archive.add(destination / name, arcname="python/lib/python3.12/site-packages/" + name)
             archive.add(destination / "engine.py", arcname="engine.py")
+            archive.add(destination / "creation_runner.py", arcname="creation_runner.py")
             archive.add(destination / "manifest.json", arcname="manifest.json")
         os.replace(destination / "engine.tar.gz", OUTPUT)
     stamp.write_text(digest.hexdigest())

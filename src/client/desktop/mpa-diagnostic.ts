@@ -104,7 +104,12 @@ export function mpaFailureReason(
   diagnostic?: Diagnostic,
 ) {
   const code = safeMpaDiagnostic(diagnostic)?.errorCode || '';
-  if (/^(ExceededQuota|QuotaExceeded|LimitExceeded)([._]|$)/.test(code))
+  if (code === 'QuotaExceed.EndpointEachVpc') return 'vpcEndpointQuota';
+  if (
+    /^(ExceededQuota|QuotaExceed|QuotaExceeded|LimitExceeded)([._]|$)/.test(
+      code,
+    )
+  )
     return 'quota';
   if (/^(AccessDenied|Forbidden|Unauthorized)([._]|$)/.test(code))
     return 'permission';
@@ -113,8 +118,10 @@ export function mpaFailureReason(
     task.error === 'runtimeNameTaken'
   )
     return 'nameConflict';
-  if (code === 'PostgreSQL.28P01') return 'databaseAuthentication';
+  if (/^PostgreSQL\.28[0-9A-Z]{3}$/.test(code)) return 'databaseAuthentication';
   if (code === 'PostgreSQL.42501') return 'databasePermission';
+  if (diagnostic?.category === 'resource_failed' && code)
+    return 'resourceFailedWithDetails';
   if (task.state === 'failed' && task.error && legacyReasons[task.error])
     return legacyReasons[task.error];
   return diagnostic?.category || 'unknown';

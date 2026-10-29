@@ -12558,6 +12558,18 @@ func (msgs Messages) MpaFailureReasonQuota() string {
 	return Catalog.Format(msgs.locale, "mpaFailureReasonQuota", nil)
 }
 
+// MpaFailureReasonVpcEndpointQuota says "目标 VPC …"
+// in the language the app shows.
+func MpaFailureReasonVpcEndpointQuota() string {
+	return In(i18n.Locale()).MpaFailureReasonVpcEndpointQuota()
+}
+
+// MpaFailureReasonVpcEndpointQuota says "目标 VPC …"
+// in the language of msgs.
+func (msgs Messages) MpaFailureReasonVpcEndpointQuota() string {
+	return Catalog.Format(msgs.locale, "mpaFailureReasonVpcEndpointQuota", nil)
+}
+
 // MpaFailureReasonPermission says "当前凭据没有执行该操作的权限，或凭据已失效。"
 // in the language the app shows.
 func MpaFailureReasonPermission() string { return In(i18n.Locale()).MpaFailureReasonPermission() }
@@ -12718,6 +12730,18 @@ func MpaFailureReasonResourceFailed() string {
 // in the language of msgs.
 func (msgs Messages) MpaFailureReasonResourceFailed() string {
 	return Catalog.Format(msgs.locale, "mpaFailureReasonResourceFailed", nil)
+}
+
+// MpaFailureReasonResourceFailedWithDetails says "云端资源创建失败，已获取具体错误，请查看下方错误码和诊断详情。"
+// in the language the app shows.
+func MpaFailureReasonResourceFailedWithDetails() string {
+	return In(i18n.Locale()).MpaFailureReasonResourceFailedWithDetails()
+}
+
+// MpaFailureReasonResourceFailedWithDetails says "云端资源创建失败，已获取具体错误，请查看下方错误码和诊断详情。"
+// in the language of msgs.
+func (msgs Messages) MpaFailureReasonResourceFailedWithDetails() string {
+	return Catalog.Format(msgs.locale, "mpaFailureReasonResourceFailedWithDetails", nil)
 }
 
 // MpaFailureReasonConfigurationChanged says "当前配置与已登记的创建配置不一致。"
@@ -12902,4 +12926,760 @@ func MpaDeleteErrorSource() string { return In(i18n.Locale()).MpaDeleteErrorSour
 // in the language of msgs.
 func (msgs Messages) MpaDeleteErrorSource() string {
 	return Catalog.Format(msgs.locale, "mpaDeleteErrorSource", nil)
+}
+
+// ScheduleDirectoryTooLarge says "任务目录过大，无法完整读取，请缩小任务范围。"
+// in the language the app shows.
+func ScheduleDirectoryTooLarge() string { return In(i18n.Locale()).ScheduleDirectoryTooLarge() }
+
+// ScheduleDirectoryTooLarge says "任务目录过大，无法完整读取，请缩小任务范围。"
+// in the language of msgs.
+func (msgs Messages) ScheduleDirectoryTooLarge() string {
+	return Catalog.Format(msgs.locale, "scheduleDirectoryTooLarge", nil)
+}
+
+// ScheduleNotRun says "尚未执行"
+// in the language the app shows.
+func ScheduleNotRun() string { return In(i18n.Locale()).ScheduleNotRun() }
+
+// ScheduleNotRun says "尚未执行"
+// in the language of msgs.
+func (msgs Messages) ScheduleNotRun() string {
+	return Catalog.Format(msgs.locale, "scheduleNotRun", nil)
+}
+
+// ScheduleStuck says "执行停滞"
+// in the language the app shows.
+func ScheduleStuck() string { return In(i18n.Locale()).ScheduleStuck() }
+
+// ScheduleStuck says "执行停滞"
+// in the language of msgs.
+func (msgs Messages) ScheduleStuck() string {
+	return Catalog.Format(msgs.locale, "scheduleStuck", nil)
+}
+
+// ScheduleTimedOut says "执行超时"
+// in the language the app shows.
+func ScheduleTimedOut() string { return In(i18n.Locale()).ScheduleTimedOut() }
+
+// ScheduleTimedOut says "执行超时"
+// in the language of msgs.
+func (msgs Messages) ScheduleTimedOut() string {
+	return Catalog.Format(msgs.locale, "scheduleTimedOut", nil)
+}
+
+// ScheduleSkipped says "已跳过"
+// in the language the app shows.
+func ScheduleSkipped() string { return In(i18n.Locale()).ScheduleSkipped() }
+
+// ScheduleSkipped says "已跳过"
+// in the language of msgs.
+func (msgs Messages) ScheduleSkipped() string {
+	return Catalog.Format(msgs.locale, "scheduleSkipped", nil)
+}
+
+// ScheduleEverySeconds says "每 {seconds} 秒"
+// in the language the app shows.
+func ScheduleEverySeconds(seconds string) string {
+	return In(i18n.Locale()).ScheduleEverySeconds(seconds)
+}
+
+// ScheduleEverySeconds says "每 {seconds} 秒"
+// in the language of msgs.
+func (msgs Messages) ScheduleEverySeconds(seconds string) string {
+	return Catalog.Format(msgs.locale, "scheduleEverySeconds", map[string]any{"seconds": seconds})
+}
+
+// ScheduleMonday says "周一"
+// in the language the app shows.
+func ScheduleMonday() string { return In(i18n.Locale()).ScheduleMonday() }
+
+// ScheduleMonday says "周一"
+// in the language of msgs.
+func (msgs Messages) ScheduleMonday() string {
+	return Catalog.Format(msgs.locale, "scheduleMonday", nil)
+}
+
+// ScheduleTuesday says "周二"
+// in the language the app shows.
+func ScheduleTuesday() string { return In(i18n.Locale()).ScheduleTuesday() }
+
+// ScheduleTuesday says "周二"
+// in the language of msgs.
+func (msgs Messages) ScheduleTuesday() string {
+	return Catalog.Format(msgs.locale, "scheduleTuesday", nil)
+}
+
+// ScheduleWednesday says "周三"
+// in the language the app shows.
+func ScheduleWednesday() string { return In(i18n.Locale()).ScheduleWednesday() }
+
+// ScheduleWednesday says "周三"
+// in the language of msgs.
+func (msgs Messages) ScheduleWednesday() string {
+	return Catalog.Format(msgs.locale, "scheduleWednesday", nil)
+}
+
+// ScheduleThursday says "周四"
+// in the language the app shows.
+func ScheduleThursday() string { return In(i18n.Locale()).ScheduleThursday() }
+
+// ScheduleThursday says "周四"
+// in the language of msgs.
+func (msgs Messages) ScheduleThursday() string {
+	return Catalog.Format(msgs.locale, "scheduleThursday", nil)
+}
+
+// ScheduleFriday says "周五"
+// in the language the app shows.
+func ScheduleFriday() string { return In(i18n.Locale()).ScheduleFriday() }
+
+// ScheduleFriday says "周五"
+// in the language of msgs.
+func (msgs Messages) ScheduleFriday() string {
+	return Catalog.Format(msgs.locale, "scheduleFriday", nil)
+}
+
+// ScheduleSaturday says "周六"
+// in the language the app shows.
+func ScheduleSaturday() string { return In(i18n.Locale()).ScheduleSaturday() }
+
+// ScheduleSaturday says "周六"
+// in the language of msgs.
+func (msgs Messages) ScheduleSaturday() string {
+	return Catalog.Format(msgs.locale, "scheduleSaturday", nil)
+}
+
+// ScheduleSunday says "周日"
+// in the language the app shows.
+func ScheduleSunday() string { return In(i18n.Locale()).ScheduleSunday() }
+
+// ScheduleSunday says "周日"
+// in the language of msgs.
+func (msgs Messages) ScheduleSunday() string {
+	return Catalog.Format(msgs.locale, "scheduleSunday", nil)
+}
+
+// ScheduleScopeHint says "展示当前用户在此 Runtime 中配置的任务，包括聊天中创建的任务。"
+// in the language the app shows.
+func ScheduleScopeHint() string { return In(i18n.Locale()).ScheduleScopeHint() }
+
+// ScheduleScopeHint says "展示当前用户在此 Runtime 中配置的任务，包括聊天中创建的任务。"
+// in the language of msgs.
+func (msgs Messages) ScheduleScopeHint() string {
+	return Catalog.Format(msgs.locale, "scheduleScopeHint", nil)
+}
+
+// ScheduleListView says "列表"
+// in the language the app shows.
+func ScheduleListView() string { return In(i18n.Locale()).ScheduleListView() }
+
+// ScheduleListView says "列表"
+// in the language of msgs.
+func (msgs Messages) ScheduleListView() string {
+	return Catalog.Format(msgs.locale, "scheduleListView", nil)
+}
+
+// ScheduleCalendarView says "日历"
+// in the language the app shows.
+func ScheduleCalendarView() string { return In(i18n.Locale()).ScheduleCalendarView() }
+
+// ScheduleCalendarView says "日历"
+// in the language of msgs.
+func (msgs Messages) ScheduleCalendarView() string {
+	return Catalog.Format(msgs.locale, "scheduleCalendarView", nil)
+}
+
+// ScheduleView says "任务视图"
+// in the language the app shows.
+func ScheduleView() string { return In(i18n.Locale()).ScheduleView() }
+
+// ScheduleView says "任务视图"
+// in the language of msgs.
+func (msgs Messages) ScheduleView() string {
+	return Catalog.Format(msgs.locale, "scheduleView", nil)
+}
+
+// ScheduleAllStatuses says "全部执行状态"
+// in the language the app shows.
+func ScheduleAllStatuses() string { return In(i18n.Locale()).ScheduleAllStatuses() }
+
+// ScheduleAllStatuses says "全部执行状态"
+// in the language of msgs.
+func (msgs Messages) ScheduleAllStatuses() string {
+	return Catalog.Format(msgs.locale, "scheduleAllStatuses", nil)
+}
+
+// ScheduleLastRun says "上次执行"
+// in the language the app shows.
+func ScheduleLastRun() string { return In(i18n.Locale()).ScheduleLastRun() }
+
+// ScheduleLastRun says "上次执行"
+// in the language of msgs.
+func (msgs Messages) ScheduleLastRun() string {
+	return Catalog.Format(msgs.locale, "scheduleLastRun", nil)
+}
+
+// ScheduleLastStatus says "最近执行状态"
+// in the language the app shows.
+func ScheduleLastStatus() string { return In(i18n.Locale()).ScheduleLastStatus() }
+
+// ScheduleLastStatus says "最近执行状态"
+// in the language of msgs.
+func (msgs Messages) ScheduleLastStatus() string {
+	return Catalog.Format(msgs.locale, "scheduleLastStatus", nil)
+}
+
+// ScheduleExecutionPlan says "执行周期"
+// in the language the app shows.
+func ScheduleExecutionPlan() string { return In(i18n.Locale()).ScheduleExecutionPlan() }
+
+// ScheduleExecutionPlan says "执行周期"
+// in the language of msgs.
+func (msgs Messages) ScheduleExecutionPlan() string {
+	return Catalog.Format(msgs.locale, "scheduleExecutionPlan", nil)
+}
+
+// ScheduleNextRun says "下次执行"
+// in the language the app shows.
+func ScheduleNextRun() string { return In(i18n.Locale()).ScheduleNextRun() }
+
+// ScheduleNextRun says "下次执行"
+// in the language of msgs.
+func (msgs Messages) ScheduleNextRun() string {
+	return Catalog.Format(msgs.locale, "scheduleNextRun", nil)
+}
+
+// ScheduleAgent says "执行 Agent"
+// in the language the app shows.
+func ScheduleAgent() string { return In(i18n.Locale()).ScheduleAgent() }
+
+// ScheduleAgent says "执行 Agent"
+// in the language of msgs.
+func (msgs Messages) ScheduleAgent() string {
+	return Catalog.Format(msgs.locale, "scheduleAgent", nil)
+}
+
+// ScheduleActions says "操作"
+// in the language the app shows.
+func ScheduleActions() string { return In(i18n.Locale()).ScheduleActions() }
+
+// ScheduleActions says "操作"
+// in the language of msgs.
+func (msgs Messages) ScheduleActions() string {
+	return Catalog.Format(msgs.locale, "scheduleActions", nil)
+}
+
+// ScheduleCopy says "复制任务"
+// in the language the app shows.
+func ScheduleCopy() string { return In(i18n.Locale()).ScheduleCopy() }
+
+// ScheduleCopy says "复制任务"
+// in the language of msgs.
+func (msgs Messages) ScheduleCopy() string {
+	return Catalog.Format(msgs.locale, "scheduleCopy", nil)
+}
+
+// ScheduleCopyName says "{name}（副本）"
+// in the language the app shows.
+func ScheduleCopyName(name string) string { return In(i18n.Locale()).ScheduleCopyName(name) }
+
+// ScheduleCopyName says "{name}（副本）"
+// in the language of msgs.
+func (msgs Messages) ScheduleCopyName(name string) string {
+	return Catalog.Format(msgs.locale, "scheduleCopyName", map[string]any{"name": name})
+}
+
+// ScheduleTaskCount says "共 {count} 个任务"
+// in the language the app shows.
+func ScheduleTaskCount(count string) string { return In(i18n.Locale()).ScheduleTaskCount(count) }
+
+// ScheduleTaskCount says "共 {count} 个任务"
+// in the language of msgs.
+func (msgs Messages) ScheduleTaskCount(count string) string {
+	return Catalog.Format(msgs.locale, "scheduleTaskCount", map[string]any{"count": count})
+}
+
+// ScheduleExecutionCount says "执行次数：{count}"
+// in the language the app shows.
+func ScheduleExecutionCount(count string) string {
+	return In(i18n.Locale()).ScheduleExecutionCount(count)
+}
+
+// ScheduleExecutionCount says "执行次数：{count}"
+// in the language of msgs.
+func (msgs Messages) ScheduleExecutionCount(count string) string {
+	return Catalog.Format(msgs.locale, "scheduleExecutionCount", map[string]any{"count": count})
+}
+
+// ScheduleSuccessRate says "成功率：{rate}%"
+// in the language the app shows.
+func ScheduleSuccessRate(rate string) string { return In(i18n.Locale()).ScheduleSuccessRate(rate) }
+
+// ScheduleSuccessRate says "成功率：{rate}%"
+// in the language of msgs.
+func (msgs Messages) ScheduleSuccessRate(rate string) string {
+	return Catalog.Format(msgs.locale, "scheduleSuccessRate", map[string]any{"rate": rate})
+}
+
+// ScheduleLoading says "正在读取定时任务…"
+// in the language the app shows.
+func ScheduleLoading() string { return In(i18n.Locale()).ScheduleLoading() }
+
+// ScheduleLoading says "正在读取定时任务…"
+// in the language of msgs.
+func (msgs Messages) ScheduleLoading() string {
+	return Catalog.Format(msgs.locale, "scheduleLoading", nil)
+}
+
+// ScheduleEmptyTitle says "暂无定时任务"
+// in the language the app shows.
+func ScheduleEmptyTitle() string { return In(i18n.Locale()).ScheduleEmptyTitle() }
+
+// ScheduleEmptyTitle says "暂无定时任务"
+// in the language of msgs.
+func (msgs Messages) ScheduleEmptyTitle() string {
+	return Catalog.Format(msgs.locale, "scheduleEmptyTitle", nil)
+}
+
+// ScheduleSaved says "定时任务已保存。"
+// in the language the app shows.
+func ScheduleSaved() string { return In(i18n.Locale()).ScheduleSaved() }
+
+// ScheduleSaved says "定时任务已保存。"
+// in the language of msgs.
+func (msgs Messages) ScheduleSaved() string {
+	return Catalog.Format(msgs.locale, "scheduleSaved", nil)
+}
+
+// ScheduleDeleted says "定时任务已删除。"
+// in the language the app shows.
+func ScheduleDeleted() string { return In(i18n.Locale()).ScheduleDeleted() }
+
+// ScheduleDeleted says "定时任务已删除。"
+// in the language of msgs.
+func (msgs Messages) ScheduleDeleted() string {
+	return Catalog.Format(msgs.locale, "scheduleDeleted", nil)
+}
+
+// ScheduleEnabledNotice says "定时任务已启用。"
+// in the language the app shows.
+func ScheduleEnabledNotice() string { return In(i18n.Locale()).ScheduleEnabledNotice() }
+
+// ScheduleEnabledNotice says "定时任务已启用。"
+// in the language of msgs.
+func (msgs Messages) ScheduleEnabledNotice() string {
+	return Catalog.Format(msgs.locale, "scheduleEnabledNotice", nil)
+}
+
+// ScheduleDisabledNotice says "定时任务已暂停。"
+// in the language the app shows.
+func ScheduleDisabledNotice() string { return In(i18n.Locale()).ScheduleDisabledNotice() }
+
+// ScheduleDisabledNotice says "定时任务已暂停。"
+// in the language of msgs.
+func (msgs Messages) ScheduleDisabledNotice() string {
+	return Catalog.Format(msgs.locale, "scheduleDisabledNotice", nil)
+}
+
+// ScheduleIdentityHint says "定时任务按用户隔离。请在身份认证设置中配置与创建任务时相同的用户身份，再刷新。"
+// in the language the app shows.
+func ScheduleIdentityHint() string { return In(i18n.Locale()).ScheduleIdentityHint() }
+
+// ScheduleIdentityHint says "定时任务按用户隔离。请在身份认证设置中配置与创建任务时相同的用户身份，再刷新。"
+// in the language of msgs.
+func (msgs Messages) ScheduleIdentityHint() string {
+	return Catalog.Format(msgs.locale, "scheduleIdentityHint", nil)
+}
+
+// ScheduleUnsupported says "此 Runtime 尚未提供定时任务接口，请检查 Runtime 镜像版本。"
+// in the language the app shows.
+func ScheduleUnsupported() string { return In(i18n.Locale()).ScheduleUnsupported() }
+
+// ScheduleUnsupported says "此 Runtime 尚未提供定时任务接口，请检查 Runtime 镜像版本。"
+// in the language of msgs.
+func (msgs Messages) ScheduleUnsupported() string {
+	return Catalog.Format(msgs.locale, "scheduleUnsupported", nil)
+}
+
+// ScheduleConfigureIdentity says "配置任务身份"
+// in the language the app shows.
+func ScheduleConfigureIdentity() string { return In(i18n.Locale()).ScheduleConfigureIdentity() }
+
+// ScheduleConfigureIdentity says "配置任务身份"
+// in the language of msgs.
+func (msgs Messages) ScheduleConfigureIdentity() string {
+	return Catalog.Format(msgs.locale, "scheduleConfigureIdentity", nil)
+}
+
+// ScheduleEditorHint says "每次执行会发送任务内容给 Agent，并创建独立会话。关闭应用后仍会按计划运行。"
+// in the language the app shows.
+func ScheduleEditorHint() string { return In(i18n.Locale()).ScheduleEditorHint() }
+
+// ScheduleEditorHint says "每次执行会发送任务内容给 Agent，并创建独立会话。关闭应用后仍会按计划运行。"
+// in the language of msgs.
+func (msgs Messages) ScheduleEditorHint() string {
+	return Catalog.Format(msgs.locale, "scheduleEditorHint", nil)
+}
+
+// ScheduleAgentHint says "留空使用当前用户的 Main 助手。"
+// in the language the app shows.
+func ScheduleAgentHint() string { return In(i18n.Locale()).ScheduleAgentHint() }
+
+// ScheduleAgentHint says "留空使用当前用户的 Main 助手。"
+// in the language of msgs.
+func (msgs Messages) ScheduleAgentHint() string {
+	return Catalog.Format(msgs.locale, "scheduleAgentHint", nil)
+}
+
+// ScheduleRunAtLocal says "执行时间（设备时区）"
+// in the language the app shows.
+func ScheduleRunAtLocal() string { return In(i18n.Locale()).ScheduleRunAtLocal() }
+
+// ScheduleRunAtLocal says "执行时间（设备时区）"
+// in the language of msgs.
+func (msgs Messages) ScheduleRunAtLocal() string {
+	return Catalog.Format(msgs.locale, "scheduleRunAtLocal", nil)
+}
+
+// ScheduleTimezoneInvalid says "请输入有效的 IANA 时区，例如 Asia/Shanghai。"
+// in the language the app shows.
+func ScheduleTimezoneInvalid() string { return In(i18n.Locale()).ScheduleTimezoneInvalid() }
+
+// ScheduleTimezoneInvalid says "请输入有效的 IANA 时区，例如 Asia/Shanghai。"
+// in the language of msgs.
+func (msgs Messages) ScheduleTimezoneInvalid() string {
+	return Catalog.Format(msgs.locale, "scheduleTimezoneInvalid", nil)
+}
+
+// ScheduleFutureTime says "请选择未来的执行时间。"
+// in the language the app shows.
+func ScheduleFutureTime() string { return In(i18n.Locale()).ScheduleFutureTime() }
+
+// ScheduleFutureTime says "请选择未来的执行时间。"
+// in the language of msgs.
+func (msgs Messages) ScheduleFutureTime() string {
+	return Catalog.Format(msgs.locale, "scheduleFutureTime", nil)
+}
+
+// ScheduleIntervalInvalid says "间隔须为 30–31536000 的整数秒。"
+// in the language the app shows.
+func ScheduleIntervalInvalid() string { return In(i18n.Locale()).ScheduleIntervalInvalid() }
+
+// ScheduleIntervalInvalid says "间隔须为 30–31536000 的整数秒。"
+// in the language of msgs.
+func (msgs Messages) ScheduleIntervalInvalid() string {
+	return Catalog.Format(msgs.locale, "scheduleIntervalInvalid", nil)
+}
+
+// ScheduleDaysInvalid says "请选择有效且不重复的星期或日期。"
+// in the language the app shows.
+func ScheduleDaysInvalid() string { return In(i18n.Locale()).ScheduleDaysInvalid() }
+
+// ScheduleDaysInvalid says "请选择有效且不重复的星期或日期。"
+// in the language of msgs.
+func (msgs Messages) ScheduleDaysInvalid() string {
+	return Catalog.Format(msgs.locale, "scheduleDaysInvalid", nil)
+}
+
+// ScheduleCronInvalid says "Cron 表达式需要 5 个字段，例如 0 9 * * *。"
+// in the language the app shows.
+func ScheduleCronInvalid() string { return In(i18n.Locale()).ScheduleCronInvalid() }
+
+// ScheduleCronInvalid says "Cron 表达式需要 5 个字段，例如 0 9 * * *。"
+// in the language of msgs.
+func (msgs Messages) ScheduleCronInvalid() string {
+	return Catalog.Format(msgs.locale, "scheduleCronInvalid", nil)
+}
+
+// ScheduleRequired says "请填写任务名称和任务内容。"
+// in the language the app shows.
+func ScheduleRequired() string { return In(i18n.Locale()).ScheduleRequired() }
+
+// ScheduleRequired says "请填写任务名称和任务内容。"
+// in the language of msgs.
+func (msgs Messages) ScheduleRequired() string {
+	return Catalog.Format(msgs.locale, "scheduleRequired", nil)
+}
+
+// ScheduleTimeInvalid says "请选择有效的执行时间。"
+// in the language the app shows.
+func ScheduleTimeInvalid() string { return In(i18n.Locale()).ScheduleTimeInvalid() }
+
+// ScheduleTimeInvalid says "请选择有效的执行时间。"
+// in the language of msgs.
+func (msgs Messages) ScheduleTimeInvalid() string {
+	return Catalog.Format(msgs.locale, "scheduleTimeInvalid", nil)
+}
+
+// ScheduleEnabledField says "启用任务"
+// in the language the app shows.
+func ScheduleEnabledField() string { return In(i18n.Locale()).ScheduleEnabledField() }
+
+// ScheduleEnabledField says "启用任务"
+// in the language of msgs.
+func (msgs Messages) ScheduleEnabledField() string {
+	return Catalog.Format(msgs.locale, "scheduleEnabledField", nil)
+}
+
+// ScheduleBot says "投递机器人"
+// in the language the app shows.
+func ScheduleBot() string { return In(i18n.Locale()).ScheduleBot() }
+
+// ScheduleBot says "投递机器人"
+// in the language of msgs.
+func (msgs Messages) ScheduleBot() string {
+	return Catalog.Format(msgs.locale, "scheduleBot", nil)
+}
+
+// ScheduleSelectBot says "请选择已启用的飞书机器人"
+// in the language the app shows.
+func ScheduleSelectBot() string { return In(i18n.Locale()).ScheduleSelectBot() }
+
+// ScheduleSelectBot says "请选择已启用的飞书机器人"
+// in the language of msgs.
+func (msgs Messages) ScheduleSelectBot() string {
+	return Catalog.Format(msgs.locale, "scheduleSelectBot", nil)
+}
+
+// ScheduleSelectTarget says "请选择此机器人有权投递的群聊。"
+// in the language the app shows.
+func ScheduleSelectTarget() string { return In(i18n.Locale()).ScheduleSelectTarget() }
+
+// ScheduleSelectTarget says "请选择此机器人有权投递的群聊。"
+// in the language of msgs.
+func (msgs Messages) ScheduleSelectTarget() string {
+	return Catalog.Format(msgs.locale, "scheduleSelectTarget", nil)
+}
+
+// ScheduleDeleteDescription says "删除“{name}”后将不再调度此任务。"
+// in the language the app shows.
+func ScheduleDeleteDescription(name string) string {
+	return In(i18n.Locale()).ScheduleDeleteDescription(name)
+}
+
+// ScheduleDeleteDescription says "删除“{name}”后将不再调度此任务。"
+// in the language of msgs.
+func (msgs Messages) ScheduleDeleteDescription(name string) string {
+	return Catalog.Format(msgs.locale, "scheduleDeleteDescription", map[string]any{"name": name})
+}
+
+// ScheduleHistory says "执行记录"
+// in the language the app shows.
+func ScheduleHistory() string { return In(i18n.Locale()).ScheduleHistory() }
+
+// ScheduleHistory says "执行记录"
+// in the language of msgs.
+func (msgs Messages) ScheduleHistory() string {
+	return Catalog.Format(msgs.locale, "scheduleHistory", nil)
+}
+
+// ScheduleNoHistory says "暂无执行记录。"
+// in the language the app shows.
+func ScheduleNoHistory() string { return In(i18n.Locale()).ScheduleNoHistory() }
+
+// ScheduleNoHistory says "暂无执行记录。"
+// in the language of msgs.
+func (msgs Messages) ScheduleNoHistory() string {
+	return Catalog.Format(msgs.locale, "scheduleNoHistory", nil)
+}
+
+// ScheduleDuration says "耗时"
+// in the language the app shows.
+func ScheduleDuration() string { return In(i18n.Locale()).ScheduleDuration() }
+
+// ScheduleDuration says "耗时"
+// in the language of msgs.
+func (msgs Messages) ScheduleDuration() string {
+	return Catalog.Format(msgs.locale, "scheduleDuration", nil)
+}
+
+// ScheduleMonthPrevious says "上个月"
+// in the language the app shows.
+func ScheduleMonthPrevious() string { return In(i18n.Locale()).ScheduleMonthPrevious() }
+
+// ScheduleMonthPrevious says "上个月"
+// in the language of msgs.
+func (msgs Messages) ScheduleMonthPrevious() string {
+	return Catalog.Format(msgs.locale, "scheduleMonthPrevious", nil)
+}
+
+// ScheduleMonthNext says "下个月"
+// in the language the app shows.
+func ScheduleMonthNext() string { return In(i18n.Locale()).ScheduleMonthNext() }
+
+// ScheduleMonthNext says "下个月"
+// in the language of msgs.
+func (msgs Messages) ScheduleMonthNext() string {
+	return Catalog.Format(msgs.locale, "scheduleMonthNext", nil)
+}
+
+// ScheduleToday says "今天"
+// in the language the app shows.
+func ScheduleToday() string { return In(i18n.Locale()).ScheduleToday() }
+
+// ScheduleToday says "今天"
+// in the language of msgs.
+func (msgs Messages) ScheduleToday() string {
+	return Catalog.Format(msgs.locale, "scheduleToday", nil)
+}
+
+// ScheduleCalendarHint says "显示设备时区下的预计执行安排；复杂 Cron 仅显示服务端提供的下次执行时间。"
+// in the language the app shows.
+func ScheduleCalendarHint() string { return In(i18n.Locale()).ScheduleCalendarHint() }
+
+// ScheduleCalendarHint says "显示设备时区下的预计执行安排；复杂 Cron 仅显示服务端提供的下次执行时间。"
+// in the language of msgs.
+func (msgs Messages) ScheduleCalendarHint() string {
+	return Catalog.Format(msgs.locale, "scheduleCalendarHint", nil)
+}
+
+// ScheduleNextOnly says "仅下次"
+// in the language the app shows.
+func ScheduleNextOnly() string { return In(i18n.Locale()).ScheduleNextOnly() }
+
+// ScheduleNextOnly says "仅下次"
+// in the language of msgs.
+func (msgs Messages) ScheduleNextOnly() string {
+	return Catalog.Format(msgs.locale, "scheduleNextOnly", nil)
+}
+
+// ScheduleOccurrences says "{count} 次"
+// in the language the app shows.
+func ScheduleOccurrences(count string) string { return In(i18n.Locale()).ScheduleOccurrences(count) }
+
+// ScheduleOccurrences says "{count} 次"
+// in the language of msgs.
+func (msgs Messages) ScheduleOccurrences(count string) string {
+	return Catalog.Format(msgs.locale, "scheduleOccurrences", map[string]any{"count": count})
+}
+
+// SchedulePreviousPage says "上一页"
+// in the language the app shows.
+func SchedulePreviousPage() string { return In(i18n.Locale()).SchedulePreviousPage() }
+
+// SchedulePreviousPage says "上一页"
+// in the language of msgs.
+func (msgs Messages) SchedulePreviousPage() string {
+	return Catalog.Format(msgs.locale, "schedulePreviousPage", nil)
+}
+
+// ScheduleNextPage says "下一页"
+// in the language the app shows.
+func ScheduleNextPage() string { return In(i18n.Locale()).ScheduleNextPage() }
+
+// ScheduleNextPage says "下一页"
+// in the language of msgs.
+func (msgs Messages) ScheduleNextPage() string {
+	return Catalog.Format(msgs.locale, "scheduleNextPage", nil)
+}
+
+// SchedulePage says "第 {page} 页"
+// in the language the app shows.
+func SchedulePage(page string) string { return In(i18n.Locale()).SchedulePage(page) }
+
+// SchedulePage says "第 {page} 页"
+// in the language of msgs.
+func (msgs Messages) SchedulePage(page string) string {
+	return Catalog.Format(msgs.locale, "schedulePage", map[string]any{"page": page})
+}
+
+// ScheduleConflictHint says "任务已被修改，请刷新后重新编辑。"
+// in the language the app shows.
+func ScheduleConflictHint() string { return In(i18n.Locale()).ScheduleConflictHint() }
+
+// ScheduleConflictHint says "任务已被修改，请刷新后重新编辑。"
+// in the language of msgs.
+func (msgs Messages) ScheduleConflictHint() string {
+	return Catalog.Format(msgs.locale, "scheduleConflictHint", nil)
+}
+
+// ScheduleMoreTasks says "还有 {count} 个任务"
+// in the language the app shows.
+func ScheduleMoreTasks(count string) string { return In(i18n.Locale()).ScheduleMoreTasks(count) }
+
+// ScheduleMoreTasks says "还有 {count} 个任务"
+// in the language of msgs.
+func (msgs Messages) ScheduleMoreTasks(count string) string {
+	return Catalog.Format(msgs.locale, "scheduleMoreTasks", map[string]any{"count": count})
+}
+
+// ScheduleSchedulerUnavailable says "定时调度服务暂不可用，请检查 Runtime 状态后重试。"
+// in the language the app shows.
+func ScheduleSchedulerUnavailable() string { return In(i18n.Locale()).ScheduleSchedulerUnavailable() }
+
+// ScheduleSchedulerUnavailable says "定时调度服务暂不可用，请检查 Runtime 状态后重试。"
+// in the language of msgs.
+func (msgs Messages) ScheduleSchedulerUnavailable() string {
+	return Catalog.Format(msgs.locale, "scheduleSchedulerUnavailable", nil)
+}
+
+// ScheduleQuotaExceeded says "定时任务数量已达上限，请清理不再使用的任务后重试。"
+// in the language the app shows.
+func ScheduleQuotaExceeded() string { return In(i18n.Locale()).ScheduleQuotaExceeded() }
+
+// ScheduleQuotaExceeded says "定时任务数量已达上限，请清理不再使用的任务后重试。"
+// in the language of msgs.
+func (msgs Messages) ScheduleQuotaExceeded() string {
+	return Catalog.Format(msgs.locale, "scheduleQuotaExceeded", nil)
+}
+
+// ScheduleTaskMissing says "此任务已不存在，请关闭详情并刷新列表。"
+// in the language the app shows.
+func ScheduleTaskMissing() string { return In(i18n.Locale()).ScheduleTaskMissing() }
+
+// ScheduleTaskMissing says "此任务已不存在，请关闭详情并刷新列表。"
+// in the language of msgs.
+func (msgs Messages) ScheduleTaskMissing() string {
+	return Catalog.Format(msgs.locale, "scheduleTaskMissing", nil)
+}
+
+// CloudProvider says "云平台"
+// in the language the app shows.
+func CloudProvider() string { return In(i18n.Locale()).CloudProvider() }
+
+// CloudProvider says "云平台"
+// in the language of msgs.
+func (msgs Messages) CloudProvider() string {
+	return Catalog.Format(msgs.locale, "cloudProvider", nil)
+}
+
+// ProviderVolcengine says "火山引擎"
+// in the language the app shows.
+func ProviderVolcengine() string { return In(i18n.Locale()).ProviderVolcengine() }
+
+// ProviderVolcengine says "火山引擎"
+// in the language of msgs.
+func (msgs Messages) ProviderVolcengine() string {
+	return Catalog.Format(msgs.locale, "providerVolcengine", nil)
+}
+
+// CloudAccount says "云账号"
+// in the language the app shows.
+func CloudAccount() string { return In(i18n.Locale()).CloudAccount() }
+
+// CloudAccount says "云账号"
+// in the language of msgs.
+func (msgs Messages) CloudAccount() string {
+	return Catalog.Format(msgs.locale, "cloudAccount", nil)
+}
+
+// ByteplusAccount says "BytePlus 账号"
+// in the language the app shows.
+func ByteplusAccount() string { return In(i18n.Locale()).ByteplusAccount() }
+
+// ByteplusAccount says "BytePlus 账号"
+// in the language of msgs.
+func (msgs Messages) ByteplusAccount() string {
+	return Catalog.Format(msgs.locale, "byteplusAccount", nil)
+}
+
+// SettingsRegionSingapore says "新加坡"
+// in the language the app shows.
+func SettingsRegionSingapore() string { return In(i18n.Locale()).SettingsRegionSingapore() }
+
+// SettingsRegionSingapore says "新加坡"
+// in the language of msgs.
+func (msgs Messages) SettingsRegionSingapore() string {
+	return Catalog.Format(msgs.locale, "settingsRegionSingapore", nil)
 }
