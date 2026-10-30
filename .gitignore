@@ -60,3 +60,6 @@ __pycache__/
 
 # Local brainstorming mockups (visual companion)
 .superpowers/
+
+# Private requirements and design documents stay local.
+/prd-spec/
